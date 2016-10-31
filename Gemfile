@@ -3,6 +3,7 @@ ruby '2.3.1'
 
 # Standard gems
 gem 'rails', '4.2.6'
+gem 'responders', '~>2.3.0'
 gem 'pg', '~> 0.18.3'
 gem 'passenger', '~> 5.0.30'
 gem 'sidekiq',  '~> 4.2.3'

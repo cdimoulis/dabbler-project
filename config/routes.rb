@@ -9,7 +9,9 @@ Rails.application.routes.draw do
   #####
   namespace :api do
     namespace :v1 do
-       resources :domains, except: (exc_new_edit + [:destroy]), constraints: uuid_constraints
+       resources :domains, except: (exc_new_edit + [:destroy]), constraints: uuid_constraints do
+         resources :domain_groups, except: exc_new_edit
+       end
 
 
 

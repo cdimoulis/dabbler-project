@@ -40,4 +40,5 @@ class Api::V1::DomainsController < ApplicationController
 
     def permitted_params
       params.require(:domain).permit(:text, :description, :subdomain, :active)
+    end
 end
