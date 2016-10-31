@@ -26,4 +26,18 @@ class Api::V1::DomainsController < ApplicationController
   # End standard CRUD Ops
   ###
 
+  def new
+    super
+  end
+
+  def edit
+    super
+  end
+
+
+
+  private
+
+    def permitted_params
+      params.require(:domain).permit(:text, :description, :subdomain, :active)
 end
