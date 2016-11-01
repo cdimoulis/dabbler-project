@@ -4,7 +4,7 @@
 class Api::V1::ApiController < ActionController::Base
   protect_from_forgery with: :exception
 
-  respond_to :json
+  respond_to :json, :html
 
   ###
   # Standard CRUD Ops
@@ -12,16 +12,16 @@ class Api::V1::ApiController < ActionController::Base
   def create
     # TODO: Authorization
     #   Need to authorize when USERS are added
-    puts "\nParams: #{params[:controller]}\n"
+    puts "\nParams: #{params[:domain]}\n"
     resource = params[:controller].gsub("api/v1/","").singularize.classify.constantize
     begin
-      record = resource.new permitted_params
-      if record.valid? and record.save
-        respond_with( record )
+      @record = resource.new permitted_params
+      if @record.valid? and @record.save
+        respond_with :api, :v1, @record
       else
-        puts "\n\nCould not create #{resource} record.\n#{record.errors.inspect}\n\n"
-        Rails.logger.debug "\n\nCould not create #{resource} record.\n#{record.errors.inspect}\n\n"
-        render :json => {errors: record.errors}, :status => 422
+        puts "\n\nCould not create #{resource} record.\n#{@record.errors.inspect}\n\n"
+        Rails.logger.debug "\n\nCould not create #{resource} record.\n#{@record.errors.inspect}\n\n"
+        render :json => {errors: @record.errors}, :status => 422
       end
     rescue ActionController::ParameterMissing
       puts "\n\nCould not create #{resource} record.\nNo attributes specified\n\n"

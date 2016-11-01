@@ -34,6 +34,7 @@ class DomainGroupTest < ActiveSupport::TestCase
     dg = DomainGroup.new(text: "Test Group", description: "test domain", domain_id: code.id)
     assert dg.save, "New DomainGroup: Test, but different domain, will not save"
 
+    # Duplicate text and domain
     dg = DomainGroup.new(text: "Test Group", description: "test domain", domain_id: travel.id)
     assert_not dg.save, "New DomainGroup: Duplicate text and domain saves"
   end

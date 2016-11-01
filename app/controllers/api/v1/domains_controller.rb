@@ -1,5 +1,7 @@
 class Api::V1::DomainsController < Api::V1::ApiController
 
+  respond_to :json
+
   ###
   # Standard CRUD Ops
   ###
