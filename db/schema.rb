@@ -17,7 +17,7 @@ ActiveRecord::Schema.define(version: 20161031180249) do
   enable_extension "plpgsql"
   enable_extension "uuid-ossp"
 
-  create_table "domain_groups", force: :cascade do |t|
+  create_table "domain_groups", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
     t.string   "text",        null: false
     t.text     "description"
     t.uuid     "domain_id",   null: false

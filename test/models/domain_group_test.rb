@@ -2,7 +2,7 @@
 #
 # Table name: domain_groups
 #
-#  id          :integer          not null, primary key
+#  id          :uuid             not null, primary key
 #  text        :string           not null
 #  description :text
 #  domain_id   :uuid             not null
