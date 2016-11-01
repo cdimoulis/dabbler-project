@@ -12,14 +12,21 @@ class Api::V1::ApiController < ActionController::Base
   def create
     # TODO: Authorization
     #   Need to authorize when USERS are added
-    resource = params[:controller].singularize.classify.constantize
-    record = resource.new(permitted_params)
-    if record.valid? and record.save
-      respond_with( record )
-    else
-      puts "\n\nCould not create #{resource} record.\n#{record.errors.inspect}\n\n"
-      Rails.logger.debug "\n\nCould not create #{resource} record.\n#{record.errors.inspect}\n\n"
-      render :json => {errors: record.errors}, :status => 422
+    puts "\nParams: #{params[:controller]}\n"
+    resource = params[:controller].gsub("api/v1/","").singularize.classify.constantize
+    begin
+      record = resource.new permitted_params
+      if record.valid? and record.save
+        respond_with( record )
+      else
+        puts "\n\nCould not create #{resource} record.\n#{record.errors.inspect}\n\n"
+        Rails.logger.debug "\n\nCould not create #{resource} record.\n#{record.errors.inspect}\n\n"
+        render :json => {errors: record.errors}, :status => 422
+      end
+    rescue ActionController::ParameterMissing
+      puts "\n\nCould not create #{resource} record.\nNo attributes specified\n\n"
+      Rails.logger.debug "\n\nCould not create #{resource} record.\nNo attributes specified\n\n"
+      render :json => {}, :status => 422
     end
   end
 

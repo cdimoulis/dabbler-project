@@ -25,7 +25,9 @@ ActiveRecord::Schema.define(version: 20161031180249) do
     t.datetime "updated_at",  null: false
   end
 
+  add_index "domain_groups", ["domain_id", "text"], name: "index_domain_groups_on_domain_id_and_text", unique: true, using: :btree
   add_index "domain_groups", ["domain_id"], name: "index_domain_groups_on_domain_id", using: :btree
+  add_index "domain_groups", ["text"], name: "index_domain_groups_on_text", using: :btree
 
   create_table "domains", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
     t.string   "text",                       null: false
@@ -36,6 +38,7 @@ ActiveRecord::Schema.define(version: 20161031180249) do
     t.datetime "updated_at",                 null: false
   end
 
-  add_index "domains", ["text"], name: "index_domains_on_text", using: :btree
+  add_index "domains", ["subdomain"], name: "index_domains_on_subdomain", unique: true, using: :btree
+  add_index "domains", ["text"], name: "index_domains_on_text", unique: true, using: :btree
 
 end

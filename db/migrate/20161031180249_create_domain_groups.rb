@@ -7,5 +7,8 @@ class CreateDomainGroups < ActiveRecord::Migration
 
       t.timestamps null: false
     end
+
+    add_index :domain_groups, :text
+    add_index :domain_groups, [:domain_id, :text], unique: true
   end
 end
