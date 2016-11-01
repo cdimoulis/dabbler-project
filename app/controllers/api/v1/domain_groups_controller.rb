@@ -1,4 +1,4 @@
-class Api::V1::DomainGroupController < ApplicationController
+class Api::V1::DomainGroupsController < Api::V1::ApiController
 
   ###
   # Standard CRUD Ops
@@ -39,6 +39,6 @@ class Api::V1::DomainGroupController < ApplicationController
   private
 
     def permitted_params
-      params.require(:domain_groups).permit(:text, :description, :subdomain, :active)
+      params.require(:domain_group).permit(:text, :description, :subdomain, :active)
     end
 end

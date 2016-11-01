@@ -1,4 +1,4 @@
-class Api::V1::DomainsController < ApplicationController
+class Api::V1::DomainsController < Api::V1::ApiController
 
   ###
   # Standard CRUD Ops

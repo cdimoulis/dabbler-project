@@ -17,4 +17,9 @@ class DomainTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end
+
+  # test "New Domain" do
+  def test_new_domain
+    assert true
+  end
 end

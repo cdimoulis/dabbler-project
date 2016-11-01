@@ -10,9 +10,9 @@
 #  updated_at  :datetime         not null
 #
 
-class DomainGroup < ActiveRecord::Base
+class DomainGroup < ApplicationRecord
 
   belongs_to :domain
 
-  
+
 end
