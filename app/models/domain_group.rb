@@ -5,7 +5,7 @@
 #  id          :integer          not null, primary key
 #  text        :string           not null
 #  description :text
-#  domain_id   :integer
+#  domain_id   :uuid             not null
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #
@@ -14,5 +14,18 @@ class DomainGroup < ApplicationRecord
 
   belongs_to :domain
 
+  validates :text, :domain_id, presence: true
+  validate :domain_exists
+
+  private
+
+    def domain_exists
+      if attribute_present?(:domain_id) and !Domain.exists?(domain_id)
+        errors.add(:domain_id, "Invalid Domain")
+        return false
+      end
+
+      return true
+    end
 
 end

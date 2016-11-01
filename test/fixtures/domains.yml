@@ -21,13 +21,11 @@ travel:
   text: Travel
   description: Travel related Information
   subdomain: travel
-  active: true
 
 code:
   text: Code
   description: Code related Information
   subdomain: code
-  active: true
 
 inactive:
   text: Inactive

@@ -20,7 +20,7 @@ ActiveRecord::Schema.define(version: 20161031180249) do
   create_table "domain_groups", force: :cascade do |t|
     t.string   "text",        null: false
     t.text     "description"
-    t.integer  "domain_id"
+    t.uuid     "domain_id",   null: false
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
   end

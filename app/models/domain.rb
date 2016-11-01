@@ -15,4 +15,6 @@ class Domain < ApplicationRecord
 
   has_many :domain_groups
 
+  validates :text, :subdomain, presence: true
+
 end

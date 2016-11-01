@@ -41,5 +41,5 @@ group :development do
   gem 'foreman', '~> 0.78'
   gem 'annotate'
   gem 'better_errors'
-  # gem 'minitest', '~> 5.9.1'
+  gem 'minitest', '~> 5.8.4'
 end

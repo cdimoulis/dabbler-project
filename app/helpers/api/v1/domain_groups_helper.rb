@@ -1,2 +1,2 @@
-module Api::V1::DomainsGroupHelper
+module Api::V1::DomainGroupsHelper
 end

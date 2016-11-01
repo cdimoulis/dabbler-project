@@ -3,7 +3,7 @@ class CreateDomainGroups < ActiveRecord::Migration
     create_table :domain_groups do |t|
       t.string :text, null: false
       t.text :description
-      t.belongs_to :domain, index: true
+      t.uuid :domain_id, index: true, null: false
 
       t.timestamps null: false
     end
