@@ -16,3 +16,7 @@
 # model remove the '{}' from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
 #
+fly:
+  text: Fly
+  description: Fly group in travel
+  domain: travel (Domain)

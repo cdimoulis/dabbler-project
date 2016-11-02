@@ -18,6 +18,7 @@ class Api::V1::ApiController < ActionController::Base
       @record = resource.new permitted_params
       if @record.valid? and @record.save
         respond_with :api, :v1, @record
+        # respond_with @record
       else
         puts "\n\nCould not create #{resource} record.\n#{@record.errors.inspect}\n\n"
         Rails.logger.debug "\n\nCould not create #{resource} record.\n#{@record.errors.inspect}\n\n"
