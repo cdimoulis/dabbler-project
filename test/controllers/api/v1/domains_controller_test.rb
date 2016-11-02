@@ -4,19 +4,75 @@ class Api::V1::DomainsControllerTest < ActionController::TestCase
 
   def setup
     @travel = domains(:travel)
+    @code = domains(:code)
+    @unused = domains(:unused)
     @params = {text: "Create Test", description: "test create", subdomain: "create_test"}
+    @bad_update_params = {subdomain: "travel"}
+    @update_params = {description: "Travel related entries"}
   end
 
+  # Create route
   test "create" do
     # Create without sending params
     post :create
     assert_response 422, "Domain Create: Empty post did not fail"
 
-    # Create with params
-    post :create, domain: @params
-    assert_response :success, "Domain Create: Creation failed.\n#{@response.body.inspect}\n"
+    # Assert that the Domain count is increased by 1 after POST
+    assert_difference('Domain.count', 1, "Domain Create: Creation failed.\n#{@response.body.inspect}") do
+      post :create, domain: @params
+    end
 
-    puts "\n\npath: #{domain_path(assigns(:domain))}\n\n"
+    assert_redirected_to api_v1_domain_path(assigns(:record)), "Domain Create: Redirect failed.\n#{@response.body.inspect}"
+  end
+
+  # Index route
+  test "index" do
+    get :index
+    assert_response :success
+    assert_not_nil assigns(:records)
+  end
+
+  # Show route
+  test "show" do
+    get :show, id: @travel
+    assert_response :success, "Domain Show: Response NOT successful"
+    assert_same @travel.id, assigns(:record).id, "Domain Show: Return incorrect record"
+  end
+
+  # Update route
+  test "update" do
+    # Proper update
+    put :update, id: @travel, domain: @update_params
+    assert_redirected_to api_v1_domain(assigns(:record)), "Domain Update: Redirect failed"
+    @travel = assign(:record)
+    assert_same @update_params.description, @travel.description, "Domain Update: Update failed"
+
+    # Invalid update
+    put :update, id: @code, domain: @bad_update_params
+    assert_response 424, "Domain Update: Invalid update did not error\n#{@response.body.inspect}"
+  end
+
+  test "delete" do
+    assert_difference('Domain.count', -1, "Domain Delete: failure") do
+      delete :destroy, id: @unused
+    end
+
+    assert_redirected_to api_v1_domain_path
+  end
+
+
+
+  ###
+  # Currently not used Routes. Ensure they are not reachable
+  ###
+  test "new" do
+    get :new, id: @code
+    assert_response :missing, "Domain New: route not missing"
+  end
+
+  test "edit" do
+    get :edit, id: @code
+    assert_response :missing, "Domain Edit: route not missing"
   end
 
 end

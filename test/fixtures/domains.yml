@@ -32,3 +32,8 @@ inactive:
   description: Inactive domain
   subdomain: inactive
   active: false
+
+unused:
+  text: Unused
+  description: unused domain
+  subdomain: unused

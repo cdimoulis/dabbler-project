@@ -7,14 +7,10 @@ Rails.application.routes.draw do
   #####
   # API Routes for the database models
   #####
-  # scope module: :api do
-  #   scope module: :v1 do
-  # scope :api do
-  #   scope :v1 do
   namespace :api do
     namespace :v1 do
        resources :domains, except: (exc_new_edit + [:destroy]), constraints: uuid_constraints do
-         resources :domain_groups, except: exc_new_edit
+         resources :domain_groups, except: exc_new_edit, parent: :domains
        end
 
 

@@ -15,7 +15,7 @@ require 'test_helper'
 class DomainGroupTest < ActiveSupport::TestCase
 
   # Creationg of domain_group succeeds
-  test "new" do
+  test "save_new" do
     # Empty DomainGroup
     empty_group = DomainGroup.new()
     assert_not empty_group.save, "New DomainGroup: Empty DomainGroup saved"
@@ -39,7 +39,7 @@ class DomainGroupTest < ActiveSupport::TestCase
     assert_not dg.save, "New DomainGroup: Duplicate text and domain saves"
   end
 
-  # Responds
+  # Responds to appropriate associations
   test "responds" do
     dg = DomainGroup.new
     assert_respond_to dg, :domain, "DomainGroup Responds: Does not respond to domain"
