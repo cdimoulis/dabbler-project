@@ -21,7 +21,7 @@ class Api::V1::DomainsController < Api::V1::ApiController
     super
   end
 
-  def delete
+  def destroy
     super
   end
   ###
@@ -38,7 +38,7 @@ class Api::V1::DomainsController < Api::V1::ApiController
 
 
 
-  private
+  protected
 
     def permitted_params
       params.require(:domain).permit(:text, :description, :subdomain, :active)

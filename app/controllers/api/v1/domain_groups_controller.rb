@@ -19,7 +19,7 @@ class Api::V1::DomainGroupsController < Api::V1::ApiController
     super
   end
 
-  def delete
+  def destroy
     super
   end
   ###
@@ -36,7 +36,7 @@ class Api::V1::DomainGroupsController < Api::V1::ApiController
 
 
 
-  private
+  protected
 
     def permitted_params
       params.require(:domain_group).permit(:text, :description, :subdomain, :active)

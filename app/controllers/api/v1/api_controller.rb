@@ -99,7 +99,7 @@ class Api::V1::ApiController < ActionController::Base
 
 
   def show
-    resource_name, resource_id, parent_name, parent_id = getResources()
+    resource_name, resource_id = getResources()
     resource = resource_name.classify.constantize
 
     @record = resource.where("id = ?", resource_id).take
@@ -114,14 +114,28 @@ class Api::V1::ApiController < ActionController::Base
   def update
     # TODO: Authorization
     #   Need to authorize when USERS are added
+    resource_name, resource_id = getResources()
+    resource = resource_name.classify.constantize
 
+    @record = resource.where("id = ?", resource_id)
+    if @record.update(permitted_params)
+      respond_with :api, :v1, @record
+    else
+      respond_with :json => {errors: @record.errors}, :status => 424
   end
 
 
-  def delete
+  def destroy
     # TODO: Authorization
     #   Need to authorize when USERS are added
+    resource_name, resource_id = getResources()
+    resource = resource_name.classify.constantize
 
+    @record = resource.where("id = ?", resource_id)
+    if @record.destroy
+      respond_with :api, :v1, @record
+    else
+      respond_with :json => {errors: @record.errors}, :status => 424
   end
   ###
   # End standard CRUD Ops
@@ -189,7 +203,18 @@ class Api::V1::ApiController < ActionController::Base
       @records = @records.offset(start).limit(count)
     end
 
+    # By default, permit all except
+    # id, created_at, updated_at
+    def permitted_params
+      remove = ['id', 'created_at', 'updated_at']
+      resource = controller_name.singularize.classify.constantize
+      attributes = resource.column_names
+      remove.each do |a|
+        attributes.delete(a)
+      end
 
+      resource.require(controller_name).permit(attributes)
+    end
 
   private
 
