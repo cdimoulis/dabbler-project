@@ -76,6 +76,7 @@ class Api::V1::ApiController < ActionController::Base
         end
       rescue NameError
         errors = {msg: "Invalid parent: #{parent_name}"}
+      end
     else
       resource = resource_name.classify.constantize
       @records = resource.all
@@ -95,6 +96,7 @@ class Api::V1::ApiController < ActionController::Base
       respond_with :api, :v1, @records
     else
       respond_with :json => {errors: errors}, :status => 422
+    end
   end
 
 
@@ -122,6 +124,7 @@ class Api::V1::ApiController < ActionController::Base
       respond_with :api, :v1, @record
     else
       respond_with :json => {errors: @record.errors}, :status => 424
+    end
   end
 
 
@@ -136,6 +139,7 @@ class Api::V1::ApiController < ActionController::Base
       respond_with :api, :v1, @record
     else
       respond_with :json => {errors: @record.errors}, :status => 424
+    end
   end
   ###
   # End standard CRUD Ops
@@ -177,7 +181,7 @@ class Api::V1::ApiController < ActionController::Base
     # Params:
     #     from -> Start date
     #     to -> End date
-    def dateRangeRecords()
+    def dateRangeRecords
       from = params.has_key?(:from) ? params[:from] : nil
       to = params.has_key?(:to) ? params[:to] : nil
 
@@ -188,7 +192,7 @@ class Api::V1::ApiController < ActionController::Base
       elsif from.nil? and !to.nil?
         @records = @records.where("#{date_attribute} <= ?", to)
       elsif !from.nil? and !to.nil?
-        @records = @records.where("#{date_attribute} >= ? AND #{date_attribute} <=", from, to)
+        @records = @records.where("#{date_attribute} >= ? AND #{date_attribute} <= ?", from, to)
       end
     end
 
@@ -196,7 +200,7 @@ class Api::V1::ApiController < ActionController::Base
     # Params:
     #     start -> Starting record
     #     count -> Number of records to fetch
-    def pageRecords()
+    def pageRecords
       start = params.has_key?(:start) ? params[:start] : 0
       count = params.has_key?(:count) ? params[:count] : 1000
 

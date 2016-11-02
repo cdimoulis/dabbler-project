@@ -3,6 +3,7 @@ require 'test_helper'
 class Api::V1::DomainsControllerTest < ActionController::TestCase
 
   def setup
+    @headers = {"Content-Type" => "json/application", "Accept" => "json/application"}
     @travel = domains(:travel)
     @code = domains(:code)
     @unused = domains(:unused)
@@ -27,14 +28,14 @@ class Api::V1::DomainsControllerTest < ActionController::TestCase
 
   # Index route
   test "index" do
-    get :index
+    get :index, headers: @headers
     assert_response :success
     assert_not_nil assigns(:records)
   end
 
   # Show route
   test "show" do
-    get :show, id: @travel
+    get :show, id: @travel, headers: @headers
     assert_response :success, "Domain Show: Response NOT successful"
     assert_same @travel.id, assigns(:record).id, "Domain Show: Return incorrect record"
   end
@@ -42,7 +43,7 @@ class Api::V1::DomainsControllerTest < ActionController::TestCase
   # Update route
   test "update" do
     # Proper update
-    put :update, id: @travel, domain: @update_params
+    put :update, id: @travel, domain: @update_params, headers: @headers
     assert_redirected_to api_v1_domain(assigns(:record)), "Domain Update: Redirect failed"
     @travel = assign(:record)
     assert_same @update_params.description, @travel.description, "Domain Update: Update failed"
@@ -52,27 +53,28 @@ class Api::V1::DomainsControllerTest < ActionController::TestCase
     assert_response 424, "Domain Update: Invalid update did not error\n#{@response.body.inspect}"
   end
 
-  test "delete" do
-    assert_difference('Domain.count', -1, "Domain Delete: failure") do
-      delete :destroy, id: @unused
-    end
-
-    assert_redirected_to api_v1_domain_path
-  end
+  # Destroy route
+  # test "destroy" do
+  #   assert_difference('Domain.count', -1, "Domain Delete: failure") do
+  #     delete :destroy, id: @unused
+  #   end
+  #
+  #   assert_redirected_to api_v1_domain_path
+  # end
 
 
 
   ###
   # Currently not used Routes. Ensure they are not reachable
   ###
-  test "new" do
-    get :new, id: @code
-    assert_response :missing, "Domain New: route not missing"
-  end
-
-  test "edit" do
-    get :edit, id: @code
-    assert_response :missing, "Domain Edit: route not missing"
-  end
+  # test "new" do
+  #   get :new, id: @code
+  #   assert_response :missing, "Domain New: route not missing"
+  # end
+  #
+  # test "edit" do
+  #   get :edit, id: @code
+  #   assert_response :missing, "Domain Edit: route not missing"
+  # end
 
 end
