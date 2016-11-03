@@ -7,11 +7,13 @@ Rails.application.routes.draw do
   #####
   # API Routes for the database models
   #####
-  namespace :api, defaults: {format: 'json'} do
+  namespace :api do
     namespace :v1 do
        resources :domains, except: (exc_new_edit + [:destroy]), constraints: uuid_constraints do
          resources :domain_groups, except: exc_new_edit, parent: :domains
        end
+
+       resources :domain_groups, except: exc_new_edit, constraints: uuid_constraints
 
 
 

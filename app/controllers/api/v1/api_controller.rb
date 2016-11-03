@@ -12,7 +12,7 @@ class Api::V1::ApiController < ActionController::Base
   def create
     # TODO: Authorization
     #   Need to authorize when USERS are added
-
+    puts "\n\nPARAMS #{controller_name}: #{params.inspect}\nPath: #{request.path}\n\n"
     resource_name, resource_id, parent_name, parent_id = getResources()
     resource = resource_name.classify.constantize
     begin
@@ -23,6 +23,7 @@ class Api::V1::ApiController < ActionController::Base
         begin
           parent = parent_name.classify.constantize
           if parent.exists?(parent_id)
+            puts "\n\nParent: #{parent_name}\nResource: #{resource_name}\n\n"
             @record[parent_name] = parent.find(parent_id)
           end
         rescue NameError

@@ -6,7 +6,7 @@ class Api::V1::DomainsControllerTest < ActionController::TestCase
     @travel = domains(:travel)
     @code = domains(:code)
     @unused = domains(:unused)
-    @params = {text: "Create Test", description: "test create", subdomain: "create_test"}
+    @create_params = {text: "Create Test", description: "test create", subdomain: "create_test"}
     @bad_update_params = {subdomain: "travel"}
     @update_params = {description: "Travel related entries"}
   end
@@ -19,7 +19,7 @@ class Api::V1::DomainsControllerTest < ActionController::TestCase
 
     # Assert that the Domain count is increased by 1 after POST
     assert_difference('Domain.count', 1, "Domain Create: Creation failed.\n#{@response.body.inspect}") do
-      post :create, domain: @params
+      post :create, domain: @create_params
     end
 
     assert_redirected_to api_v1_domain_path(assigns(:record)), "Domain Create: Redirect failed.\n#{@response.body.inspect}"

@@ -39,6 +39,6 @@ class Api::V1::DomainGroupsController < Api::V1::ApiController
   protected
 
     def permitted_params
-      params.require(:domain_group).permit(:text, :description, :subdomain, :active)
+      params.require(:domain_group).permit(:text, :description, :domain_id)
     end
 end

@@ -20,3 +20,18 @@ fly:
   text: Fly
   description: Fly group in travel
   domain: travel (Domain)
+
+hotel:
+  text: Hotels
+  description: Hotel group in travel
+  domain: travel (Domain)
+
+web:
+  text: Web
+  description: Web code
+  domain: code (Domain)
+
+unused:
+  text: Unused
+  description: No longer used
+  domain: unused (Domain)
