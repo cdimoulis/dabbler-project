@@ -19,19 +19,19 @@
 fly:
   text: Fly
   description: Fly group in travel
-  domain: travel (Domain)
+  domain: travel
 
 hotel:
   text: Hotels
   description: Hotel group in travel
-  domain: travel (Domain)
+  domain: travel
 
 web:
   text: Web
   description: Web code
-  domain: code (Domain)
+  domain: code
 
 unused:
   text: Unused
   description: No longer used
-  domain: unused (Domain)
+  domain: unused

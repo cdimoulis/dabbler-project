@@ -12,7 +12,6 @@ class Api::V1::ApiController < ActionController::Base
   def create
     # TODO: Authorization
     #   Need to authorize when USERS are added
-    puts "\n\nPARAMS #{controller_name}: #{params.inspect}\nPath: #{request.path}\n\n"
     resource_name, resource_id, parent_name, parent_id = getResources()
     resource = resource_name.classify.constantize
     begin
@@ -23,11 +22,10 @@ class Api::V1::ApiController < ActionController::Base
         begin
           parent = parent_name.classify.constantize
           if parent.exists?(parent_id)
-            puts "\n\nParent: #{parent_name}\nResource: #{resource_name}\n\n"
-            @record[parent_name] = parent.find(parent_id)
+            @record[parent_name.singularize] = parent.find(parent_id)
           end
-        rescue NameError
-          errors = {msg: "Invalid parent: #{parent_name}"}
+        rescue NameError => e
+          errors = {msg: "Invalid parent: #{parent_name.classify}"}
         end
       end
 
@@ -66,11 +64,11 @@ class Api::V1::ApiController < ActionController::Base
         if parent.exists?(parent_id)
           parent_record = parent.find parent_id
           # Does parent respond to the singular name?
-          if parent.respond_to?(resource_name)
-            @records = [parent[resource_name]]
+          if parent.respond_to?(resource_name.singularize)
+            @records = [parent[resource_name.singularize]]
           # Does parent respond to the pluralized name?
-          elsif parent.responds_to?(resource_name.pluralize)
-            @records = parent[resource_name.pluralize]
+          elsif parent.responds_to?(resource_name)
+            @records = parent[resource_name]
           else
             errors = {msg: "Parent #{parent_name} does not respond to #{resource_name}"}
           end
@@ -170,9 +168,9 @@ class Api::V1::ApiController < ActionController::Base
       if params.has_key?(:parent)
         id_string = "#{params[:parent].to_s.singularize}_id"
         parent_id = params[id_string]
-        parent = params[:parent].to_s.singularize
+        parent = params[:parent].to_s
       end
-      resource = controller_name.singularize
+      resource = controller_name
       id = params[:id]
 
       [resource, id, parent, parent_id]
