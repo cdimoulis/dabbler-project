@@ -95,7 +95,7 @@ class Api::V1::ApiController < ActionController::Base
     if errors.nil?
       respond_with :api, :v1, @records
     else
-      respond_with :json => {errors: errors}, :status => 422
+      render :json => {errors: errors}, :status => 422
     end
   end
 
@@ -119,11 +119,11 @@ class Api::V1::ApiController < ActionController::Base
     resource_name, resource_id = getResources()
     resource = resource_name.classify.constantize
 
-    @record = resource.where("id = ?", resource_id)
+    @record = resource.where("id = ?", resource_id).take
     if @record.update(permitted_params)
       respond_with :api, :v1, @record
     else
-      respond_with :json => {errors: @record.errors}, :status => 424
+      render :json => {errors: @record.errors}, :status => 424
     end
   end
 
@@ -138,7 +138,7 @@ class Api::V1::ApiController < ActionController::Base
     if @record.destroy
       respond_with :api, :v1, @record
     else
-      respond_with :json => {errors: @record.errors}, :status => 424
+      render :json => {errors: @record.errors}, :status => 424
     end
   end
   ###

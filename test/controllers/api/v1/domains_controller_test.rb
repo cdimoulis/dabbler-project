@@ -3,7 +3,6 @@ require 'test_helper'
 class Api::V1::DomainsControllerTest < ActionController::TestCase
 
   def setup
-    @headers = {"Content-Type" => "json/application", "Accept" => "json/application"}
     @travel = domains(:travel)
     @code = domains(:code)
     @unused = domains(:unused)
@@ -28,25 +27,24 @@ class Api::V1::DomainsControllerTest < ActionController::TestCase
 
   # Index route
   test "index" do
-    get :index, headers: @headers
+    get :index, format: :json
     assert_response :success
     assert_not_nil assigns(:records)
   end
 
   # Show route
   test "show" do
-    get :show, id: @travel, headers: @headers
+    get :show, id: @travel, format: :json
     assert_response :success, "Domain Show: Response NOT successful"
-    assert_same @travel.id, assigns(:record).id, "Domain Show: Return incorrect record"
+    assert_equal @travel.id, assigns(:record).id, "Domain Show: Return incorrect record"
   end
 
   # Update route
   test "update" do
     # Proper update
     put :update, id: @travel, domain: @update_params, headers: @headers
-    assert_redirected_to api_v1_domain(assigns(:record)), "Domain Update: Redirect failed"
-    @travel = assign(:record)
-    assert_same @update_params.description, @travel.description, "Domain Update: Update failed"
+    @travel = assigns(:record)
+    assert_equal @update_params[:description], @travel.description, "Domain Update: Update failed"
 
     # Invalid update
     put :update, id: @code, domain: @bad_update_params
