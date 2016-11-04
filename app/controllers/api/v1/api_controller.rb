@@ -21,11 +21,11 @@ class Api::V1::ApiController < ActionController::Base
         # Try block in case parent_name is not a model class
         begin
           parent = parent_name.classify.constantize
-          if parent.exists?(parent_id)
-            @record[parent_name.singularize] = parent.find(parent_id)
+          if parent.exists?(parent_id) and @record.respond_to?(parent_name.singularize)
+            @record.send("#{parent_name.singularize}=",parent.find(parent_id))
           end
         rescue NameError => e
-          errors = {msg: "Invalid parent: #{parent_name.classify}"}
+          errors = {msg: "Possible invalid parent: #{parent_name.classify}\n#{e.inspect}"}
         end
       end
 
@@ -44,9 +44,9 @@ class Api::V1::ApiController < ActionController::Base
       end
 
     # No model data sent
-    rescue ActionController::ParameterMissing
-      puts "\n\nCould not create #{resource} record.\nNo attributes specified\n\n"
-      Rails.logger.debug "\n\nCould not create #{resource} record.\nNo attributes specified\n\n"
+    rescue ActionController::ParameterMissing => e
+      puts "\n\nCould not create #{resource} record.\nNo attributes specified\n#{e.inspect}\n\n"
+      Rails.logger.debug "\n\nCould not create #{resource} record.\nNo attributes specified\n#{e.inspect}\n\n"
       render :json => {}, :status => 422
     end
   end

@@ -12,6 +12,8 @@
 
 class DomainGroup < ApplicationRecord
 
+  attr_accessor :domain
+
   belongs_to :domain
 
   validates :text, :domain_id, presence: true
