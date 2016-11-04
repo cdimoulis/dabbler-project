@@ -56,4 +56,12 @@ class Api::V1::DomainGroupsControllerTest < ActionController::TestCase
     put :update, id: @unused, domain_group: @bad_update_params
     assert_redirected_to update_path, "DomainGroup Controller Update: Did not redirect properly: #{update_path}\n#{@response.body.inspect}"
   end
+
+  # Destroy route
+  test "destroy" do
+    assert_difference('DomainGroup.count', -1, "DomainGroup Destroy: Did not properly destroy #{@response.body.inspect}") do
+      delete :destroy, id: @unused, format: :json
+    end
+    assert_response :success, "DomainGroup Destroy: Response was not success\n#{@response.status}\n#{@response.body.inspect}"
+  end
 end
