@@ -19,10 +19,10 @@ class Api::V1::DomainGroupsControllerTest < ActionController::TestCase
     # Assert that the DomainGroup count is increased by 1 after POST
     # Standard create route
     # puts "\n\nController PATH #{api_v1_domain_domain_groups_path(domain_id: @code.id)}\n\n"
-    assert_difference('@travel.domain_groups.count', 1, "DomainGroup Create: Creation failed.\n#{@response.body.inspect}") do
+    assert_difference('@travel.domain_groups.count', 1, "DomainGroup Controller Create: Creation failed.\n#{@response.body.inspect}") do
       post :create, domain_group: @create_a_params
     end
-    assert_redirected_to api_v1_domain_group_path(assigns(:record)), "DomainGroups Create 1: Redirect failed.\n#{@response.body.inspect}"
+    assert_redirected_to api_v1_domain_group_path(assigns(:record)), "DomainGroups Controller Create 1: Redirect failed.\n#{@response.body.inspect}"
 
   end
 

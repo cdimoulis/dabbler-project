@@ -25,7 +25,7 @@ class Api::V1::ApiController < ActionController::Base
             @record.send("#{parent_name.singularize}=",parent.find(parent_id))
           end
         rescue NameError => e
-          errors = {msg: "Possible invalid parent: #{parent_name.classify}\n#{e.inspect}"}
+          errors = {msg: "Possible invalid parent: #{parent_name.classify}", error: "#{e.inspect}"}
         end
       end
 
@@ -59,22 +59,25 @@ class Api::V1::ApiController < ActionController::Base
     if !parent_name.nil? and !parent_id.nil?
       # Try block in case parent_name is not a model class
       begin
-        parent = parent.classify.constantize
+        parent = parent_name.classify.constantize
         # Check that the parent model with parent_id exists
         if parent.exists?(parent_id)
           parent_record = parent.find parent_id
+          puts "\n\nrecord: #{parent_record.inspect}\n\n"
           # Does parent respond to the singular name?
-          if parent.respond_to?(resource_name.singularize)
-            @records = [parent[resource_name.singularize]]
+          if parent_record.respond_to?(resource_name.singularize)
+            @records = [parent_record.send(resource_name.singularize)]
           # Does parent respond to the pluralized name?
-          elsif parent.responds_to?(resource_name)
-            @records = parent[resource_name]
+          elsif parent_record.respond_to?(resource_name)
+            @records = parent_record.send(resource_name)
           else
             errors = {msg: "Parent #{parent_name} does not respond to #{resource_name}"}
           end
+        else
+          errors = {msn: "Invalid Parent: #{parent_name} of id #{parent_id} does not exist."}
         end
-      rescue NameError
-        errors = {msg: "Invalid parent: #{parent_name}"}
+      rescue NameError => e
+        errors = {msg: "Invalid parent: #{parent_name}", error: "#{e}"}
       end
     else
       resource = resource_name.classify.constantize
