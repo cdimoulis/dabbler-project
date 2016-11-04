@@ -63,7 +63,6 @@ class Api::V1::ApiController < ActionController::Base
         # Check that the parent model with parent_id exists
         if parent.exists?(parent_id)
           parent_record = parent.find parent_id
-          puts "\n\nrecord: #{parent_record.inspect}\n\n"
           # Does parent respond to the singular name?
           if parent_record.respond_to?(resource_name.singularize)
             @records = [parent_record.send(resource_name.singularize)]
