@@ -1,0 +1,39 @@
+# == Schema Information
+#
+# Table name: domains
+#
+#  id          :uuid             not null, primary key
+#  text        :string           not null
+#  description :text
+#  subdomain   :string           not null
+#  active      :boolean          default(TRUE)
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#
+
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+# This model initially had no columns defined.  If you add columns to the
+# model remove the '{}' from the fixture names and add the columns immediately
+# below each fixture, per the syntax in the comments below
+#
+travel:
+  text: Travel
+  description: Travel related Information
+  subdomain: travel
+
+code:
+  text: Code
+  description: Code related Information
+  subdomain: code
+
+inactive:
+  text: Inactive
+  description: Inactive domain
+  subdomain: inactive
+  active: false
+
+unused:
+  text: Unused
+  description: unused domain
+  subdomain: unused
