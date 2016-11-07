@@ -23,3 +23,4 @@
 *.pid
 start.sh
 notes/*
+.ruby-version
