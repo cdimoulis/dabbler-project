@@ -13,6 +13,7 @@ class CreatePeople < ActiveRecord::Migration
       t.string :address_two
       t.string :city
       t.string :state_region
+      t.string :country
       t.string :postal_code
       t.string :facebook_id
       t.string :facebook_link

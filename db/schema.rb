@@ -54,6 +54,7 @@ ActiveRecord::Schema.define(version: 20161108223720) do
     t.string   "address_two"
     t.string   "city"
     t.string   "state_region"
+    t.string   "country"
     t.string   "postal_code"
     t.string   "facebook_id"
     t.string   "facebook_link"

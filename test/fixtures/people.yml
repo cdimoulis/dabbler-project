@@ -15,6 +15,7 @@
 #  address_two         :string
 #  city                :string
 #  state_region        :string
+#  country             :string
 #  postal_code         :string
 #  facebook_id         :string
 #  facebook_link       :string

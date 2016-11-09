@@ -15,6 +15,7 @@
 #  address_two         :string
 #  city                :string
 #  state_region        :string
+#  country             :string
 #  postal_code         :string
 #  facebook_id         :string
 #  facebook_link       :string
@@ -27,7 +28,13 @@
 #  updated_at          :datetime         not null
 #
 
-class Person < ActiveRecord::Base
+class Person < ApplicationRecord
+  include PersonLists
+  include Addresses
 
-  
+  validates :gender, inclusion: { in: GENDERS }, allow_blank: true
+  validates :prefix, inclusion: { in: PREFIXES }, allow_blank: true
+  validates :suffix, inclusion: { in: SUFFIXES }, allow_blank: true
+  validate :countryExists, :stateExists
+
 end
