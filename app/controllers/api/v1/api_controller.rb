@@ -2,6 +2,8 @@
 # Parent controller for all API V1 controllers
 ###
 class Api::V1::ApiController < ActionController::Base
+  include DateRange
+  include PageRecords
   protect_from_forgery with: :exception
 
   respond_to :json, :html
@@ -177,36 +179,6 @@ class Api::V1::ApiController < ActionController::Base
       id = params[:id]
 
       [resource, id, parent, parent_id]
-    end
-
-    # Handle record date range
-    # Params:
-    #     from -> Start date
-    #     to -> End date
-    def dateRangeRecords
-      from = params.has_key?(:from) ? params[:from] : nil
-      to = params.has_key?(:to) ? params[:to] : nil
-
-      date_attribute ||= "created_at"
-      # Starting date, no ending date
-      if to.nil? and !from.nil?
-        @records = @records.where("#{date_attribute} >= ?", from)
-      elsif from.nil? and !to.nil?
-        @records = @records.where("#{date_attribute} <= ?", to)
-      elsif !from.nil? and !to.nil?
-        @records = @records.where("#{date_attribute} >= ? AND #{date_attribute} <= ?", from, to)
-      end
-    end
-
-    # Handle record paging
-    # Params:
-    #     start -> Starting record
-    #     count -> Number of records to fetch
-    def pageRecords
-      start = params.has_key?(:start) ? params[:start] : 0
-      count = params.has_key?(:count) ? params[:count] : 1000
-
-      @records = @records.offset(start).limit(count)
     end
 
     # By default, permit all except

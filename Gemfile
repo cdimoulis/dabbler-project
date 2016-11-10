@@ -8,6 +8,11 @@ gem 'pg', '~> 0.18.3'
 gem 'passenger', '~> 5.0.30'
 gem 'sidekiq',  '~> 4.2.3'
 gem 'redis-rails', '~> 4.0.0'
+
+# Authentication
+gem 'devise', '~> 4.2.0'
+
+# Page markup and style gems
 gem 'sass-rails', '~> 5.0.6'
 gem 'uglifier', '>= 3.0.3'
 gem 'coffee-rails', '~> 4.2.1'
