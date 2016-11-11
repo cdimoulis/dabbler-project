@@ -1,6 +1,7 @@
 # Factory for
 #   Domain model
 FactoryGirl.define do
+  
   factory :domain_travel, class: Domain do
     text 'Travel'
     description 'Travel related Information'
@@ -26,8 +27,3 @@ FactoryGirl.define do
     subdomain 'unused'
   end
 end
-
-FactoryGirl.create(:domain_travel)
-FactoryGirl.create(:domain_code)
-FactoryGirl.create(:domain_inactive)
-FactoryGirl.create(:domain_unused)
