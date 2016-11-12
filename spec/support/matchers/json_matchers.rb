@@ -1,3 +1,8 @@
+#
+# Custom JSON matchers
+#
+
+# Matcher to test if a string can be converted into JSON
 RSpec::Matchers.define :look_like_json do |expected|
   match do |actual|
     begin
@@ -8,7 +13,7 @@ RSpec::Matchers.define :look_like_json do |expected|
   end
 
   failure_message do |actual|
-    "\"#{actual}\" is not parsable by JSON.parse"
+    "\"#{actual.inspect}\" is not parsable by JSON.parse"
   end
 
   description do

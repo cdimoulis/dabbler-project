@@ -5,5 +5,5 @@ end
 
 # Convert a string to JSON
 def str_to_hash(str)
-  JSON.parse(str).with_indifferent_access
+  JSON.parse(str)
 end
