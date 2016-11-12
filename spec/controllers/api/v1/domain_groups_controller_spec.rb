@@ -43,7 +43,7 @@ RSpec.describe Api::V1::DomainGroupsController do
   # Tests for SHOW route
   context "#show" do
     # Allow travel to be shared across all tests
-    let!(:fly) {create(:domain_group, text: "Fly Group")}
+    let!(:fly) { create(:domain_group, text: "Fly Group") }
 
     # Before running a test do this
     before do
@@ -61,5 +61,43 @@ RSpec.describe Api::V1::DomainGroupsController do
 
     it { expect(assigns(:record)).to eq(fly) }
 
+  end
+
+  # Test for UPDATE route
+  context "#update" do
+    # Allow travel to be shared across all tests
+    let!(:travel) { create(:domain, text: "Travel") }
+    let!(:hotel) { create(:domain_group, text: 'Hotel Group', domain: travel) }
+
+    it "succeeds" do
+      update_params = {description: "Hotel entries in Travel"}
+      put :update, id: hotel.id, domain_group: update_params, format: :json
+      expect(response).to have_http_status(:success)
+      expect(assigns(:record).description).to eq(update_params[:description])
+    end
+
+    it "prevents invalid updates" do
+      fly = create(:domain_group, text: 'Fly Group', domain: travel)
+      update_params = {text: "Hotel Group"}
+      put :update, id: fly.id, domain_group: update_params, format: :json
+      expect(response).to have_http_status(424)
+    end
+  end
+
+  # Test for UPDATE route
+  context "#destroy" do
+    # Allow travel to be shared across all tests
+    let!(:travel) { create(:domain, text: "Travel") }
+    let!(:hotel) { create(:domain_group, text: 'Hotel Group', domain: travel) }
+    let!(:current) { DomainGroup.count }
+
+    before do
+      delete :destroy, id: hotel.id, format: :json
+    end
+
+    it "succeeds" do
+      expect(response).to have_http_status(:success)
+      expect(DomainGroup.count).to eq(current-1)
+    end
   end
 end

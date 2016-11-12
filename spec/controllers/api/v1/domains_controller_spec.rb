@@ -66,17 +66,17 @@ RSpec.describe Api::V1::DomainsController do
   # Test for UPDATE route
   context "#update" do
     # Allow travel to be shared across all tests
-    let!(:travel) {create(:domain, text: "Travel")}
     let!(:code) {create(:domain, text: "Code")}
 
     it "succeeds" do
-      update_params = {description: "Travel related entries"}
-      put :update, id: travel.id, domain: update_params, format: :json
+      update_params = {description: "Programming related entries"}
+      put :update, id: code.id, domain: update_params, format: :json
       expect(response).to have_http_status(:success)
       expect(assigns(:record).description).to eq(update_params[:description])
     end
 
     it "prevents invalid updates" do
+      travel = create(:domain, text: "Travel")
       update_params = {text: "Code"}
       put :update, id: travel.id, domain: update_params, format: :json
       expect(response).to have_http_status(424)
