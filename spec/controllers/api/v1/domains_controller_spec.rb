@@ -10,7 +10,7 @@ RSpec.describe Api::V1::DomainsController do
       expect(response).to have_http_status(422)
     end
 
-    it 'successfully creates' do
+    it 'succeeds' do
       current = Domain.count
       create(:domain)
       expect(Domain.count).to eq(current+1)
@@ -29,11 +29,11 @@ RSpec.describe Api::V1::DomainsController do
 
     it { is_expected.to respond_with(:success) }
 
-    it 'returns json' do
+    it 'returns JSON' do
       # look_like_json found in support/matchers/json_matchers.rb
       expect(response.body).to look_like_json
       # body_as_json found in support/helpers.rb
-      expect(body_as_json).to match([travel.attributes,code.attributes])
+      expect(body_as_json).to match([code.attributes,travel.attributes])
     end
 
     it { expect(assigns(:records).count).to eq(2) }
@@ -52,7 +52,7 @@ RSpec.describe Api::V1::DomainsController do
 
     it { is_expected.to respond_with(:success) }
 
-    it 'returns correct JSON data' do
+    it 'returns JSON' do
       # look_like_json found in support/matchers/json_matchers.rb
       expect(response.body).to look_like_json
       # body_as_json found in support/helpers.rb

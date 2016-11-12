@@ -13,6 +13,8 @@
 
 class Domain < ApplicationRecord
 
+  default_scope { order(text: :asc) }
+
   has_many :domain_groups
 
   validates :text, :subdomain, presence: true, uniqueness: true

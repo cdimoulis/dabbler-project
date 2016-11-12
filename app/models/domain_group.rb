@@ -12,6 +12,8 @@
 
 class DomainGroup < ApplicationRecord
 
+  default_scope { order(text: :asc) }
+
   belongs_to :domain
 
   validates :text, :domain_id, presence: true
