@@ -27,7 +27,7 @@ RSpec.describe Api::V1::DomainsController do
       get :index, format: :json
     end
 
-    it { expect(response).to have_http_status(:success) }
+    it { is_expected.to respond_with(:success) }
 
     it 'returns json' do
       # look_like_json found in support/matchers/json_matchers.rb
@@ -50,7 +50,7 @@ RSpec.describe Api::V1::DomainsController do
       get :show, id: travel.id, format: :json
     end
 
-    it { expect(response).to have_http_status(:success) }
+    it { is_expected.to respond_with(:success) }
 
     it 'returns correct JSON data' do
       # look_like_json found in support/matchers/json_matchers.rb
