@@ -32,6 +32,8 @@ class Person < ApplicationRecord
   include PersonLists
   include Addresses
 
+  default_scope { order(last_name: :asc, first_name: :asc) }
+
   validates :gender, inclusion: { in: GENDERS }, allow_blank: true
   validates :prefix, inclusion: { in: PREFIXES }, allow_blank: true
   validates :suffix, inclusion: { in: SUFFIXES }, allow_blank: true
