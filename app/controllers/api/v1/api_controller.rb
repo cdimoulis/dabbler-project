@@ -138,7 +138,6 @@ class Api::V1::ApiController < ActionController::Base
     resource = resource_name.classify.constantize
 
     @record = resource.where("id = ?", resource_id).take
-    puts "\n\nDESTROY #{@record.inspect}\n\n"
     if !@record.nil? and @record.destroy
       respond_with :api, :v1, @record
     else

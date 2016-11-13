@@ -35,6 +35,12 @@ gem 'sprockets-rails', '~> 3.2.0'
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
+
+  gem 'rspec-rails', '~> 3.5.2'
+  gem 'factory_girl_rails', '~> 4.7.0'
+  gem 'database_cleaner', '~> 1.5.3'
+  gem 'capybara', '~> 2.10.1'
+  gem 'shoulda-matchers', '~> 3.1.1', require: false
 end
 
 group :development do
@@ -42,6 +48,7 @@ group :development do
   gem 'web-console', '~> 2.0'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
+  gem 'spring-commands-rspec'
 
   gem 'foreman', '~> 0.78'
   gem 'annotate'

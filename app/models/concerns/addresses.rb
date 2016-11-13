@@ -26,9 +26,9 @@ module Addresses
     def stateExists
       if self.attribute_present?(:state_region)
         if self.attribute_present?(:country)
-          states = COUNTRIES[self.country].split(',')
-          if !states.include?(self.state_region)
-            errors.add(:state_region, "State/Region is not valid for #{self.country}")
+          states = COUNTRIES[country].split(',')
+          if !states.include?(state_region)
+            errors.add(:state_region, "State/Region is not valid for #{country}")
           end
         else
           errors.add(:state_region, 'Country required if city is specificed')

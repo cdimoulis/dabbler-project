@@ -1,4 +1,4 @@
-class Api::V1::PeopleController < ApplicationController
+class Api::V1::PeopleController < Api::V1::ApiController
   include PageRecords
 
   respond_to :json
@@ -42,7 +42,7 @@ class Api::V1::PeopleController < ApplicationController
   protected
 
     def permitted_params
-      params.require(:domain).permit(:prefix, :first_name, :middle_name, :last_name,
+      params.require(:person).permit(:prefix, :first_name, :middle_name, :last_name,
                               :suffix, :gender, :birth_date, :phone, :address_one,
                               :address_two, :city, :state_region, :country, :postal_code,
                               :facebook_id, :facebook_link, :twitter_id, :twitter_screen_name,
