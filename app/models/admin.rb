@@ -28,13 +28,40 @@ class Admin < ApplicationRecord
 
   belongs_to :person, dependent: :destroy
 
+  before_create :create_person
 
-  private
+
+  protected
 
     # For AssociatioAccessors concern
     def association_params
       {:person => Person.column_names - ['creator_id']}
     end
 
+    def create_person
+      # Either there will be a person or person attributes from controller will exist
+      raise "Admin Create Error: no person model or attributes to create" if self.person.nil?
+
+      if self.person.id.nil?
+        person = Person.new(self.person)
+        # If there is a current admin then add as creator
+        if !current_admin.nil?
+          person.creator_id = current_admin.id?
+        end
+
+        if person.valid? and person.save
+          @person = person
+          self.person_id = person.id
+        else
+          puts "Admin Create Error: Could not create person model #{person.errors.inspect}"
+          Rails.logger.info "Admin Create Error: Could not create person model #{person.errors.inspect}"
+          return false
+        end
+      else
+        @person = Person.find(person.id)
+        self.person_id = person.id
+      end
+
+    end
 
 end
