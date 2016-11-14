@@ -26,10 +26,10 @@ module AssociationAccessors
             if self.respond_to?(association)
               record = self.send(association)
               if !record.nil? and record.respond_to?(param)
-                value = record[param]
+                instance_variable_set "@#{param}", record[param]
               end
             end
-            value
+            instance_variable_get "@#{param}"
           end
 
           # Define setter
@@ -38,10 +38,11 @@ module AssociationAccessors
               record = self.send(association)
               if !record.nil? and record.respond_to?(param)
                 record[param] = arg
-                if record.valid?
-                  record.save
+                if record.valid? and record.save
+                  instance_variable_set "@#{param}", arg
+                  return true
                 else
-                  false
+                  return false
                 end
               end
             end

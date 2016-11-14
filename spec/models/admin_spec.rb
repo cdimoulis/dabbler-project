@@ -24,5 +24,16 @@ require 'rails_helper'
 include FactoryGirl::Syntax::Methods
 
 RSpec.describe Admin, type: :model do
-  pending "Admin tests"
+  # pending "Admin tests"
+
+  context 'associations' do
+    it { is_expected.to belong_to(:person) }
+  end
+
+  context '.save' do
+    it 'suceeds' do
+      admin = build(:admin)
+      expect(admin.save).to be_truthy
+    end
+  end
 end

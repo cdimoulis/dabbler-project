@@ -26,9 +26,15 @@ class Admin < ApplicationRecord
   devise :database_authenticatable, :registerable, :recoverable,
          :trackable, :validatable, :lockable, :timeoutable
 
+  attr_accessor :prefix, :first_name, :middle_name, :last_name, :suffix, :gender,
+                :birth_date, :phone, :address_one, :address_two, :city, :state_region,
+                :country, :postal_code, :facebook_id, :facebook_link, :twitter_id,
+                :twitter_screen_name, :instagram_id, :instagram_username
+
   belongs_to :person, dependent: :destroy
 
   before_create :create_person
+
 
 
   protected
@@ -39,15 +45,35 @@ class Admin < ApplicationRecord
     end
 
     def create_person
-      # Either there will be a person or person attributes from controller will exist
-      raise "Admin Create Error: no person model or attributes to create" if self.person.nil?
+      if self.person_id.nil?
+        # person = Person.new(self.person)
+        person = Person.new()
 
-      if self.person.id.nil?
-        person = Person.new(self.person)
+        person.prefix = self.prefix
+        person.first_name = self.first_name
+        person.middle_name = self.middle_name
+        person.last_name = self.last_name
+        person.suffix = self.suffix
+        person.gender = self.gender
+        person.birth_date = self.birth_date
+        person.phone = self.phone
+        person.address_one = self.address_one
+        person.address_two = self.address_two
+        person.city = self.city
+        person.state_region = self.state_region
+        person.country = self.country
+        person.postal_code = self.postal_code
+        person.facebook_id = self.facebook_id
+        person.facebook_link = self.facebook_link
+        person.twitter_id = self.twitter_id
+        person.twitter_screen_name = self.twitter_screen_name
+        person.instagram_id = self.instagram_id
+        person.instagram_username = self.instagram_username
+        
         # If there is a current admin then add as creator
-        if !current_admin.nil?
-          person.creator_id = current_admin.id?
-        end
+        # if !current_admin.nil?
+        #   person.creator_id = current_admin.id?
+        # end
 
         if person.valid? and person.save
           @person = person
@@ -58,8 +84,7 @@ class Admin < ApplicationRecord
           return false
         end
       else
-        @person = Person.find(person.id)
-        self.person_id = person.id
+        @person = Person.find(self.person_id)
       end
 
     end

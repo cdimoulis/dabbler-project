@@ -21,7 +21,14 @@
 #
 
 FactoryGirl.define do
+
   factory :admin do
-    
+    email 'admin_test@dabbler.fyi'
+    password '12345678'
+    person { create(:person, first_name: "Admin", last_name: "Test") }
+
+    created_at { DateTime.now.to_date.to_time }
+    updated_at { DateTime.now.to_date.to_time }
+
   end
 end
