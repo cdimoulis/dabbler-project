@@ -1,6 +1,6 @@
 class DeviseCreateAdmins < ActiveRecord::Migration
   def change
-    create_table :admins, id: :uuid, default: "uuid_generate_v4()", force: true do |t| do |t|
+    create_table :admins, id: :uuid, default: "uuid_generate_v4()", force: true do |t|
       ## Database authenticatable
       t.string :email,              null: false
       t.string :encrypted_password, null: false, default: ""
