@@ -34,6 +34,9 @@ class Person < ApplicationRecord
 
   default_scope { order(last_name: :asc, first_name: :asc) }
 
+  has_one :admin
+  belongs_to :creator, class_name: "Admin"
+
   validates :gender, inclusion: { in: GENDERS }, allow_blank: true
   validates :prefix, inclusion: { in: PREFIXES }, allow_blank: true
   validates :suffix, inclusion: { in: SUFFIXES }, allow_blank: true

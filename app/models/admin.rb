@@ -21,9 +21,20 @@
 #
 
 class Admin < ApplicationRecord
+  include AssociationAccessors
 
   devise :database_authenticatable, :registerable, :recoverable,
          :trackable, :validatable, :lockable, :timeoutable
+
+  belongs_to :person, dependent: :destroy
+
+
+  private
+
+    # For AssociatioAccessors concern
+    def association_params
+      {:person => Person.column_names - ['creator_id']}
+    end
 
 
 end
