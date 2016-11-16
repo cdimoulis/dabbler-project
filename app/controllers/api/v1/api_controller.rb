@@ -55,8 +55,6 @@ class Api::V1::ApiController < ActionController::Base
 
 
   def index
-    # TODO: Authorization
-    #   Need to authorize when USERS are added
     resource_name, resource_id, parent_name, parent_id = getResources()
     @records = []
     # fetch from parent
@@ -106,8 +104,6 @@ class Api::V1::ApiController < ActionController::Base
 
 
   def show
-    # TODO: Authorization
-    #   Need to authorize when USERS are added
     resource_name, resource_id = getResources()
     resource = resource_name.classify.constantize
 

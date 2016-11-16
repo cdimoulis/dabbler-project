@@ -35,11 +35,5 @@ RSpec.describe Admin, type: :model do
       admin = build(:admin)
       expect(admin.save).to be_truthy
     end
-
-    it 'has person' do
-      admin = create(:admin)
-      person = Person.first
-      expect(admin.person_id).to eql(person.id)
-    end
   end
 end
