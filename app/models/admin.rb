@@ -35,7 +35,7 @@ class Admin < ApplicationRecord
 
   before_create :create_person
 
-
+  
 
   protected
 
@@ -69,7 +69,7 @@ class Admin < ApplicationRecord
         person.twitter_screen_name = self.twitter_screen_name
         person.instagram_id = self.instagram_id
         person.instagram_username = self.instagram_username
-        
+
         # If there is a current admin then add as creator
         # if !current_admin.nil?
         #   person.creator_id = current_admin.id?
