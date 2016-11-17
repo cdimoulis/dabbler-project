@@ -12,7 +12,9 @@ RSpec.describe Api::V1::DomainsController do
 
     it 'succeeds' do
       current = Domain.count
-      create(:domain)
+      domain = build(:domain)
+      post :create, domain: domain.attributes, format: :json
+      expect(response).to have_http_status(:success)
       expect(Domain.count).to eq(current+1)
     end
 

@@ -15,7 +15,7 @@
 #  failed_attempts        :integer          default(0), not null
 #  unlock_token           :string
 #  locked_at              :datetime
-#  person_id              :uuid             not null
+#  person_id              :uuid
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #
@@ -34,6 +34,12 @@ RSpec.describe Admin, type: :model do
     it 'suceeds' do
       admin = build(:admin)
       expect(admin.save).to be_truthy
+    end
+
+    it 'does not allow duplicate emails' do
+      create(:admin, email: "test1@dabbler.fyi")
+      duplicate = build(:admin, email: "test1@dabbler.fyi")
+      expect(duplicate.save).to be_falsy
     end
   end
 end

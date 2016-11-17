@@ -15,13 +15,15 @@
 #  failed_attempts        :integer          default(0), not null
 #  unlock_token           :string
 #  locked_at              :datetime
-#  person_id              :uuid             not null
+#  person_id              :uuid
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #
 
 class Admin < ApplicationRecord
   include AssociationAccessors
+
+  default_scope { order(email: :asc) }
 
   devise :database_authenticatable, :registerable, :recoverable,
          :trackable, :validatable, :lockable, :timeoutable
@@ -45,8 +47,8 @@ class Admin < ApplicationRecord
     end
 
     def create_person
+      # If no person_id then create new person
       if self.person_id.nil?
-        # person = Person.new(self.person)
         person = Person.new()
 
         person.prefix = self.prefix
@@ -69,7 +71,7 @@ class Admin < ApplicationRecord
         person.twitter_screen_name = self.twitter_screen_name
         person.instagram_id = self.instagram_id
         person.instagram_username = self.instagram_username
-        
+
         # If there is a current admin then add as creator
         # if !current_admin.nil?
         #   person.creator_id = current_admin.id?

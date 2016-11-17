@@ -15,7 +15,7 @@
 #  failed_attempts        :integer          default(0), not null
 #  unlock_token           :string
 #  locked_at              :datetime
-#  person_id              :uuid             not null
+#  person_id              :uuid
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #
@@ -29,6 +29,10 @@ FactoryGirl.define do
 
     created_at { DateTime.now.to_date.to_time }
     updated_at { DateTime.now.to_date.to_time }
+
+    factory :admin_without_person do
+      person nil
+    end
 
   end
 end

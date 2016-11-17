@@ -32,7 +32,7 @@ end
       expect(valid_group.save).to be_truthy
     end
 
-    it 'fails without domain' do
+    it 'fails - no domain' do
       invalid_group = build(:domain_group, domain: Domain.new)
       expect(invalid_group.save).to be_falsy
     end
