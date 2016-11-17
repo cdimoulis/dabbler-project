@@ -7,7 +7,9 @@ RSpec.describe Api::V1::PeopleController do
   context "#create" do
     it 'succeeds' do
       current = Person.count
-      create(:person)
+      person = build(:person)
+      post :create, person: person.attributes, format: :json
+      expect(response).to have_http_status(:success)
       expect(Person.count).to eq(current+1)
     end
 
@@ -83,7 +85,7 @@ RSpec.describe Api::V1::PeopleController do
   # Test for UPDATE route
   context "#destroy" do
     # Allow travel to be shared across all tests
-    let!(:chris) {create(:person, first_name: 'Chris', last_name: 'Dimoulis')}
+    let!(:chris) { create(:person, first_name: 'Chris', last_name: 'Dimoulis') }
     let!(:current) { Person.count }
 
     before do

@@ -1,3 +1,15 @@
+# == Schema Information
+#
+# Table name: domain_groups
+#
+#  id          :uuid             not null, primary key
+#  text        :string           not null
+#  description :text
+#  domain_id   :uuid             not null
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#
+
 require "rails_helper"
 include FactoryGirl::Syntax::Methods
 
@@ -20,7 +32,7 @@ end
       expect(valid_group.save).to be_truthy
     end
 
-    it 'fails without domain' do
+    it 'fails - no domain' do
       invalid_group = build(:domain_group, domain: Domain.new)
       expect(invalid_group.save).to be_falsy
     end
