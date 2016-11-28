@@ -19,6 +19,7 @@
 class User < ApplicationRecord
   include Clearance::User
   include AssociationAccessors
+  include UserTypes
 
   default_scope { order(email: :asc) }
 
@@ -31,6 +32,7 @@ class User < ApplicationRecord
 
   before_create :create_person
 
+  validates :user_type, inclusion: { in: TYPE_OPTIONS }, allow_blank: true
 
 
   protected
