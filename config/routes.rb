@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-  devise_for :admins
   # You can have the root of your site routed with "root"
   # root 'welcome#index'
   uuid_constraints = { id: /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i }
