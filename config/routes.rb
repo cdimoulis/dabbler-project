@@ -15,7 +15,7 @@ Rails.application.routes.draw do
 
        resources :domain_groups, except: exc_new_edit, constraints: uuid_constraints
 
-       resources :admins, except: exc_new_edit, constraints: uuid_constraints
+       resources :users, except: exc_new_edit, constraints: uuid_constraints
 
        resources :people, except: exc_new_edit, constraints: uuid_constraints
 

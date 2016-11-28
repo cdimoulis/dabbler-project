@@ -35,8 +35,8 @@ class Person < ApplicationRecord
 
   default_scope { order(last_name: :asc, first_name: :asc) }
 
-  # has_one :admin
-  # belongs_to :creator, class_name: "Admin"
+  has_one :user
+  belongs_to :creator, class_name: "User"
 
   validates :gender, inclusion: { in: GENDERS }, allow_blank: true
   validates :prefix, inclusion: { in: PREFIXES }, allow_blank: true
@@ -46,8 +46,8 @@ class Person < ApplicationRecord
   protected
 
     # For AssociatioAccessors concern
-    # def association_params
-    #   {:admin => [:email]}
-    # end
+    def association_params
+      {:user => [:email]}
+    end
 
 end
