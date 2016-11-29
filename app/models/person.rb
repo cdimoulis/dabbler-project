@@ -45,9 +45,9 @@ class Person < ApplicationRecord
 
   protected
 
-    # For AssociatioAccessors concern
-    def association_params
-      {:user => [:email]}
-    end
+  # For AssociatioAccessors concern
+  def association_params
+    {:user => [:email]}
+  end
 
 end

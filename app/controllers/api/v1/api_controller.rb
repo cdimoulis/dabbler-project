@@ -166,33 +166,33 @@ class Api::V1::ApiController < ActionController::Base
 
   protected
 
-    # Get the resources for the request
-    # This returns an array of model data
-    # [resource_name, resource_id, parent_name, parent_id]
-    # def getResources
-    #   if params.has_key?(:parent)
-    #     id_string = "#{params[:parent].to_s.singularize}_id"
-    #     parent_id = params[id_string]
-    #     parent = params[:parent].to_s
-    #   end
-    #   resource = controller_name
-    #   id = params[:id]
-    #
-    #   [resource, id, parent, parent_id]
-    # end
+  # Get the resources for the request
+  # This returns an array of model data
+  # [resource_name, resource_id, parent_name, parent_id]
+  # def getResources
+  #   if params.has_key?(:parent)
+  #     id_string = "#{params[:parent].to_s.singularize}_id"
+  #     parent_id = params[id_string]
+  #     parent = params[:parent].to_s
+  #   end
+  #   resource = controller_name
+  #   id = params[:id]
+  #
+  #   [resource, id, parent, parent_id]
+  # end
 
-    # By default, permit all except
-    # id, created_at, updated_at
-    # def permitted_params
-    #   remove = ['id', 'created_at', 'updated_at']
-    #   resource = controller_name.singularize.classify.constantize
-    #   attributes = resource.column_names
-    #   remove.each do |a|
-    #     attributes.delete(a)
-    #   end
-    #
-    #   resource.require(controller_name).permit(attributes)
-    # end
+  # By default, permit all except
+  # id, created_at, updated_at
+  # def permitted_params
+  #   remove = ['id', 'created_at', 'updated_at']
+  #   resource = controller_name.singularize.classify.constantize
+  #   attributes = resource.column_names
+  #   remove.each do |a|
+  #     attributes.delete(a)
+  #   end
+  #
+  #   resource.require(controller_name).permit(attributes)
+  # end
 
   private
 

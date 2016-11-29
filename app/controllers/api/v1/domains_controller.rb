@@ -40,7 +40,8 @@ class Api::V1::DomainsController < Api::V1::ApiController
 
   protected
 
-    def permitted_params
-      params.require(:domain).permit(:text, :description, :subdomain, :active)
-    end
+  def permitted_params
+    params.require(:domain).permit(:text, :description, :subdomain, :active)
+  end
+  
 end

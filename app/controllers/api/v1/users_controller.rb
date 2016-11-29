@@ -22,21 +22,21 @@ class Api::V1::UsersController < Clearance::UsersController
 
   protected
 
-    def permitted_params
-      params.require(:user).permit(:email, :password, :password_confirmation,
-                    :prefix, :first_name, :middle_name, :last_name, :suffix, :gender,
-                    :birth_date, :phone, :address_one, :address_two, :city, :state_region,
-                    :country, :postal_code, :facebook_id, :facebook_link, :twitter_id,
-                    :twitter_screen_name, :instagram_id, :instagram_username, :person_id)
-    end
+  def permitted_params
+    params.require(:user).permit(:email, :password, :password_confirmation,
+                  :prefix, :first_name, :middle_name, :last_name, :suffix, :gender,
+                  :birth_date, :phone, :address_one, :address_two, :city, :state_region,
+                  :country, :postal_code, :facebook_id, :facebook_link, :twitter_id,
+                  :twitter_screen_name, :instagram_id, :instagram_username, :person_id)
+  end
 
 
   private
 
-    def redirect_signed_in_users
-      # As this controller is part of the API we do not want to redirect
-      # users. In fact a signed in user may create a new user
-      # Thus we are overriding this with no operations
-    end
+  def redirect_signed_in_users
+    # As this controller is part of the API we do not want to redirect
+    # users. In fact a signed in user may create a new user
+    # Thus we are overriding this with no operations
+  end
 
 end
