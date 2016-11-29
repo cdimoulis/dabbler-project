@@ -13,6 +13,10 @@ class ApplicationController < ActionController::Base
     super user
   end
 
+  def sign_out
+    super
+  end
+
   def login
     render template: 'main/login'
   end

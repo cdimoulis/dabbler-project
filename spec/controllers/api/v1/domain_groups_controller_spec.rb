@@ -5,6 +5,7 @@ RSpec.describe Api::V1::DomainGroupsController do
   # tests for CREATE route
   context "#create" do
     before do
+      puts "\n\ntest sign in\n\n"
       sign_in
     end
 

@@ -41,6 +41,22 @@ RSpec.describe Api::V1::UsersController, type: :controller do
     end
   end
 
+  context '#create while signed in' do
+    let!(:admin) { create(:user) }
+
+    before do
+      sign_in_as admin
+    end
+
+    it 'succeeds' do
+      person = {prefix: "Mr.", first_name: "Chris", last_name: "Dimoulis", gender: "Male"}
+      user = {email: 'user_test@dabbler.com', password: '12345678', password_confirmation: '12345678', person: person}
+      post :create, user: user, format: :json
+      expect(admin.id).to eq(assigns(:record).person.creator_id)
+    end
+
+  end
+
   # Tests for INDEX route
   context "#index" do
     let!(:chris) { build(:person, first_name: 'Chris', last_name: 'Dimoulis') }

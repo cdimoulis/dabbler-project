@@ -8,6 +8,12 @@ class Api::V1::UsersController < Clearance::UsersController
   ###
   def create
     @record = User.new permitted_params
+
+    if !current_user.nil?
+      puts "\n\ncreate #{current_user.id}\n\n"
+      @record.creator_id = current_user.id
+    end
+
     if @record.valid? and @record.save
       respond_with :api, :v1, @record
     else

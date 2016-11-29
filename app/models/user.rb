@@ -28,7 +28,7 @@ class User < ApplicationRecord
                 :country, :postal_code, :facebook_id, :facebook_link, :twitter_id,
                 :twitter_screen_name, :instagram_id, :instagram_username
 
-  attr_accessor :password_confirmation
+  attr_accessor :password_confirmation, :creator_id
 
   belongs_to :person, dependent: :destroy
 
@@ -45,6 +45,14 @@ class User < ApplicationRecord
 
   def is_admin?
     user_type == ADMIN_TYPE
+  end
+
+  def creator_id=(user_id)
+    @creator_id = user_id
+  end
+
+  def creator_id
+    @creator_id
   end
 
 
@@ -82,9 +90,10 @@ class User < ApplicationRecord
       person.instagram_username = self.instagram_username
 
       # If there is a current admin then add as creator
-      # if !current_user.nil?
-      #   person.creator_id = current_admin.id?
-      # end
+      if !self.creator_id.nil?
+        puts "\n\nCreate person #{self.creator_id}\n\n"
+        person.creator_id = self.creator_id
+      end
 
       if person.valid? and person.save
         @person = person
@@ -105,5 +114,5 @@ class User < ApplicationRecord
       errors.add :password, "Password and Password Confirmation do not match"
     end
   end
-  
+
 end
