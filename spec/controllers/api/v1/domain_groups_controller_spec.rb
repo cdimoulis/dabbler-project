@@ -23,23 +23,6 @@ RSpec.describe Api::V1::DomainGroupsController do
 
   end
 
-  # context '#create via parent' do
-  #   let!(:travel) { create(:domain, text: 'Travel') }
-  #   let(:domain_group_via_domain_path) { api_v1_domain_domain_groups_path(domain_id: travel.id) }
-  #   let(:create_params) { {text: "Fly Group", description: "Fly domain group"} }
-  #
-  #   before do
-  #     sign_in
-  #   end
-  #
-  #   it "succeeds via domain" do
-  #     post :create, domain_group_via_domain_path, domain_group: create_params, format: :json
-  #     expect(response).to have_http_status(:success)
-  #     expect(travel.domain_groups.count).to eq(1)
-  #     expect(DomainGroup.first.domain.id).to eq(travel.id)
-  #   end
-  # end
-
   # Tests for INDEX route
   context "#index" do
     let!(:fly) {create(:domain_group, text: 'Fly Group')}

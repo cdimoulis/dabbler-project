@@ -28,6 +28,12 @@ Rails.application.routes.draw do
   #####
   # Session Routes
   #####
-  resource :session, controller: 'clearance/sessions', only: [:create]
+  resource :session, controller: 'clearance/sessions', only: [:create, :destroy]
+
+  # TEMP SIGN IN FOR TESTING (actually so that sign out redirect properly)
+  # Either the url after sign out needs to change (currently it is sign_in below)
+  # or we just don't redirect (which will probably require extending the sessions
+  # controller)
+  get '/login' => 'application#login', as: 'sign_in'
 
 end

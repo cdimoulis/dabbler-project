@@ -1,19 +1,23 @@
 require "rails_helper"
-require "clearance/testing/controller_helpers"
-include Clearance::Testing::ControllerHelpers
+
 
 RSpec.describe DomainGroup do
+  include RequestSpecHelper
 
   # Test nested creates
   context '#create' do
     let!(:travel) { create(:domain, text: 'Travel') }
     let(:domain_group_via_domain_path) { api_v1_domain_domain_groups_path(domain_id: travel.id) }
     let(:create_params) { {text: "Fly Group", description: "Fly domain group"} }
+    let!(:user) { create(:user) }
 
-    # before do
-    #   puts "\n\nreq #{@request}\n\n"
-    #   sign_in
-    # end
+    before do
+      sign_in user, '12345678'
+    end
+
+    after do
+      sign_out
+    end
 
     it "succeeds via domain" do
       post domain_group_via_domain_path, domain_group: create_params, format: :json
