@@ -3,4 +3,6 @@ module UserTypes
 
   TYPE_OPTIONS = ['Admin']
 
+  ADMIN_TYPE = 'Admin'
+
 end

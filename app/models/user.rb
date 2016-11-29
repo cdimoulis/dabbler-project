@@ -35,6 +35,11 @@ class User < ApplicationRecord
   validates :user_type, inclusion: { in: TYPE_OPTIONS }, allow_blank: true
 
 
+  def is_admin?
+    user_type == ADMIN_TYPE
+  end
+
+
   protected
 
     # For AssociatioAccessors concern

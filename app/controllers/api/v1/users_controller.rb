@@ -1,43 +1,23 @@
 class Api::V1::UsersController < Clearance::UsersController
   include DefaultApiActions
 
-  respond_to :json, :html
+  respond_to :json
 
   ###
-  # Standard CRUD Ops
+  # Standard CRUD Ops overrides
   ###
   def create
-    puts "\n\nCREATE USER\n\n"
-
+    @record = User.new permitted_params
+    if @record.valid? and @record.save
+      respond_with :api, :v1, @record
+    else
+      render :json => {errors: @record.errors}, :status => 422
+    end
   end
 
-  def index
-    super
-  end
-
-  def show
-    super
-  end
-
-  def update
-    super
-  end
-
-  def destroy
-    super
-  end
   ###
-  # End standard CRUD Ops
+  # End standard CRUD Ops overrides
   ###
-
-  def new
-    render :json => {  }, :status => 405
-  end
-
-  def edit
-    render :json => {  }, :status => 405
-  end
-
 
 
   protected
@@ -50,5 +30,13 @@ class Api::V1::UsersController < Clearance::UsersController
                     :twitter_screen_name, :instagram_id, :instagram_username, :person_id)
     end
 
+
+  private
+
+    def redirect_signed_in_users
+      # As this controller is part of the API we do not want to redirect
+      # users. In fact a signed in user may create a new user
+      # Thus we are overriding this with no operations
+    end
 
 end
