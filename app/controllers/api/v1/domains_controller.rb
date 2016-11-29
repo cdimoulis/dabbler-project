@@ -1,6 +1,5 @@
 class Api::V1::DomainsController < Api::V1::ApiController
-
-  respond_to :json
+  before_action :require_login, only: [:create, :update, :destroy]
 
   ###
   # Standard CRUD Ops
@@ -43,5 +42,5 @@ class Api::V1::DomainsController < Api::V1::ApiController
   def permitted_params
     params.require(:domain).permit(:text, :description, :subdomain, :active)
   end
-  
+
 end

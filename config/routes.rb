@@ -25,6 +25,9 @@ Rails.application.routes.draw do
   # END API Routes
   #####
 
-
+  #####
+  # Session Routes
+  #####
+  resource :session, controller: 'clearance/sessions', only: [:create]
 
 end

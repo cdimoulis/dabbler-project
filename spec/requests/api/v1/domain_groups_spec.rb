@@ -1,5 +1,6 @@
 require "rails_helper"
-include FactoryGirl::Syntax::Methods
+require "clearance/testing/controller_helpers"
+include Clearance::Testing::ControllerHelpers
 
 RSpec.describe DomainGroup do
 
@@ -8,6 +9,11 @@ RSpec.describe DomainGroup do
     let!(:travel) { create(:domain, text: 'Travel') }
     let(:domain_group_via_domain_path) { api_v1_domain_domain_groups_path(domain_id: travel.id) }
     let(:create_params) { {text: "Fly Group", description: "Fly domain group"} }
+
+    # before do
+    #   puts "\n\nreq #{@request}\n\n"
+    #   sign_in
+    # end
 
     it "succeeds via domain" do
       post domain_group_via_domain_path, domain_group: create_params, format: :json

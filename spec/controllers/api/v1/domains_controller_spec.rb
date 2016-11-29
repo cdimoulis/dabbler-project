@@ -1,10 +1,13 @@
 require "rails_helper"
-include FactoryGirl::Syntax::Methods
 
 RSpec.describe Api::V1::DomainsController do
 
   # tests for CREATE route
   context "#create" do
+    before do
+      sign_in
+    end
+
     it 'errors without data' do
       post :create
       expect(response).to have_http_status(422)
@@ -67,6 +70,10 @@ RSpec.describe Api::V1::DomainsController do
 
   # Test for UPDATE route
   context "#update" do
+    before do
+      sign_in
+    end
+
     # Allow travel to be shared across all tests
     let!(:code) {create(:domain, text: "Code")}
 

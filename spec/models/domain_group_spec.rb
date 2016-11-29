@@ -11,7 +11,6 @@
 #
 
 require "rails_helper"
-include FactoryGirl::Syntax::Methods
 
 RSpec.describe DomainGroup do
 

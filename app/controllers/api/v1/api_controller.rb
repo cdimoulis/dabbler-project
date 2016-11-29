@@ -2,6 +2,7 @@
 # Parent controller for all API V1 controllers
 ###
 class Api::V1::ApiController < ActionController::Base
+  include Clearance::Controller
   include DefaultApiActions
   include DateRange
   include PageRecords

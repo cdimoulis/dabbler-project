@@ -29,7 +29,6 @@
 #
 
 require "rails_helper"
-include FactoryGirl::Syntax::Methods
 
 RSpec.describe Person do
 

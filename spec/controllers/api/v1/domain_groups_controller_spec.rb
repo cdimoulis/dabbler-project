@@ -1,10 +1,13 @@
 require "rails_helper"
-include FactoryGirl::Syntax::Methods
 
 RSpec.describe Api::V1::DomainGroupsController do
 
   # tests for CREATE route
   context "#create" do
+    before do
+      sign_in
+    end
+
     it 'errors - no data' do
       post :create
       expect(response).to have_http_status(422)
@@ -19,6 +22,23 @@ RSpec.describe Api::V1::DomainGroupsController do
     end
 
   end
+
+  # context '#create via parent' do
+  #   let!(:travel) { create(:domain, text: 'Travel') }
+  #   let(:domain_group_via_domain_path) { api_v1_domain_domain_groups_path(domain_id: travel.id) }
+  #   let(:create_params) { {text: "Fly Group", description: "Fly domain group"} }
+  #
+  #   before do
+  #     sign_in
+  #   end
+  #
+  #   it "succeeds via domain" do
+  #     post :create, domain_group_via_domain_path, domain_group: create_params, format: :json
+  #     expect(response).to have_http_status(:success)
+  #     expect(travel.domain_groups.count).to eq(1)
+  #     expect(DomainGroup.first.domain.id).to eq(travel.id)
+  #   end
+  # end
 
   # Tests for INDEX route
   context "#index" do
@@ -71,6 +91,10 @@ RSpec.describe Api::V1::DomainGroupsController do
     let!(:travel) { create(:domain, text: "Travel") }
     let!(:hotel) { create(:domain_group, text: 'Hotel Group', domain: travel) }
 
+    before do
+      sign_in
+    end
+
     it "succeeds" do
       update_params = {description: "Hotel entries in Travel"}
       put :update, id: hotel.id, domain_group: update_params, format: :json
@@ -94,6 +118,7 @@ RSpec.describe Api::V1::DomainGroupsController do
     let!(:current) { DomainGroup.count }
 
     before do
+      sign_in
       delete :destroy, id: hotel.id, format: :json
     end
 

@@ -1,4 +1,5 @@
 class Api::V1::DomainGroupsController < Api::V1::ApiController
+  before_action :require_login, only: [:create, :update, :destroy]
 
   ###
   # Standard CRUD Ops

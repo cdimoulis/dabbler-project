@@ -48,5 +48,5 @@ class Api::V1::PeopleController < Api::V1::ApiController
                             :facebook_id, :facebook_link, :twitter_id, :twitter_screen_name,
                             :instagram_id, :instagram_username)
   end
-  
+
 end

@@ -1,5 +1,4 @@
 require "rails_helper"
-include FactoryGirl::Syntax::Methods
 
 RSpec.describe Api::V1::PeopleController do
 
