@@ -30,12 +30,9 @@ RSpec.describe Api::V1::PeopleController do
     it 'returns JSON and sorted by last_name, first_name' do
       # look_like_json found in support/matchers/json_matchers.rb
       expect(response.body).to look_like_json
-      # body_as_json found in support/helpers.rb
       order = [bob_1.id, chris.id, naomi.id, bob_2.id]
       expect(assigns(:records).pluck('id')).to match(order)
     end
-
-    it { expect(assigns(:records).count).to eq(4) }
 
   end
 
@@ -54,8 +51,6 @@ RSpec.describe Api::V1::PeopleController do
     it 'returns JSON' do
       # look_like_json found in support/matchers/json_matchers.rb
       expect(response.body).to look_like_json
-      # body_as_json found in support/helpers.rb
-      expect(assigns(:record).id).to match(chris.id)
     end
 
     it { expect(assigns(:record)).to eq(chris) }

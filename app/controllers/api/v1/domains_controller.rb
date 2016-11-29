@@ -20,9 +20,9 @@ class Api::V1::DomainsController < Api::V1::ApiController
     super
   end
 
-  # def destroy
-  #   super
-  # end
+  def destroy
+    render :json => {  }, :status => 405
+  end
   ###
   # End standard CRUD Ops
   ###

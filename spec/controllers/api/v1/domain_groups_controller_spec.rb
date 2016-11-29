@@ -37,11 +37,9 @@ RSpec.describe Api::V1::DomainGroupsController do
     it 'returns JSON' do
       # look_like_json found in support/matchers/json_matchers.rb
       expect(response.body).to look_like_json
-      # body_as_json found in support/helpers.rb
-      expect(body_as_json).to match([fly.attributes,hotel.attributes])
+      order = [fly.id, hotel.id]
+      expect(assigns(:records).pluck('id')).to match(order)
     end
-
-    it { expect(assigns(:records).count).to eq(2) }
 
   end
 
@@ -60,8 +58,6 @@ RSpec.describe Api::V1::DomainGroupsController do
     it 'returns JSON' do
       # look_like_json found in support/matchers/json_matchers.rb
       expect(response.body).to look_like_json
-      # body_as_json found in support/helpers.rb
-      expect(body_as_json).to match(fly.attributes)
     end
 
     it { expect(assigns(:record)).to eq(fly) }

@@ -27,13 +27,18 @@ RSpec.describe Api::V1::UsersController, type: :controller do
       expect(Person.count).to eq(current_person+1)
     end
 
-    it 'handles duplicate email' do
+    it 'does not allow duplicate email' do
       create(:user, email: "test1@dabbler.fyi")
       duplicate = {email: 'test1@dabbler.fyi', password: '12345678', password_confirmation: '12345678',}
       post :create, user: duplicate, format: :json
       expect(response).to have_http_status(422)
     end
 
+    it 'does not allow mismatch password confirmation' do
+      user = {email: 'test1@dabbler.fyi', password: '12345678', password_confirmation: 'abc',}
+      post :create, user: user, format: :json
+      expect(response).to have_http_status(422)
+    end
   end
 
   # Tests for INDEX route
@@ -52,12 +57,9 @@ RSpec.describe Api::V1::UsersController, type: :controller do
     it 'returns JSON and sorted by email' do
       # look_like_json found in support/matchers/json_matchers.rb
       expect(response.body).to look_like_json
-      # body_as_json found in support/helpers.rb
       order = [c_user.id, n_user.id]
       expect(assigns(:records).pluck('id')).to match(order)
     end
-
-    it { expect(assigns(:records).count).to eq(2) }
 
   end
 
@@ -76,8 +78,6 @@ RSpec.describe Api::V1::UsersController, type: :controller do
     it 'returns JSON' do
       # look_like_json found in support/matchers/json_matchers.rb
       expect(response.body).to look_like_json
-      # body_as_json found in support/helpers.rb
-      expect(assigns(:record).id).to match(chris.id)
     end
 
     it { expect(assigns(:record)).to eq(chris) }

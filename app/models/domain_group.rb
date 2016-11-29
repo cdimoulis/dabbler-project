@@ -26,10 +26,7 @@ class DomainGroup < ApplicationRecord
   def domain_exists
     if attribute_present?(:domain_id) and !Domain.exists?(domain_id)
       errors.add(:domain_id, "Invalid Domain")
-      return false
     end
-
-    true
   end
 
 end

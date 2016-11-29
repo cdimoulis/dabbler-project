@@ -34,5 +34,20 @@ RSpec.describe User, type: :model do
       person = Person.first
       expect(user.person_id).to eq(person.id)
     end
+
+    it 'is admin' do
+      user = create(:user_as_admin)
+      expect(user.is_admin?).to be_truthy
+    end
+
+    it 'person attributes are appropriately linked' do
+      user = create(:user)
+      current_name = user.person.first_name
+      expect(user.first_name).to eq(current_name)
+      user.first_name = "Tommy"
+      user.save
+      person = Person.find(user.person_id)
+      expect(user.first_name).to eq(person.first_name)
+    end
   end
 end
