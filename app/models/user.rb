@@ -28,11 +28,19 @@ class User < ApplicationRecord
                 :country, :postal_code, :facebook_id, :facebook_link, :twitter_id,
                 :twitter_screen_name, :instagram_id, :instagram_username
 
+  attr_accessor :password_confirmation
+
   belongs_to :person, dependent: :destroy
 
   before_create :create_person
 
   validates :user_type, inclusion: { in: TYPE_OPTIONS }, allow_blank: true
+  validate :password_match, on: :create
+
+  def password_confirmation=(val)
+    # Needed to accept in controller
+    @password_confirmation = val
+  end
 
 
   def is_admin?
@@ -90,5 +98,11 @@ class User < ApplicationRecord
         @person = Person.find(self.person_id)
       end
 
+    end
+
+    def password_match
+      if  !(BCrypt::Password.new(self.encrypted_password) == self.password_confirmation)
+        errors.add :password, "Password and Password Confirmation do not match"
+      end
     end
 end

@@ -3,6 +3,6 @@ module UserTypes
 
   TYPE_OPTIONS = ['Admin']
 
-  ADMIN_TYPE = 'Admin'
+  ADMIN_TYPE = 'Admin'.freeze
 
 end
