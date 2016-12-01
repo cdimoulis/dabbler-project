@@ -1,6 +1,5 @@
 require "rails_helper"
 
-
 RSpec.describe DomainGroup do
   include RequestSpecHelper
 
@@ -12,11 +11,11 @@ RSpec.describe DomainGroup do
     let!(:user) { create(:user) }
 
     before do
-      sign_in user, '12345678'
+      full_sign_in user, '12345678'
     end
 
     after do
-      sign_out
+      full_sign_out
     end
 
     it "succeeds via domain" do

@@ -76,7 +76,7 @@ class User < ApplicationRecord
     # If no person_id then create new person
     if self.person_id.nil?
       person = Person.new()
-      puts "\n\ncreate person #{self.first_name}\n\n"
+
       person.prefix = self.prefix
       person.first_name = self.first_name
       person.middle_name = self.middle_name
