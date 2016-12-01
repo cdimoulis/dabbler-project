@@ -7,6 +7,7 @@ class ApplicationController < ActionController::Base
   hide_action :sign_in
 
   def sign_in(user)
+    Thread.current[:user] = current_user
     user.last_sign_in_at = DateTime.now
     user.last_sign_in_ip = request.remote_ip
     user.save
@@ -14,6 +15,7 @@ class ApplicationController < ActionController::Base
   end
 
   def sign_out
+    Thread.current[:user] = nil
     super
   end
 

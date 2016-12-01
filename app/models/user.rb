@@ -33,9 +33,18 @@ class User < ApplicationRecord
   belongs_to :person, dependent: :destroy
 
   before_create :create_person
+  after_create :send_new_user_email
 
   validates :user_type, inclusion: { in: TYPE_OPTIONS }, allow_blank: true
   validate :password_match, on: :create
+
+  def first_name
+    if !person.nil? && !person.first_name.nil?
+      return person.first_name
+    else
+      return @first_name
+    end
+  end
 
   def password_confirmation=(val)
     # Needed to accept in controller
@@ -47,12 +56,12 @@ class User < ApplicationRecord
     user_type == ADMIN_TYPE
   end
 
-  def creator_id=(user_id)
-    @creator_id = user_id
-  end
-
-  def creator_id
-    @creator_id
+  # Be able to access the current user in models
+  def self.current
+    if Thread.current.key?(:user)
+      current = Thread.current[:user]
+    end
+    current
   end
 
 
@@ -60,14 +69,14 @@ class User < ApplicationRecord
 
   # For AssociatioAccessors concern
   def association_params
-    {:person => Person.column_names - ['creator_id']}
+    {:person => Person.column_names}
   end
 
   def create_person
     # If no person_id then create new person
     if self.person_id.nil?
       person = Person.new()
-
+      puts "\n\ncreate person #{self.first_name}\n\n"
       person.prefix = self.prefix
       person.first_name = self.first_name
       person.middle_name = self.middle_name
@@ -89,12 +98,6 @@ class User < ApplicationRecord
       person.instagram_id = self.instagram_id
       person.instagram_username = self.instagram_username
 
-      # If there is a current admin then add as creator
-      if !self.creator_id.nil?
-        puts "\n\nCreate person #{self.creator_id}\n\n"
-        person.creator_id = self.creator_id
-      end
-
       if person.valid? and person.save
         @person = person
         self.person_id = person.id
@@ -113,6 +116,19 @@ class User < ApplicationRecord
     if  !(BCrypt::Password.new(self.encrypted_password) == self.password_confirmation)
       errors.add :password, "Password and Password Confirmation do not match"
     end
+  end
+
+  def send_new_user_email
+    # if ENV['ENABLE_RESET_USER_PASSWORD'].to_i > 0
+      # generate_confirmation_token
+      # save
+      # mail = UserMailer.change_password(self)
+      # mail.deliver_later
+    # end
+    generate_confirmation_token
+    save
+    mail = UserMailer.create_user(self)
+    mail.deliver_later
   end
 
 end
