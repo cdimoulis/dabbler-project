@@ -28,7 +28,7 @@ class User < ApplicationRecord
                 :country, :postal_code, :facebook_id, :facebook_link, :twitter_id,
                 :twitter_screen_name, :instagram_id, :instagram_username
 
-  attr_accessor :password_confirmation, :creator_id
+  attr_accessor :password_confirmation
 
   belongs_to :person, dependent: :destroy
 
