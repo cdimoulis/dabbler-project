@@ -32,6 +32,7 @@ class Person < ApplicationRecord
   include PersonLists
   include Addresses
   include AssociationAccessors
+  include HasCreator
 
   default_scope { order(last_name: :asc, first_name: :asc) }
 
