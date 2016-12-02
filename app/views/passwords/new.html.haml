@@ -1,0 +1,15 @@
+%div.password-reset
+  %h2
+    = t(".title")
+
+  %p
+    THIS VIEW
+    = t(".description")
+
+  = form_for :password, url: passwords_path do |form|
+    %div.text-field
+      = form.label t('.label')
+      = form.text_field :email, type: 'email'
+
+    %di.submit-field
+      = form.submit
