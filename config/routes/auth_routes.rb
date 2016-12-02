@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   uuid_constraints = { id: /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i }
   exc_new_edit = [:new, :edit]
-  
+
   #####
   # Session Routes
   #####

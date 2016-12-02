@@ -5,7 +5,7 @@ Rails.application.routes.draw do
   exc_new_edit = [:new, :edit]
 
   #####
-  # API Routes for the database models
+  # BLOG Routes for the database models
   #####
   namespace :blog do
     namespace :v1 do
@@ -22,7 +22,7 @@ Rails.application.routes.draw do
     end
   end
   #####
-  # END API Routes
+  # END BLOG Routes
   #####
 
 end
