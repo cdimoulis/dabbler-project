@@ -1,4 +1,4 @@
-class Api::V1::DomainGroupsController < Api::V1::ApiController
+class Blog::V1::DomainGroupsController < Blog::V1::BlogController
   before_action :require_login, only: [:create, :update, :destroy]
 
   ###

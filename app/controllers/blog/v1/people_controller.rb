@@ -1,4 +1,4 @@
-class Api::V1::PeopleController < Api::V1::ApiController
+class Blog::V1::PeopleController < Blog::V1::BlogController
   include PageRecords
 
   respond_to :json

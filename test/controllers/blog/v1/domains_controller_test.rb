@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class Api::V1::DomainsControllerTest < ActionController::TestCase
+class Blog::V1::DomainsControllerTest < ActionController::TestCase
 
   def setup
     @travel = domains(:travel)
@@ -22,7 +22,7 @@ class Api::V1::DomainsControllerTest < ActionController::TestCase
       post :create, domain: @create_params
     end
 
-    assert_redirected_to api_v1_domain_path(assigns(:record)), "Domain Controller Create: Redirect failed.\n#{@response.body.inspect}"
+    assert_redirected_to blog_v1_domain_path(assigns(:record)), "Domain Controller Create: Redirect failed.\n#{@response.body.inspect}"
   end
 
   # Index route
@@ -57,7 +57,7 @@ class Api::V1::DomainsControllerTest < ActionController::TestCase
   #     delete :destroy, id: @unused
   #   end
   #
-  #   assert_redirected_to api_v1_domain_path
+  #   assert_redirected_to blog_v1_domain_path
   # end
 
 

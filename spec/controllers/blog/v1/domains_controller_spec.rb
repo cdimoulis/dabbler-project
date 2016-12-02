@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Api::V1::DomainsController do
+RSpec.describe Blog::V1::DomainsController do
 
   # tests for CREATE route
   context "#create" do

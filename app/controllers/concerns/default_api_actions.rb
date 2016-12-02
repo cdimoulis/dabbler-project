@@ -26,7 +26,7 @@ module DefaultApiActions
 
       if errors.nil?
         if @record.valid? and @record.save
-          respond_with :api, :v1, @record
+          respond_with :blog, :v1, @record
         else
           puts "\n\nCould not create #{resource} record.\n#{@record.errors.inspect}\n\n"
           Rails.logger.debug "\n\nCould not create #{resource} record.\n#{@record.errors.inspect}\n\n"
@@ -89,7 +89,7 @@ module DefaultApiActions
     end
 
     if errors.nil?
-      respond_with :api, :v1, @records
+      respond_with :blog, :v1, @records
     else
       render :json => {errors: errors}, :status => 422
     end
@@ -104,7 +104,7 @@ module DefaultApiActions
     if @record.nil?
       render :json => {}, :status => 404
     else
-      respond_with :api, :v1, @record
+      respond_with :blog, :v1, @record
     end
   end
 
@@ -117,7 +117,7 @@ module DefaultApiActions
 
     @record = resource.where("id = ?", resource_id).take
     if @record.update(permitted_params)
-      respond_with :api, :v1, @record
+      respond_with :blog, :v1, @record
     else
       render :json => {errors: @record.errors}, :status => 424
     end
@@ -132,7 +132,7 @@ module DefaultApiActions
 
     @record = resource.where("id = ?", resource_id).take
     if !@record.nil? and @record.destroy
-      respond_with :api, :v1, @record
+      respond_with :blog, :v1, @record
     else
       render :json => {errors: @record.errors}, :status => 424
     end

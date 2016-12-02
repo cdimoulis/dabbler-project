@@ -1,7 +1,7 @@
 ###
 # Parent controller for all API V1 controllers
 ###
-class Api::V1::ApiController < ActionController::Base
+class Blog::V1::BlogController < ActionController::Base
   include Clearance::Controller
   include DefaultApiActions
   include DateRange

@@ -1,4 +1,4 @@
-class Api::V1::UsersController < Clearance::UsersController
+class Blog::V1::UsersController < Clearance::UsersController
   include DefaultApiActions
 
   respond_to :json
@@ -10,7 +10,7 @@ class Api::V1::UsersController < Clearance::UsersController
     @record = User.new permitted_params
 
     if @record.valid? and @record.save
-      respond_with :api, :v1, @record
+      respond_with :blog, :v1, @record
     else
       render :json => {errors: @record.errors}, :status => 422
     end

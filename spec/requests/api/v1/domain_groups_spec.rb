@@ -6,7 +6,7 @@ RSpec.describe DomainGroup do
   # Test nested creates
   context '#create' do
     let!(:travel) { create(:domain, text: 'Travel') }
-    let(:domain_group_via_domain_path) { api_v1_domain_domain_groups_path(domain_id: travel.id) }
+    let(:domain_group_via_domain_path) { blog_v1_domain_domain_groups_path(domain_id: travel.id) }
     let(:create_params) { {text: "Fly Group", description: "Fly domain group"} }
     let!(:user) { create(:user) }
 
@@ -29,7 +29,7 @@ RSpec.describe DomainGroup do
   # test nested index
   context '#index' do
     let!(:travel) { create(:domain_with_groups, text: 'Travel') }
-    let(:domain_groups_via_domain_path) { api_v1_domain_domain_groups_path(domain_id: travel.id) }
+    let(:domain_groups_via_domain_path) { blog_v1_domain_domain_groups_path(domain_id: travel.id) }
 
     it "fetches via domain" do
       get domain_groups_via_domain_path, format: :json

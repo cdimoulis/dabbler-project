@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class Api::V1::DomainGroupsControllerTest < ActionController::TestCase
+class Blog::V1::DomainGroupsControllerTest < ActionController::TestCase
 
   def setup
     @travel = domains(:travel)
@@ -22,7 +22,7 @@ class Api::V1::DomainGroupsControllerTest < ActionController::TestCase
     assert_difference('@travel.domain_groups.count', 1, "DomainGroup Controller Create: Creation failed.\n#{@response.body.inspect}") do
       post :create, domain_group: @create_a_params
     end
-    assert_redirected_to api_v1_domain_group_path(assigns(:record)), "DomainGroups Controller Create 1: Redirect failed.\n#{@response.body.inspect}"
+    assert_redirected_to blog_v1_domain_group_path(assigns(:record)), "DomainGroups Controller Create 1: Redirect failed.\n#{@response.body.inspect}"
 
   end
 
@@ -42,7 +42,7 @@ class Api::V1::DomainGroupsControllerTest < ActionController::TestCase
 
   # Update route
   test "update" do
-    update_path = api_v1_domain_group_path(@unused)
+    update_path = blog_v1_domain_group_path(@unused)
     # Proper update
     put :update, id: @unused, domain_group: @update_params, headers: @headers
     assert_redirected_to update_path, "DomainGroup Controller Update: Did not redirect properly: #{update_path}\n#{@response.body.inspect}"
