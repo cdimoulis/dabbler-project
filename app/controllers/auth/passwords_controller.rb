@@ -1,4 +1,4 @@
-class PasswordsController < Clearance::PasswordsController
+class Auth::PasswordsController < Clearance::PasswordsController
 
   # Override Clearance::PasswordsController
   def create

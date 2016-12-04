@@ -38,11 +38,11 @@ Rails.application.routes.draw do
   get '/login' => 'application#login', as: 'sign_in'
 
   resources :users, only: [], constraints: uuid_constraints do
-    resource :password, only: [:create, :edit, :update]
+    resource :password, controller: 'auth/passwords', only: [:create, :edit, :update]
   end
 
-  resources :passwords,
-    only: [:create, :new]
+  resources :passwords, controller: 'auth/passwords', only: [:create, :new]
+
 end
 
 # ADDITIONAL_ROUTES = Dir[Rails.root.join('config','routes','**','*.rb')]
