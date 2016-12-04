@@ -1,2 +1,8 @@
 en:
-  header: "Welcome to Dabbler! Your user account has been created. Please take time to set your password."
+  create_user:
+    header: Welcome to Dabbler! Your user account has been created. Please take time to set your password.
+    link_text: Set my password
+  change_password:
+    opening: We received a request to change your password.
+    closing: If you did not do this then you can ignore this email.
+    link_text: Change my password

@@ -42,7 +42,15 @@ class PasswordsController < Clearance::PasswordsController
 
   private
 
+  def deliver_email(user)
+    mail = UserMailer.change_password(user)
 
+    if mail.respond_to?(:deliver_later)
+      mail.deliver_later
+    else
+      mail.deliver
+    end
+  end
 
   # def flash_failure_when_forbidden
   #   flash.now[:notice] = translate(:forbidden,

@@ -128,7 +128,12 @@ class User < ApplicationRecord
     generate_confirmation_token
     save
     mail = UserMailer.create_user(self)
-    mail.deliver_later
+
+    if mail.respond_to?(:deliver_later)
+      mail.deliver_later
+    else
+      mail.deliver
+    end
   end
 
 end

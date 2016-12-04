@@ -1,2 +1,5 @@
 en:
-  subject: "Welcome to Dabbler!"
+  create_user:
+    subject: Welcome to Dabbler!
+  change_password:
+    subject: Change your password
