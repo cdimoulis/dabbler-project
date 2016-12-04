@@ -35,7 +35,10 @@ Rails.application.routes.draw do
   # Either the url after sign out needs to change (currently it is sign_in below)
   # or we just don't redirect (which will probably require extending the sessions
   # controller)
-  get '/login' => 'application#login', as: 'sign_in'
+  # get '/login' => 'application#login', as: 'sign_in'
+  get '/login' => 'clearance/sessions#new', as: 'sign_in'
+  get '/logout' => 'clearance/sessions#destroy'
+  delete '/logout' => 'clearance/sessions#destroy', as: 'sign_out'
 
   resources :users, only: [], constraints: uuid_constraints do
     resource :password, controller: 'auth/passwords', only: [:create, :edit, :update]
