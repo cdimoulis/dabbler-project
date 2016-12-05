@@ -2,6 +2,7 @@ module HasCreator
   extend ActiveSupport::Concern
 
   included do
+    belongs_to :creator, class_name: "User"
     before_create :add_creator
   end
 
