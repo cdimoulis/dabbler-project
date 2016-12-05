@@ -10,7 +10,8 @@ gem 'sidekiq',  '~> 4.2.3'
 gem 'redis-rails', '~> 4.0.0'
 
 # Authentication
-gem 'devise', '~> 4.2.0'
+# gem 'devise', '~> 4.2.0'
+gem 'clearance', '~> 1.15.1'
 
 # Page markup and style gems
 gem 'sass-rails', '~> 5.0.6'

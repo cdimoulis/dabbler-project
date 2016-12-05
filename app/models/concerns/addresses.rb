@@ -5,37 +5,37 @@ module Addresses
 
   private
 
-    def getCountries
-      return COUNTRIES.keys()
-    end
+  def getCountries
+    return COUNTRIES.keys()
+  end
 
-    # Validation to check that :country is valid
-    def countryExists
+  # Validation to check that :country is valid
+  def countryExists
+    if self.attribute_present?(:country)
+      if COUNTRIES.keys().include?(self.country)
+        return true
+      else
+        errors.add(:country, 'Invalid Country')
+      end
+    else
+      true
+    end
+  end
+
+  # Validation to check that :state_region is valid
+  def stateExists
+    if self.attribute_present?(:state_region)
       if self.attribute_present?(:country)
-        if COUNTRIES.keys().include?(self.country)
-          return true
-        else
-          errors.add(:country, 'Invalid Country')
+        states = COUNTRIES[country].split(',')
+        if !states.include?(state_region)
+          errors.add(:state_region, "State/Region is not valid for #{country}")
         end
       else
-        true
+        errors.add(:state_region, 'Country required if city is specificed')
       end
+    else
+      true
     end
-
-    # Validation to check that :state_region is valid
-    def stateExists
-      if self.attribute_present?(:state_region)
-        if self.attribute_present?(:country)
-          states = COUNTRIES[country].split(',')
-          if !states.include?(state_region)
-            errors.add(:state_region, "State/Region is not valid for #{country}")
-          end
-        else
-          errors.add(:state_region, 'Country required if city is specificed')
-        end
-      else
-        true
-      end
-    end
+  end
 
 end

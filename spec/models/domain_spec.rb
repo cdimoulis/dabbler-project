@@ -12,19 +12,11 @@
 #
 
 require "rails_helper"
-include FactoryGirl::Syntax::Methods
 
 RSpec.describe Domain do
 
   context 'associations' do
     it { is_expected.to have_many(:domain_groups) }
-  end
-
-  context '.new' do
-    it 'cannot be empty' do
-      empty_domain = Domain.new()
-      expect(empty_domain.save).to be_falsey
-    end
   end
 
   context '.save' do

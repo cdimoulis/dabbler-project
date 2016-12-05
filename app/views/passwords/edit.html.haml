@@ -1,0 +1,16 @@
+%div.password-reset
+  %h2
+    = t(:title, scope: :edit)
+
+  %p
+    = t(:description, scope: :edit)
+
+  = form_for :password_reset,
+        url: user_password_path(@user, token: @user.confirmation_token),
+        html: { method: :put } do |form|
+    %div.password-field
+      = form.label t(:label, scope: :edit)
+      = form.password_field :password
+
+    %div.submit-field
+      = form.submit

@@ -9,7 +9,7 @@ class DomainGroupsTest < ActionDispatch::IntegrationTest
 
   test "create" do
     # Check creating DomainGroup with Domain in path
-    create_path = api_v1_domain_domain_groups_path(domain_id: @code.id)
+    create_path = blog_v1_domain_domain_groups_path(domain_id: @code.id)
 
     assert_difference('@code.domain_groups.count', 1, "DomainGroup Integration Create: Creation failed.") do
       post_via_redirect create_path, domain_group: @create_params, format: :json
@@ -19,7 +19,7 @@ class DomainGroupsTest < ActionDispatch::IntegrationTest
 
   test "index" do
     # Check that the index route with Domain in path returns proper number of results
-    get_path = api_v1_domain_domain_groups_path(domain_id: @code.id)
+    get_path = blog_v1_domain_domain_groups_path(domain_id: @code.id)
 
     get get_path, format: :json
     assert_response :success, "DomainGroups Integration Index: Response not success\n#{@response.status}\n#{@response.body.inspect}\n\n"

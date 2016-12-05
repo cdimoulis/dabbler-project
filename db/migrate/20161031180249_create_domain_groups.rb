@@ -9,6 +9,7 @@ class CreateDomainGroups < ActiveRecord::Migration
     end
 
     add_index :domain_groups, :text
+    add_index :domain_groups, :domain_id
     add_index :domain_groups, [:domain_id, :text], unique: true
   end
 end

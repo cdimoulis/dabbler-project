@@ -11,21 +11,13 @@
 #
 
 require "rails_helper"
-include FactoryGirl::Syntax::Methods
 
 RSpec.describe DomainGroup do
 
-context 'associations' do
-  it { is_expected.to belong_to(:domain) }
-end
-
-  context '.new' do
-    it 'cannot be emtpy' do
-      empty_domain_group = DomainGroup.new()
-      expect(empty_domain_group.save).to be_falsy
-    end
+  context 'associations' do
+    it { is_expected.to belong_to(:domain) }
   end
-
+  
   context '.save' do
     it 'succeeds' do
       valid_group = build(:domain_group, text: "Valid Group")

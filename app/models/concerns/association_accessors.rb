@@ -1,7 +1,7 @@
 module AssociationAccessors
   extend ActiveSupport::Concern
 
-  EXCLUDED_PARAMS = ['id', 'created_at', 'updated_at']
+  EXCLUDED_PARAMS = ['id', 'creator_id', 'created_at', 'updated_at']
 
   included do
     after_initialize :add_methods
@@ -15,13 +15,13 @@ module AssociationAccessors
           resource = association.to_s.classify.constantize
         rescue NameError => e
           # If this is not a model class
-          raise "AssociatioAccessor error: #{association} is not a model"
+          raise "AssociationAccessor error: #{association} is not a model"
         end
         # Loop through params and create setters and getters
         valid_params = params - EXCLUDED_PARAMS
         valid_params.each do |param|
           # Define getter
-          self.class.send :define_method, param do
+          self.send :define_singleton_method, param do
             value = nil
             if self.respond_to?(association)
               record = self.send(association)
@@ -33,7 +33,7 @@ module AssociationAccessors
           end
 
           # Define setter
-          self.class.send :define_method, "#{param}=" do |arg|
+          self.send :define_singleton_method, "#{param}=" do |arg|
             if self.respond_to?(association)
               record = self.send(association)
               if !record.nil? and record.respond_to?(param)

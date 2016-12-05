@@ -1,0 +1,11 @@
+en:
+  create:
+    description: An email has been sent to your account. Please follow its instructions to reset your password
+  new:
+    description: Enter your email below to receive password reset instructions
+    title: Reset your password
+    label: Email
+  edit:
+    description: Enter your password below.
+    title: Set your new password
+    label: New Password

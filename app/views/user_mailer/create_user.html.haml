@@ -1,0 +1,8 @@
+%h3.salutation
+  = "#{@user.first_name} #{@user.last_name},"
+%p.welcome
+  = t(:header, scope: :create_user)
+
+%p
+  = link_to t(:link_text, scope: :create_user),
+    edit_user_password_url(@user, token: @user.confirmation_token.html_safe)
