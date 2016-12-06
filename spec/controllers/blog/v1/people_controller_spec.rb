@@ -62,6 +62,10 @@ RSpec.describe Blog::V1::PeopleController do
     # Allow travel to be shared across all tests
     let!(:chris) {create(:person, first_name: 'Chris', last_name: 'Dimoulis')}
 
+    before do
+      sign_in
+    end
+
     it "succeeds" do
       update_params = {suffix: "Esq."}
       put :update, id: chris.id, person: update_params, format: :json
@@ -79,10 +83,12 @@ RSpec.describe Blog::V1::PeopleController do
   # Test for UPDATE route
   context "#destroy" do
     # Allow travel to be shared across all tests
+    let!(:admin) { create(:user) }
     let!(:chris) { create(:person, first_name: 'Chris', last_name: 'Dimoulis') }
     let!(:current) { Person.count }
 
     before do
+      sign_in_as admin
       delete :destroy, id: chris.id, format: :json
     end
 

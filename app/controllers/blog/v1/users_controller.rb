@@ -1,6 +1,8 @@
 class Blog::V1::UsersController < Clearance::UsersController
   include DefaultApiActions
 
+  before_action :require_login, only: [:update, :destroy]
+
   respond_to :json
 
   ###
