@@ -79,12 +79,12 @@ module DefaultApiActions
     end
 
     # If from or to then grab by date
-    if params.has_key?(:from) or params.has_key?(:to)
+    if respond_to?(:dateRangeRecords) && ( params.has_key?(:from) || params.has_key?(:to) )
       dateRangeRecords()
     end
 
     # If count or start Page records
-    if params.has_key?(:count) or params.has_key?(:start)
+    if respond_to?(:pageRecords) && ( params.has_key?(:count) || params.has_key?(:start) )
       pageRecords()
     end
 

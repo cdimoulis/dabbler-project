@@ -1,5 +1,6 @@
 class Blog::V1::UsersController < Clearance::UsersController
   include DefaultApiActions
+  include PageRecords
 
   before_action :require_login, only: [:update, :destroy]
 
