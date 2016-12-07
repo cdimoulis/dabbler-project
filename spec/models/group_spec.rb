@@ -5,7 +5,7 @@
 #  id          :uuid             not null, primary key
 #  text        :string           not null
 #  description :text
-#  id   :uuid             not null
+#  domain_id   :uuid             not null
 #  type        :string           not null
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
