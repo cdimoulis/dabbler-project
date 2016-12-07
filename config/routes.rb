@@ -13,6 +13,9 @@ Rails.application.routes.draw do
          resources :domain_groups, except: exc_new_edit, parent: :domains
        end
 
+       # We will not create a group without it being DomainGroup or TutorialGroup
+       resources :groups, except: (exc_new_edit + [:create]), constraints: uuid_constraints
+
        resources :domain_groups, except: exc_new_edit, constraints: uuid_constraints
 
        resources :users, except: exc_new_edit, constraints: uuid_constraints

@@ -13,13 +13,5 @@
 
 class DomainGroup < Group
 
-  default_scope { order(text: :asc) }
-
-  belongs_to :domain
-
-  validates :text, :domain_id, presence: true
-  validates :text, uniqueness: {scope: :domain_id, message: "Domain text must be unique"}
-  validate :domain_exists
-
 
 end
