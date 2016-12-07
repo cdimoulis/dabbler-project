@@ -30,11 +30,18 @@ RSpec.describe Group do
       expect(invalid_group.save).to be_falsy
     end
 
-    it 'fails duplicate text {scoped => :domain}' do
+    it 'fails duplicate text {scoped => :domain, :type}' do
       travel = create(:domain, text: 'Travel')
       fly = create(:group, text: 'Fly Group', domain: travel)
       duplicate_text = build(:group, text: 'Fly Group', domain: travel)
       expect(duplicate_text.save).to be_falsy
+    end
+
+    it 'allows duplicate text (separate type)' do
+      travel = create(:domain, text: "Travel")
+      group = create(:domain_group, text: 'Test Group', domain: travel)
+      duplicate_text = build(:tutorial_group, text: 'Test Group', domain: travel)
+      expect(duplicate_text.save).to be_truthy
     end
 
     it 'allows duplicate text (separate domain)' do

@@ -11,6 +11,6 @@ class CreateGroups < ActiveRecord::Migration
 
     add_index :groups, :text
     add_index :groups, :domain_id
-    add_index :groups, [:domain_id, :text], unique: true
+    add_index :groups, [:domain_id, :type, :text], unique: true
   end
 end

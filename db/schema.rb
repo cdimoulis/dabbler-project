@@ -38,7 +38,7 @@ ActiveRecord::Schema.define(version: 20161128163553) do
     t.datetime "updated_at",  null: false
   end
 
-  add_index "groups", ["domain_id", "text"], name: "index_groups_on_domain_id_and_text", unique: true, using: :btree
+  add_index "groups", ["domain_id", "type", "text"], name: "index_groups_on_domain_id_and_type_and_text", unique: true, using: :btree
   add_index "groups", ["domain_id"], name: "index_groups_on_domain_id", using: :btree
   add_index "groups", ["text"], name: "index_groups_on_text", using: :btree
 
