@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161128163553) do
+ActiveRecord::Schema.define(version: 20161207215851) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -28,6 +28,22 @@ ActiveRecord::Schema.define(version: 20161128163553) do
 
   add_index "domains", ["subdomain"], name: "index_domains_on_subdomain", unique: true, using: :btree
   add_index "domains", ["text"], name: "index_domains_on_text", unique: true, using: :btree
+
+  create_table "entries", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
+    t.string   "text",                              null: false
+    t.text     "description"
+    t.uuid     "author_id",                         null: false
+    t.string   "default_image_url"
+    t.text     "content",                           null: false
+    t.boolean  "remove",            default: false
+    t.uuid     "creator_id",                        null: false
+    t.datetime "created_at",                        null: false
+    t.datetime "updated_at",                        null: false
+  end
+
+  add_index "entries", ["author_id"], name: "index_entries_on_author_id", using: :btree
+  add_index "entries", ["creator_id"], name: "index_entries_on_creator_id", using: :btree
+  add_index "entries", ["text"], name: "index_entries_on_text", using: :btree
 
   create_table "groups", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
     t.string   "text",        null: false
