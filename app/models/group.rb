@@ -11,15 +11,23 @@
 #  updated_at  :datetime         not null
 #
 
-class DomainGroup < Group
+class Group < ApplicationRecord
 
   default_scope { order(text: :asc) }
 
   belongs_to :domain
 
-  validates :text, :domain_id, presence: true
+  validates :text, :domain_id, :type, presence: true
   validates :text, uniqueness: {scope: :domain_id, message: "Domain text must be unique"}
   validate :domain_exists
 
+
+  protected
+
+  def domain_exists
+    if attribute_present?(:domain_id) and !Domain.exists?(domain_id)
+      errors.add(:domain_id, "Invalid Domain")
+    end
+  end
 
 end
