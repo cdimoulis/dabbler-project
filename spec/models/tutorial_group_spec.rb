@@ -11,7 +11,16 @@
 #  updated_at  :datetime         not null
 #
 
-class DomainGroup < Group
 
 
+require "rails_helper"
+
+RSpec.describe TutorialGroup do
+
+  context 'inheritance' do
+    it 'type is correct' do
+      domain_group = create(:tutorial_group)
+      expect(domain_group.type).to eq('TutorialGroup')
+    end
+  end
 end
