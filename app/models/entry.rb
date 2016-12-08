@@ -17,6 +17,21 @@
 class Entry < ActiveRecord::Base
   include HasCreator
 
+  default_scope { order(text: :asc) }
+
+  belongs_to :author, class_name: 'User'
   # has_and_belongs_to_many :contributors, class_name: 'User'
+
+  validates :text, :author_id, :content, :creator_id, presence: true
+  validate :author_exists
+
+
+  protected
+
+  def author_exists
+    if attribute_present?(:author_id) and !User.exists?(author_id)
+      errors.add(:author_id, "Invalid Author: Does not exists")
+    end
+  end
 
 end

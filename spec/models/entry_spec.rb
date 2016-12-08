@@ -17,5 +17,22 @@
 require 'rails_helper'
 
 RSpec.describe Entry, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+
+  context 'associations' do
+    it { is_expected.to belong_to(:author) }
+  end
+
+  context '.save' do
+    it 'suceeds' do
+      entry = build(:entry)
+      expect(entry.save).to be_truthy
+    end
+
+    it 'requires a valid author' do
+      entry = build(:entry_without_author)
+      expect(entry.save).to be_falsy
+      entry.author_id = "52af11a3-0527-454e-bab2-ded1dcdb4ac7"
+      epxect(entry.save).to be_falsy
+    end
+
 end

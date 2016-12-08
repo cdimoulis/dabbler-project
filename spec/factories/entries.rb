@@ -15,7 +15,16 @@
 #
 
 FactoryGirl.define do
+
   factory :entry do
+    text 'Entry Title'
+    description 'Some great information about stuff'
+    author { create(:user, email: 'author@dabbler.fyi') }
+    content "Here is some info to know about..."
+
+    factory :entry_without_author do
+      author nil
+    end
     
   end
 end
