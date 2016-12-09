@@ -24,6 +24,8 @@ Rails.application.routes.draw do
 
        resources :people, except: exc_new_edit, constraints: uuid_constraints
 
+       resources :entries, except: exc_new_edit, contraints: uuid_constraints
+
     end
   end
   #####

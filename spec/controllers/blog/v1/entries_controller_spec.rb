@@ -1,0 +1,58 @@
+require 'rails_helper'
+
+RSpec.describe Blog::V1::EntriesController, type: :controller do
+
+  # tests for CREATE route
+  context "#create" do
+    before do
+      sign_in
+    end
+
+    it 'errors - no data' do
+      post :create
+      expect(response).to have_http_status(422)
+    end
+
+    it 'succeeds' do
+      current = Entry.count
+      entry = build(:entry)
+      post :create, entry: entry.attributes, format: :json
+      expect(response).to have_http_status(:success)
+      expect(Entry.count).to eq(current+1)
+    end
+
+  end
+
+  # Tests for INDEX route
+  context "#index" do
+    let!(:third) { create(:entry, text: 'Third Entry') }
+    let!(:second) { create(:entry, text: 'Second Entry') }
+    let!(:first) { create(:entry, text: 'First Entry') }
+
+    it 'returns JSON and sorted by text' do
+      get :index, format: :json
+      # look_like_json found in support/matchers/json_matchers.rb
+      expect(response).to respond_with(:success)
+      expect(response.body).to look_like_json
+      order = [first.id, second.id, third.id]
+      expect(assigns(:records).pluck('id')).to match(order)
+    end
+
+    it 'handles date range' do
+      third.created_at = 10.days.ago
+      third.save
+      second.created_at = 5.days.ago
+      second.save
+
+      get :index, from: 6.days.ago, format: :json
+      expect(@records.length).to eq(2)
+      expect(@records.include?(third)).to be_falsy
+    end
+
+  end
+
+  # Tests for SHOW route
+  context "#show" do
+
+  end
+end
