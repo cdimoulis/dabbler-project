@@ -23,8 +23,8 @@ RSpec.describe Entry, type: :model do
   end
 
   context '.save' do
-    it 'suceeds' do
-      entry = build(:entry)
+    it 'succeeds' do
+      entry = build(:entry_with_creator)
       expect(entry.save).to be_truthy
     end
 
@@ -32,7 +32,8 @@ RSpec.describe Entry, type: :model do
       entry = build(:entry_without_author)
       expect(entry.save).to be_falsy
       entry.author_id = "52af11a3-0527-454e-bab2-ded1dcdb4ac7"
-      epxect(entry.save).to be_falsy
+      expect(entry.save).to be_falsy
     end
+  end
 
 end

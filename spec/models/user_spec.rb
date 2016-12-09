@@ -25,7 +25,7 @@ RSpec.describe User, type: :model do
   end
 
   context '.save' do
-    it 'suceeds' do
+    it 'succeeds' do
       user = build(:user)
       expect(user.save).to be_truthy
     end
