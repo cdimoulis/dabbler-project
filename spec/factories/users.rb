@@ -19,7 +19,7 @@
 FactoryGirl.define do
 
   factory :user do
-    email 'user_test@dabbler.fyi'
+    email { "user_test#{User.count}@dabbler.fyi" }
     password '12345678'
     password_confirmation '12345678'
     person { create(:person, first_name: "User", last_name: "Test") }

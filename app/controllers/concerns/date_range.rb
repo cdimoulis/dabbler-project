@@ -10,6 +10,7 @@ module DateRange
   def dateRangeRecords
     from = params.has_key?(:from) ? params[:from] : nil
     to = params.has_key?(:to) ? params[:to] : nil
+    puts "\n\nFROM TO #{from} #{to}\n\n"
     # Default attribute for paging is created_at
     date_attribute = 'created_at'
 

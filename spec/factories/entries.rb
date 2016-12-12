@@ -19,7 +19,7 @@ FactoryGirl.define do
   factory :entry do
     text 'Entry Title'
     description 'Some great information about stuff'
-    author { create(:user, email: 'author@dabbler.fyi') }
+    author { create(:user) }
     content "Here is some info to know about..."
 
     factory :entry_with_creator do

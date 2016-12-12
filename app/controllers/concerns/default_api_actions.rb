@@ -25,6 +25,11 @@ module DefaultApiActions
       end
 
       if errors.nil?
+        # If HasCreator is included then add creator
+        if self.class.included_modules.include?(HasCreator)
+          add_creator
+        end
+
         if @record.valid? and @record.save
           respond_with :blog, :v1, @record
         else
@@ -79,12 +84,12 @@ module DefaultApiActions
     end
 
     # If from or to then grab by date
-    if respond_to?(:dateRangeRecords) && ( params.has_key?(:from) || params.has_key?(:to) )
+    if self.class.included_modules.include?(DateRange) && ( params.has_key?(:from) || params.has_key?(:to) )
       dateRangeRecords()
     end
 
     # If count or start Page records
-    if respond_to?(:pageRecords) && ( params.has_key?(:count) || params.has_key?(:start) )
+    if self.class.included_modules.include?(PageRecords) && ( params.has_key?(:count) || params.has_key?(:start) )
       pageRecords()
     end
 

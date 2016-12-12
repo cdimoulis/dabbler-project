@@ -1,5 +1,6 @@
 class Blog::V1::PeopleController < Blog::V1::BlogController
   include PageRecords
+  include HasCreator
 
   before_action :require_login, only: [:update, :destroy]
 

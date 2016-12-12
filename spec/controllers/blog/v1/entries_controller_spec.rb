@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Blog::V1::EntriesController, type: :controller do
+RSpec.describe Blog::V1::EntriesController do
 
   # tests for CREATE route
   context "#create" do
@@ -25,14 +25,15 @@ RSpec.describe Blog::V1::EntriesController, type: :controller do
 
   # Tests for INDEX route
   context "#index" do
-    let!(:third) { create(:entry, text: 'Third Entry') }
-    let!(:second) { create(:entry, text: 'Second Entry') }
-    let!(:first) { create(:entry, text: 'First Entry') }
+
+    let!(:third) { create(:entry_with_creator, text: 'Third Entry') }
+    let!(:second) { create(:entry_with_creator, text: 'Second Entry') }
+    let!(:first) { create(:entry_with_creator, text: 'First Entry') }
 
     it 'returns JSON and sorted by text' do
       get :index, format: :json
       # look_like_json found in support/matchers/json_matchers.rb
-      expect(response).to respond_with(:success)
+      expect(response).to have_http_status(:success)
       expect(response.body).to look_like_json
       order = [first.id, second.id, third.id]
       expect(assigns(:records).pluck('id')).to match(order)
@@ -45,8 +46,8 @@ RSpec.describe Blog::V1::EntriesController, type: :controller do
       second.save
 
       get :index, from: 6.days.ago, format: :json
-      expect(@records.length).to eq(2)
-      expect(@records.include?(third)).to be_falsy
+      expect(assigns(:records).length).to eq(2)
+      expect(assigns(:records).include?(third)).to be_falsy
     end
 
   end

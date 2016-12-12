@@ -1,6 +1,7 @@
 class Blog::V1::EntriesController < Blog::V1::BlogController
   include PageRecords
   include DateRange
+  include HasCreator
 
   before_action :require_login, only: [:create, :update, :destroy]
 
@@ -24,5 +25,5 @@ class Blog::V1::EntriesController < Blog::V1::BlogController
     params.require(:entry).permit(:text, :description, :author_id, :default_image_url,
                                   :content, :remove)
   end
-  
+
 end
