@@ -26,7 +26,10 @@ Rails.application.routes.draw do
 
       resources :people, except: exc_new_edit, constraints: uuid_constraints
 
-      resources :entries, except: exc_new_edit, constraints: uuid_constraints
+      resources :entries, except: exc_new_edit, constraints: uuid_constraints do
+        resource :author, to: 'entries#author', only: :show
+        resources :contributors, controller: 'users', only: :index
+      end
 
     end
   end

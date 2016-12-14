@@ -104,7 +104,7 @@ module DefaultApiActions
   def show
     resource_name, resource_id = getResources()
     @resource = resource_name.classify.constantize
-
+    
     @record = @resource.where("id = ?", resource_id).take
     if @record.nil?
       render :json => {}, :status => 404
