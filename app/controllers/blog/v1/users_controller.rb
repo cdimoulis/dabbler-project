@@ -6,32 +6,6 @@ class Blog::V1::UsersController < Clearance::UsersController
 
   respond_to :json
 
-  # Get the author of the entry
-  def entries
-    user_id = params[:user_id]
-    user = User.where('id = ?', user_id).take
-
-    if user.nil?
-      render :json => {}, :status => 404
-    else
-      @records = user.entries
-      respond_with :blog, :v1, @records
-    end
-  end
-
-  # Get the contributors of the entry
-  def contributions
-    user_id = params[:user_id]
-    user = User.where('id = ?', user_id).take
-
-    if user.nil?
-      render :json => {}, :status => 404
-    else
-      @records = user.contributions
-      respond_with :blog, :v1, @records
-    end
-  end
-
   ###
   # Standard CRUD Ops overrides
   ###
@@ -49,6 +23,51 @@ class Blog::V1::UsersController < Clearance::UsersController
   # End standard CRUD Ops overrides
   ###
 
+  ###
+  # Association methods
+  ###
+
+  # Get the entries this user is author of
+  def entries
+    user_id = params[:user_id]
+    user = User.where('id = ?', user_id).take
+
+    if user.nil?
+      render :json => {}, :status => 404
+    else
+      @records = user.entries
+
+      # Page the records if desired
+      if params.has_key?(:count) || params.has_key?(:start)
+        pageRecords()
+      end
+
+      respond_with :blog, :v1, @records
+    end
+  end
+
+  # Get the entries this user is a contributor of
+  def contributions
+    user_id = params[:user_id]
+    user = User.where('id = ?', user_id).take
+
+    if user.nil?
+      render :json => {}, :status => 404
+    else
+      @records = user.contributions
+
+      # Page the records if desired
+      if params.has_key?(:count) || params.has_key?(:start)
+        pageRecords()
+      end
+
+      respond_with :blog, :v1, @records
+    end
+  end
+
+  ###
+  # End Association methods
+  ###
 
   protected
 
