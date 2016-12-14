@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161207215851) do
+ActiveRecord::Schema.define(version: 20161214153903) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,6 +44,15 @@ ActiveRecord::Schema.define(version: 20161207215851) do
   add_index "entries", ["author_id"], name: "index_entries_on_author_id", using: :btree
   add_index "entries", ["creator_id"], name: "index_entries_on_creator_id", using: :btree
   add_index "entries", ["text"], name: "index_entries_on_text", using: :btree
+
+  create_table "entries_users", id: false, force: :cascade do |t|
+    t.uuid "entry_id"
+    t.uuid "user_id"
+  end
+
+  add_index "entries_users", ["entry_id", "user_id"], name: "index_entries_users_on_entry_id_and_user_id", using: :btree
+  add_index "entries_users", ["entry_id"], name: "index_entries_users_on_entry_id", using: :btree
+  add_index "entries_users", ["user_id"], name: "index_entries_users_on_user_id", using: :btree
 
   create_table "groups", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
     t.string   "text",        null: false

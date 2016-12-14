@@ -31,6 +31,7 @@ class User < ApplicationRecord
   attr_accessor :password_confirmation
 
   belongs_to :person, dependent: :destroy
+  has_and_belongs_to_many :entries
 
   before_create :create_person
   after_create :send_new_user_email

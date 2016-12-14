@@ -19,8 +19,8 @@ class Entry < ApplicationRecord
   default_scope { order(text: :asc) }
 
   belongs_to :author, class_name: 'User'
-  belongs_to :creator, class_name: "User"
-  # has_and_belongs_to_many :contributors, class_name: 'User'
+  belongs_to :creator, class_name: 'User'
+  has_and_belongs_to_many :contributors, class_name: 'User'
 
   validates :text, :author_id, :content, presence: true
   validate :author_exists
