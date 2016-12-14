@@ -22,7 +22,10 @@ Rails.application.routes.draw do
 
       resources :tutorial_groups, except: exc_new_edit, constraints: uuid_constraints
 
-      resources :users, except: exc_new_edit, constraints: uuid_constraints
+      resources :users, except: exc_new_edit, constraints: uuid_constraints do
+        resources :entries, to: 'users#entries', only: :index
+        resources :contributions, to: 'users#contributions', only: :index 
+      end
 
       resources :people, except: exc_new_edit, constraints: uuid_constraints
 

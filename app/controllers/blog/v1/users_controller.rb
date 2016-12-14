@@ -6,6 +6,32 @@ class Blog::V1::UsersController < Clearance::UsersController
 
   respond_to :json
 
+  # Get the author of the entry
+  def entries
+    user_id = params[:user_id]
+    user = User.where('id = ?', user_id).take
+
+    if user.nil?
+      render :json => {}, :status => 404
+    else
+      @records = user.entries
+      respond_with :blog, :v1, @records
+    end
+  end
+
+  # Get the contributors of the entry
+  def contributions
+    user_id = params[:user_id]
+    user = User.where('id = ?', user_id).take
+
+    if user.nil?
+      render :json => {}, :status => 404
+    else
+      @records = user.contributions
+      respond_with :blog, :v1, @records
+    end
+  end
+
   ###
   # Standard CRUD Ops overrides
   ###
