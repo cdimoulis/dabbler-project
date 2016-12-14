@@ -20,6 +20,19 @@ class Blog::V1::EntriesController < Blog::V1::BlogController
     end
   end
 
+  # Get the contributors of the entry
+  def contributors
+    entry_id = params[:entry_id]
+    entry = Entry.where('id = ?', entry_id).take
+
+    if entry.nil?
+      render :json => {}, :status => 404
+    else
+      @records = entry.contributors
+      respond_with :blog, :v1, @records
+    end
+  end
+
   # Entries must be flagged removed before destroy will work
   def destroy
     entry_id = params[:id]
