@@ -1,4 +1,4 @@
-class EntriesUsers < ActiveRecord::Migration
+class CreateEntriesUsers < ActiveRecord::Migration
   def change
     create_join_table :entries, :users, id: :uuid, default: "uuid_generate_v4()", force: true do |t|
       t.uuid :entry_id
