@@ -27,7 +27,7 @@ module DefaultApiActions
       if errors.nil?
         # If HasCreator is included then add creator
         if self.class.included_modules.include?(HasCreator)
-          add_creator
+          add_creator()
         end
 
         if @record.valid? and @record.save

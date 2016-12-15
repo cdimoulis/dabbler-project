@@ -100,6 +100,10 @@ class User < ApplicationRecord
       person.instagram_id = self.instagram_id
       person.instagram_username = self.instagram_username
 
+      if !User.current.nil?
+        person.creator_id = User.current.id
+      end
+
       if person.valid? and person.save
         @person = person
         self.person_id = person.id
