@@ -14,8 +14,8 @@ class Blog::V1::EntriesController < Blog::V1::BlogController
   # Entries must be flagged removed before destroy will work
   def destroy
     entry_id = params[:id]
-    record = Entry.where('id = ?',entry_id).take
-    if !record.nil? && record.remove
+    @record = Entry.where('id = ?',entry_id).take
+    if !@record.nil? && @record.remove
       super
     else
       render :json => {errors: {msg: "Entry is not flagged for removal."}}, :status => 422

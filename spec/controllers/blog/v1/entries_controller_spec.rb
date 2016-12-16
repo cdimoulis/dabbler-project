@@ -55,7 +55,7 @@ RSpec.describe Blog::V1::EntriesController do
   # Tests for SHOW route
   context "#show" do
     # Allow travel to be shared across all tests
-    let!(:entry) { create(:entry) }
+    let!(:entry) { create(:entry_with_creator) }
 
     # Before running a test do this
     before do
@@ -79,13 +79,38 @@ RSpec.describe Blog::V1::EntriesController do
     end
 
     # Allow travel to be shared across all tests
-    let!(:entry) { create(:entry) }
+    let!(:entry) { create(:entry_with_creator) }
 
     it "succeeds" do
       update_params = {description: "Some new information"}
-      put :update, id: code.id, domain: update_params, format: :json
+      put :update, id: entry.id, entry: update_params, format: :json
       expect(response).to have_http_status(:success)
       expect(assigns(:record).description).to eq(update_params[:description])
+    end
+  end
+
+  # Test for UPDATE route
+  context "#destroy" do
+    # Allow travel to be shared across all tests
+    let!(:admin) { create(:user) }
+    let!(:entry) { create(:entry_with_creator) }
+    let!(:current) { Entry.count }
+
+    before do
+      sign_in_as admin
+    end
+
+    it "prevents without remove flag" do
+      delete :destroy, id: entry.id, format: :json
+      expect(response).to have_http_status(422)
+    end
+
+    it "succeeds" do
+      entry.remove = true
+      entry.save
+      delete :destroy, id: entry.id, format: :json
+      expect(response).to have_http_status(:success)
+      expect(Entry.count).to eq(current-1)
     end
   end
 end
