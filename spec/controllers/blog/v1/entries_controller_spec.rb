@@ -25,29 +25,45 @@ RSpec.describe Blog::V1::EntriesController do
 
   # Tests for INDEX route
   context "#index" do
-
-    let!(:third) { create(:entry_with_creator, text: 'Third Entry') }
-    let!(:second) { create(:entry_with_creator, text: 'Second Entry') }
-    let!(:first) { create(:entry_with_creator, text: 'First Entry') }
+    let!(:fourth) { create(:entry_with_creator, text: '4th Entry') }
+    let!(:third) { create(:entry_with_creator, text: '3rd Entry') }
+    let!(:second) { create(:entry_with_creator, text: '2nd Entry') }
+    let!(:first) { create(:entry_with_creator, text: '1st Entry') }
 
     it 'returns JSON and sorted by text' do
       get :index, format: :json
       # look_like_json found in support/matchers/json_matchers.rb
       expect(response).to have_http_status(:success)
       expect(response.body).to look_like_json
-      order = [first.id, second.id, third.id]
+      order = [first.id, second.id, third.id, fourth.id]
       expect(assigns(:records).pluck('id')).to match(order)
     end
 
     it 'handles date range' do
+      fourth.created_at = 15.days.ago
+      fourth.save
       third.created_at = 10.days.ago
       third.save
       second.created_at = 5.days.ago
       second.save
 
+      # From only
       get :index, from: 6.days.ago, format: :json
       expect(assigns(:records).length).to eq(2)
-      expect(assigns(:records).include?(third)).to be_falsy
+      order = [first.id, second.id]
+      expect(assigns(:records).pluck('id')).to match(order)
+
+      # To only
+      get :index, to: 6.days.ago, format: :json
+      expect(assigns(:records).length).to eq(2)
+      order = [third.id, fourth.id]
+      expect(assigns(:records).pluck('id')).to match(order)
+
+      # To and from
+      get :index, from: 12.days.ago, to: 3.days.ago, format: :json
+      expect(assigns(:records).length).to eq(2)
+      order = [second.id, third.id]
+      expect(assigns(:records).pluck('id')).to match(order)
     end
 
   end

@@ -23,15 +23,15 @@ Rails.application.routes.draw do
       resources :tutorial_groups, except: exc_new_edit, constraints: uuid_constraints
 
       resources :users, except: exc_new_edit, constraints: uuid_constraints do
-        resources :entries, to: 'users#entries', only: :index
-        resources :contributions, to: 'users#contributions', only: :index 
+        resources :entries, to: 'users#entries', only: :index, parent: :users
+        resources :contributions, to: 'users#contributions', only: :index, parent: :users
       end
 
       resources :people, except: exc_new_edit, constraints: uuid_constraints
 
       resources :entries, except: exc_new_edit, constraints: uuid_constraints do
-        resource :author, to: 'entries#author', only: :show
-        resources :contributors, to: 'entries#contributors', only: :index
+        resource :author, to: 'entries#author', only: :show, parent: :entries
+        resources :contributors, to: 'entries#contributors', only: :index, parent: :entries
       end
 
     end
