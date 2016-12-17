@@ -6,23 +6,7 @@ class Blog::V1::UsersController < Clearance::UsersController
 
   respond_to :json
 
-  ###
-  # Standard CRUD Ops overrides
-  ###
-  def create
-    @record = User.new permitted_params
-
-    if @record.valid? and @record.save
-      respond_with :blog, :v1, @record
-    else
-      render :json => {errors: @record.errors}, :status => 422
-    end
-  end
-
-  ###
-  # End standard CRUD Ops overrides
-  ###
-
+  
   ###
   # Association methods
   ###

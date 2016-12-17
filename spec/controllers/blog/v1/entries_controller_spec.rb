@@ -66,6 +66,26 @@ RSpec.describe Blog::V1::EntriesController do
       expect(assigns(:records).pluck('id')).to match(order)
     end
 
+    it 'pages records' do
+      # count only
+      get :index, count: 2, format: :json
+      expect(assigns(:records).length).to eq(2)
+      order = [first.id, second.id]
+      expect(assigns(:records).pluck('id')).to match(order)
+
+      # start only
+      get :index, start: 2, format: :json
+      expect(assigns(:records).length).to eq(2)
+      order = [third.id, fourth.id]
+      expect(assigns(:records).pluck('id')).to match(order)
+
+      # count andd start
+      get :index, start: 1, count: 2, format: :json
+      expect(assigns(:records).length).to eq(2)
+      order = [second.id, third.id]
+      expect(assigns(:records).pluck('id')).to match(order)
+    end
+
   end
 
   # Tests for SHOW route
@@ -110,7 +130,6 @@ RSpec.describe Blog::V1::EntriesController do
     # Allow travel to be shared across all tests
     let!(:admin) { create(:user) }
     let!(:entry) { create(:entry_with_creator) }
-    let!(:current) { Entry.count }
 
     before do
       sign_in_as admin
@@ -122,6 +141,7 @@ RSpec.describe Blog::V1::EntriesController do
     end
 
     it "succeeds" do
+      current = Entry.count
       entry.remove = true
       entry.save
       delete :destroy, id: entry.id, format: :json

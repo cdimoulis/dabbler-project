@@ -30,9 +30,9 @@ RSpec.describe Entry, type: :model do
 
     it 'requires a valid author' do
       entry = build(:entry_without_author)
-      expect(entry.save).to be_falsy
+      expect(entry.valid?).to be_falsy
       entry.author_id = "52af11a3-0527-454e-bab2-ded1dcdb4ac7"
-      expect(entry.save).to be_falsy
+      expect(entry.valid?).to be_falsy
     end
   end
 

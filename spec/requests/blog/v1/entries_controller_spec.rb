@@ -3,16 +3,28 @@ require 'rails_helper'
 RSpec.describe Blog::V1::EntriesController do
   include RequestSpecHelper
 
+  context '#author' do
+    let!(:author_a) { create(:user, email: 'a@dabbler.fyi') }
+    let!(:author_b) { create(:user, email: 'b@dabbler.fyi') }
+    let!(:entry) { create(:entry_with_creator, author: author_a) }
+    let(:author_via_entry_path) { blog_v1_entry_author_path(entry_id: entry.id) }
+
+    it 'returns correct author for entry' do
+      get author_via_entry_path, format: :json
+      expect(assigns(:record)).to eq(author_a)
+    end
+
+  end
+
   context '#contributors' do
     let!(:entry) { create(:entry_with_creator) }
+    let!(:contributor_a) { create(:user, email: 'a@dabbler.fyi') }
+    let!(:contributor_b) { create(:user, email: 'b@dabbler.fyi') }
+    let!(:contributor_c) { create(:user, email: 'c@dabbler.fyi') }
+    let!(:contributor_d) { create(:user, email: 'd@dabbler.fyi') }
     let(:contributors_via_entry_path) { blog_v1_entry_contributors_path(entry_id: entry.id) }
 
-    it 'returns correct entries for author' do
-      contributor_a = create(:user, email: 'a@dabbler.fyi')
-      contributor_b = create(:user, email: 'b@dabbler.fyi')
-      contributor_c = create(:user, email: 'c@dabbler.fyi')
-      contributor_d = create(:user, email: 'd@dabbler.fyi')
-
+    it 'returns correct contributors for entry' do
       entry.contributors << contributor_a
       entry.contributors << contributor_b
       entry.contributors << contributor_c
@@ -21,6 +33,19 @@ RSpec.describe Blog::V1::EntriesController do
       order = [contributor_a.id, contributor_b.id, contributor_c.id]
       expect(assigns(:records).pluck('id')).to match(order)
     end
+
+    it 'pages contributors of entries' do
+      entry.contributors << contributor_a
+      entry.contributors << contributor_b
+      entry.contributors << contributor_c
+      entry.contributors << contributor_d
+
+      get contributors_via_entry_path, start: 1, count: 2, format: :json
+      order = [contributor_b.id, contributor_c.id]
+      expect(assigns(:records).pluck('id')).to match(order)
+    end
   end
+
+
 
 end
