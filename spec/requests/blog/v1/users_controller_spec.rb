@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe User do
+RSpec.describe Blog::V1::UsersController do
   include RequestSpecHelper
 
   context '#entries' do
