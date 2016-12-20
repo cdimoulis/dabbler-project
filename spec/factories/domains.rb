@@ -31,7 +31,7 @@ FactoryGirl.define do
       after(:create) do |domain, evaluator|
         # Domain Group names must be different within same domain
         (1..evaluator.domain_groups_count).step(1) do |i|
-          create(:domain_group, text: "#{domain.text} #{i} Group", domain: domain)
+          create(:published_group, text: "#{domain.text} #{i} Group", domain: domain)
         end
       end
     end

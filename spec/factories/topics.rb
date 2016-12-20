@@ -18,12 +18,12 @@ FactoryGirl.define do
     text { "Topic #{Topic.count + 1}" }
     description { "#{text} test topic" }
     domain { create(:domain) }
-    group { create(:domain_group, domain: domain) }
+    group { create(:published_group, domain: domain) }
     creator { create(:user) }
 
     factory :topic_without_domain do
       domain nil
-      group { create(:domain_group) }
+      group { create(:published_group) }
     end
 
     factory :topic_without_group do

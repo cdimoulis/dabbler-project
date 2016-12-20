@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Blog::V1::DomainGroupsController do
+RSpec.describe Blog::V1::PublishedGroupsController do
 
   # tests for CREATE route
   context "#create" do
@@ -14,18 +14,18 @@ RSpec.describe Blog::V1::DomainGroupsController do
     end
 
     it 'succeeds' do
-      current = DomainGroup.count
-      domain_group = build(:domain_group)
-      post :create, domain_group: domain_group.attributes, format: :json
+      current = PublishedGroup.count
+      published_group = build(:published_group)
+      post :create, published_group: published_group.attributes, format: :json
       expect(response).to have_http_status(:success)
-      expect(DomainGroup.count).to eq(current+1)
+      expect(PublishedGroup.count).to eq(current+1)
     end
 
   end
 
   # Tests for INDEX route
   context "#index" do
-    let!(:fly) {create(:domain_group, text: 'Fly Group')}
+    let!(:fly) {create(:published_group, text: 'Fly Group')}
     let!(:hotel) {create(:tutorial_group, text: 'Hotel Group')}
 
     before do
@@ -41,7 +41,7 @@ RSpec.describe Blog::V1::DomainGroupsController do
   # Tests for SHOW route
   context "#show" do
     # Allow travel to be shared across all tests
-    let!(:fly) { create(:domain_group, text: "Fly Group") }
+    let!(:fly) { create(:published_group, text: "Fly Group") }
 
     # Before running a test do this
     before do

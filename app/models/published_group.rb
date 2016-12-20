@@ -11,14 +11,7 @@
 #  updated_at  :datetime         not null
 #
 
-require "rails_helper"
+class PublishedGroup < Group
 
-RSpec.describe DomainGroup do
 
-  context 'inheritance' do
-    it 'type is correct' do
-      domain_group = create(:domain_group)
-      expect(domain_group.type).to eq('DomainGroup')
-    end
-  end
 end
