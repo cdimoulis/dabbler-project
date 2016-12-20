@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe User do
+RSpec.describe Blog::V1::PeopleController do
   include RequestSpecHelper
 
   context '#create while signed in' do

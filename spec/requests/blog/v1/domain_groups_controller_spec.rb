@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe DomainGroup do
+RSpec.describe Blog::V1::DomainGroupsController do
   include RequestSpecHelper
 
   # Test nested creates

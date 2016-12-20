@@ -8,9 +8,9 @@ module DefaultApiActions
     # TODO: Authorization
     #   Need to authorize when USERS are added
     resource_name, resource_id, parent_name, parent_id = getResources()
-    resource = resource_name.classify.constantize
+    @resource = resource_name.classify.constantize
     begin
-      @record = resource.new permitted_params
+      @record = @resource.new permitted_params
       # If there is a parent then add that model to the
       if !parent_name.nil? and !parent_id.nil?
         # Try block in case parent_name is not a model class
@@ -25,23 +25,28 @@ module DefaultApiActions
       end
 
       if errors.nil?
+        # If HasCreator is included then add creator
+        if self.class.included_modules.include?(HasCreator)
+          add_creator()
+        end
+
         if @record.valid? and @record.save
           respond_with :blog, :v1, @record
         else
-          puts "\n\nCould not create #{resource} record.\n#{@record.errors.inspect}\n\n"
-          Rails.logger.debug "\n\nCould not create #{resource} record.\n#{@record.errors.inspect}\n\n"
+          puts "\n\nCould not create #{@resource} record.\n#{@record.errors.inspect}\n\n"
+          Rails.logger.debug "\n\nCould not create #{@resource} record.\n#{@record.errors.inspect}\n\n"
           render :json => {errors: @record.errors}, :status => 422
         end
       else
-        puts "\n\nCould not create #{resource} record.\n#{errors.inspect}\n\n"
-        Rails.logger.debug "\n\nCould not create #{resource} record.\n#{errors.inspect}\n\n"
+        puts "\n\nCould not create #{@resource} record.\n#{errors.inspect}\n\n"
+        Rails.logger.debug "\n\nCould not create #{@resource} record.\n#{errors.inspect}\n\n"
         render :json => {errors: errors}, :status => 422
       end
 
     # No model data sent
     rescue ActionController::ParameterMissing => e
-      puts "\n\nCould not create #{resource} record.\nNo attributes specified\n#{e.inspect}\n\n"
-      Rails.logger.debug "\n\nCould not create #{resource} record.\nNo attributes specified\n#{e.inspect}\n\n"
+      puts "\n\nCould not create #{@resource} record.\nNo attributes specified\n#{e.inspect}\n\n"
+      Rails.logger.debug "\n\nCould not create #{@resource} record.\nNo attributes specified\n#{e.inspect}\n\n"
       render :json => {}, :status => 422
     end
   end
@@ -68,23 +73,23 @@ module DefaultApiActions
             errors = {msg: "Parent #{parent_name} does not respond to #{resource_name}"}
           end
         else
-          errors = {msn: "Invalid Parent: #{parent_name} of id #{parent_id} does not exist."}
+          errors = {msg: "Invalid Parent: #{parent_name} of id #{parent_id} does not exist."}
         end
       rescue NameError => e
         errors = {msg: "Invalid parent: #{parent_name}", error: "#{e}"}
       end
     else
-      resource = resource_name.classify.constantize
-      @records = resource.all
+      @resource = resource_name.classify.constantize
+      @records = @resource.all
     end
 
     # If from or to then grab by date
-    if respond_to?(:dateRangeRecords) && ( params.has_key?(:from) || params.has_key?(:to) )
+    if self.class.included_modules.include?(DateRange) && ( params.has_key?(:from) || params.has_key?(:to) )
       dateRangeRecords()
     end
 
     # If count or start Page records
-    if respond_to?(:pageRecords) && ( params.has_key?(:count) || params.has_key?(:start) )
+    if self.class.included_modules.include?(PageRecords) && ( params.has_key?(:count) || params.has_key?(:start) )
       pageRecords()
     end
 
@@ -98,9 +103,9 @@ module DefaultApiActions
 
   def show
     resource_name, resource_id = getResources()
-    resource = resource_name.classify.constantize
+    @resource = resource_name.classify.constantize
 
-    @record = resource.where("id = ?", resource_id).take
+    @record = @resource.where("id = ?", resource_id).take
     if @record.nil?
       render :json => {}, :status => 404
     else
@@ -113,9 +118,9 @@ module DefaultApiActions
     # TODO: Authorization
     #   Need to authorize when USERS are added
     resource_name, resource_id = getResources()
-    resource = resource_name.classify.constantize
+    @resource = resource_name.classify.constantize
 
-    @record = resource.where("id = ?", resource_id).take
+    @record = @resource.where("id = ?", resource_id).take
     if @record.update(permitted_params)
       respond_with :blog, :v1, @record
     else
@@ -146,11 +151,11 @@ module DefaultApiActions
   # Unused actions
   ###
   def new
-    render :json => {  }, :status => 405
+    render :json => {}, :status => 405
   end
 
   def edit
-    render :json => {  }, :status => 405
+    render :json => {}, :status => 405
   end
   ###
   # End Unused actions

@@ -31,6 +31,8 @@ class User < ApplicationRecord
   attr_accessor :password_confirmation
 
   belongs_to :person, dependent: :destroy
+  has_many :entries, foreign_key: :author_id
+  has_and_belongs_to_many :contributions, class_name: 'Entry'
 
   before_create :create_person
   after_create :send_new_user_email
@@ -97,6 +99,10 @@ class User < ApplicationRecord
       person.twitter_screen_name = self.twitter_screen_name
       person.instagram_id = self.instagram_id
       person.instagram_username = self.instagram_username
+
+      if !User.current.nil?
+        person.creator_id = User.current.id
+      end
 
       if person.valid? and person.save
         @person = person

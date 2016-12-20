@@ -32,7 +32,7 @@ RSpec.describe Blog::V1::DomainGroupsController do
       get :index, format: :json
     end
 
-    it 'returns records of proper type' do
+    it 'returns only records of proper type' do
       expect(assigns(:records).length).to eq(1)
     end
 

@@ -20,8 +20,8 @@ FactoryGirl.define do
     description { "#{text.sub(' Group','')} domain group" }
     domain { create(:domain, text: "#{text.sub(' Group','')}" ) }
     type "DomainGroup"
-    created_at { DateTime.now.to_date.to_time }
-    updated_at { DateTime.now.to_date.to_time }
+    # created_at { DateTime.now.to_date.to_time }
+    # updated_at { DateTime.now.to_date.to_time }
   end
 
 end

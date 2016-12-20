@@ -46,7 +46,7 @@ RSpec.describe Blog::V1::DomainsController do
   # Tests for SHOW route
   context "#show" do
     # Allow travel to be shared across all tests
-    let!(:travel) {create(:domain, text: "Travel")}
+    let!(:travel) { create(:domain, text: "Travel") }
 
     # Before running a test do this
     before do
@@ -71,7 +71,7 @@ RSpec.describe Blog::V1::DomainsController do
     end
 
     # Allow travel to be shared across all tests
-    let!(:code) {create(:domain, text: "Code")}
+    let!(:code) { create(:domain, text: "Code") }
 
     it "succeeds" do
       update_params = {description: "Programming related entries"}

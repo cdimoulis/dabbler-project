@@ -6,23 +6,52 @@ class Blog::V1::UsersController < Clearance::UsersController
 
   respond_to :json
 
+  
   ###
-  # Standard CRUD Ops overrides
+  # Association methods
   ###
-  def create
-    @record = User.new permitted_params
 
-    if @record.valid? and @record.save
-      respond_with :blog, :v1, @record
+  # Get the entries this user is author of
+  def entries
+    user_id = params[:user_id]
+    user = User.where('id = ?', user_id).take
+
+    if user.nil?
+      render :json => {}, :status => 404
     else
-      render :json => {errors: @record.errors}, :status => 422
+      @records = user.entries
+
+      # Page the records if desired
+      if params.has_key?(:count) || params.has_key?(:start)
+        pageRecords()
+      end
+
+      respond_with :blog, :v1, @records
+    end
+  end
+
+  # Get the entries this user is a contributor of
+  def contributions
+    user_id = params[:user_id]
+    user = User.where('id = ?', user_id).take
+
+    if user.nil?
+      render :json => {}, :status => 404
+    else
+      @records = user.contributions
+
+      # Page the records if desired
+      if params.has_key?(:count) || params.has_key?(:start)
+        pageRecords()
+      end
+
+      respond_with :blog, :v1, @records
     end
   end
 
   ###
-  # End standard CRUD Ops overrides
+  # End Association methods
   ###
-
 
   protected
 

@@ -19,14 +19,13 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  # pending "Admin tests"
 
   context 'associations' do
     it { is_expected.to belong_to(:person) }
   end
 
   context '.save' do
-    it 'suceeds' do
+    it 'succeeds' do
       user = build(:user)
       expect(user.save).to be_truthy
     end

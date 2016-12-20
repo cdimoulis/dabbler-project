@@ -3,10 +3,17 @@ class Blog::V1::DomainsController < Blog::V1::BlogController
 
   respond_to :json
 
+  ###
+  # Standard CRUD Ops overrides
+  ###
 
   def destroy
     render :json => {  }, :status => 405
   end
+
+  ###
+  # End standard CRUD Ops overrides
+  ###
 
 
   protected

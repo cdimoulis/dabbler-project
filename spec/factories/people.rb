@@ -47,8 +47,8 @@ FactoryGirl.define do
     country "United States"
     postal_code "60061"
     # creator_id => Add when admin association is ready
-    created_at { DateTime.now.to_date.to_time }
-    updated_at { DateTime.now.to_date.to_time }
+    # created_at { DateTime.now.to_date.to_time }
+    # updated_at { DateTime.now.to_date.to_time }
 
   end
 end
