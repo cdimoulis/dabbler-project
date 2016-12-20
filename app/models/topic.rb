@@ -13,6 +13,8 @@
 #
 
 class Topic < ApplicationRecord
+  
+  default_scope { order(text: :asc) }
 
   belongs_to :domain
   belongs_to :group

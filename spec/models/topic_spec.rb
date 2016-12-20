@@ -46,6 +46,21 @@ RSpec.describe Topic, type: :model do
       expect(topic.valid?).to be_truthy
       expect(topic.domain_id).to eq(topic.group.domain_id)
     end
+
+    it 'does not allow duplicate text {scoped => :group}' do
+      group = create(:group)
+      topic_a = create(:topic, text: "My Topic", group: group, domain_id: group.domain_id)
+      topic_b = build(:topic, text: "My Topic", group: group, domain_id: group.domain_id)
+      expect(topic_b.valid?).to be_falsy
+    end
+
+    it 'allows duplicate text with different group' do
+      group_a = create(:group)
+      group_b = create(:group)
+      topic_a = create(:topic, text: "My Topic", group: group_a, domain_id: group_a.domain_id)
+      topic_b = build(:topic, text: "My Topic", group: group_b, domain_id: group_b.domain_id)
+      expect(topic_b.valid?).to be_truthy
+    end
   end
 
 end

@@ -18,11 +18,19 @@ Rails.application.routes.draw do
       end
 
       # We will not create a group without it being DomainGroup or TutorialGroup
-      resources :groups, except: (exc_new_edit + [:create]), constraints: uuid_constraints
+      resources :groups, except: (exc_new_edit + [:create]), constraints: uuid_constraints do
+        resources :topics, except: exc_new_edit, constraints: uuid_constraints
+      end
 
-      resources :published_groups, except: exc_new_edit, constraints: uuid_constraints
+      resources :published_groups, except: exc_new_edit, constraints: uuid_constraints do
+        resources :topics, except: exc_new_edit, constraints: uuid_constraints
+      end
 
-      resources :tutorial_groups, except: exc_new_edit, constraints: uuid_constraints
+      resources :tutorial_groups, except: exc_new_edit, constraints: uuid_constraints do
+        resources :topics, except: exc_new_edit, constraints: uuid_constraints
+      end
+
+      resources :topics, except: exc_new_edit, constraints: uuid_constraints
 
       resources :users, except: exc_new_edit, constraints: uuid_constraints do
         resources :entries, to: 'users#entries', only: :index, parent: :users
