@@ -15,7 +15,8 @@ class Domain < ApplicationRecord
 
   default_scope { order(text: :asc) }
 
-  has_many :domain_groups
+  has_many :groups
+  has_many :topics
 
   validates :text, :subdomain, presence: true, uniqueness: true
 

@@ -17,6 +17,7 @@ RSpec.describe Group do
 
   context 'associations' do
     it { is_expected.to belong_to(:domain) }
+    it { is_expected.to have_many(:topics) }
   end
 
   context '.save' do

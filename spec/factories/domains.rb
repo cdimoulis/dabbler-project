@@ -16,12 +16,10 @@
 FactoryGirl.define do
 
   factory :domain do
-    text "Test"
-    description { "#{text} domain" }
+    text { "Domain #{Domain.count + 1}" }
+    description { "#{text} test domain" }
     subdomain { text.downcase }
     active true
-    # created_at { DateTime.now.to_date.to_time }
-    # updated_at { DateTime.now.to_date.to_time }
 
     # Domain with :domain_groups populated
     factory :domain_with_groups do

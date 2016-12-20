@@ -16,7 +16,8 @@ require "rails_helper"
 RSpec.describe Domain do
 
   context 'associations' do
-    it { is_expected.to have_many(:domain_groups) }
+    it { is_expected.to have_many(:groups) }
+    it { is_expected.to have_many(:topics) }
   end
 
   context '.save' do
