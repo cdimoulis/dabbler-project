@@ -13,11 +13,13 @@
 #
 
 class Topic < ApplicationRecord
-  
+
   default_scope { order(text: :asc) }
 
   belongs_to :domain
   belongs_to :group
+  belongs_to :tutorial_group, class_name: 'Group'
+  belongs_to :published_group, class_name: 'Group'
   belongs_to :creator, class_name: "User"
 
   before_validation :set_domain_id, if: "domain_id.nil?"

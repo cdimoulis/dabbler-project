@@ -12,7 +12,7 @@ Rails.application.routes.draw do
   #####
   namespace :blog do
     namespace :v1 do
-      resources :domains, except: (exc_new_edit + [:destroy]), constraints: uuid_constraints do
+      resources :domains, except: exc_new_edit + [:destroy], constraints: uuid_constraints do
         resources :groups, except: exc_new_edit, parent: :domains
         resources :published_groups, except: exc_new_edit, parent: :domains
         resources :tutorial_groups, except: exc_new_edit, parent: :domains
@@ -20,8 +20,8 @@ Rails.application.routes.draw do
       end
 
       # We will not create a group without it being DomainGroup or TutorialGroup
-      resources :groups, except: (exc_new_edit + [:create]), constraints: uuid_constraints do
-        resources :topics, except: exc_new_edit, parent: :groups
+      resources :groups, except: exc_new_edit + [:create], constraints: uuid_constraints do
+        resources :topics, except: exc_new_edit + [:update], parent: :groups
       end
 
       resources :published_groups, except: exc_new_edit, constraints: uuid_constraints do

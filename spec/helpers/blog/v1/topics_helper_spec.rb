@@ -11,5 +11,5 @@ require 'rails_helper'
 #   end
 # end
 RSpec.describe Blog::V1::TopicsHelper, type: :helper do
-  pending "add some examples to (or delete) #{__FILE__}"
+  # pending "add some examples to (or delete) #{__FILE__}"
 end
