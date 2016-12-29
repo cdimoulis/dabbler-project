@@ -25,11 +25,12 @@ Rails.application.routes.draw do
       end
 
       resources :published_groups, except: exc_new_edit, constraints: uuid_constraints do
-        resources :topics, except: exc_new_edit + exc_create_update, parent: :published_groups
+        # resources :topics, except: exc_new_edit + exc_create_update, parent: :published_groups
+        resources :topics, except: exc_new_edit + [:update], parent: :published_groups
       end
 
       resources :tutorial_groups, except: exc_new_edit, constraints: uuid_constraints do
-        resources :topics, except: exc_new_edit + exc_create_update, parent: :tutorial_groups
+        resources :topics, except: exc_new_edit + [:update], parent: :tutorial_groups
       end
 
       resources :topics, except: exc_new_edit, constraints: uuid_constraints

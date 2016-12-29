@@ -17,10 +17,27 @@ RSpec.describe Blog::V1::TopicsController do
       full_sign_out
     end
 
-    it "succeeds via groups" do
+    it "succeeds via group" do
       group = create(:group, domain: domain)
-      topic.group_id = group.id
       route = blog_v1_group_topics_path(group_id: group.id)
+      post route, topic: topic.attributes, format: :json
+      expect(response).to have_http_status(:success)
+      expect(domain.topics.count).to eq(1)
+      expect(Topic.first.group.id).to eq(group.id)
+    end
+
+    it "succeeds via published_group" do
+      group = create(:published_group, domain: domain)
+      route = blog_v1_published_group_topics_path(published_group_id: group.id)
+      post route, topic: topic.attributes, format: :json
+      expect(response).to have_http_status(:success)
+      expect(domain.topics.count).to eq(1)
+      expect(Topic.first.group.id).to eq(group.id)
+    end
+
+    it "succeeds via tutorial_group" do
+      group = create(:tutorial_group, domain: domain)
+      route = blog_v1_tutorial_group_topics_path(tutorial_group_id: group.id)
       post route, topic: topic.attributes, format: :json
       expect(response).to have_http_status(:success)
       expect(domain.topics.count).to eq(1)
