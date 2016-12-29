@@ -8,6 +8,8 @@
 #  author_id         :uuid             not null
 #  default_image_url :string
 #  content           :text             not null
+#  updated_entry_id  :uuid
+#  locked            :boolean          default(FALSE)
 #  remove            :boolean          default(FALSE)
 #  creator_id        :uuid             not null
 #  created_at        :datetime         not null
