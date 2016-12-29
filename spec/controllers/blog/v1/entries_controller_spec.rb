@@ -123,6 +123,17 @@ RSpec.describe Blog::V1::EntriesController do
       expect(response).to have_http_status(:success)
       expect(assigns(:record).description).to eq(update_params[:description])
     end
+
+    it "creates new when locked" do
+      entry.locked = true
+      entry.save
+      update_params = {description: "Some new information"}
+      put :update, id: entry.id, entry: update_params, format: :json
+      entry.reload
+      expect(response).to have_http_status(:success)
+      expect(assigns(:record).description).to eq(update_params[:description])
+      expect(entry.updated_entry_id).to eq(assigns(:record).id)
+    end
   end
 
   # Test for UPDATE route

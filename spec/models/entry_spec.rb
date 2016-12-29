@@ -22,6 +22,23 @@ RSpec.describe Entry, type: :model do
 
   context 'associations' do
     it { is_expected.to belong_to(:author) }
+    it { is_expected.to belong_to(:updated_entry) }
+    it { is_expected.to have_one(:previous_entry) }
+
+    it 'associates updated entries' do
+      entry_a = create(:entry_with_creator)
+      entry_b = create(:entry_with_creator)
+      entry_c = create(:entry_with_creator)
+      entry_c.updated_entry = entry_b
+      entry_c.save
+      entry_b.updated_entry = entry_a
+      entry_b.save
+      expect(entry_a.updated_entry).to eq(nil)
+      expect(entry_a.previous_entry).to eq(entry_b)
+      expect(entry_b.updated_entry_id).to eq(entry_a.id)
+      expect(entry_b.previous_entry).to eq(entry_c)
+      expect(entry_c.updated_entry_id).to eq(entry_b.id)
+    end
   end
 
   context '.save' do

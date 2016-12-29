@@ -23,6 +23,8 @@ class Entry < ApplicationRecord
   belongs_to :author, class_name: 'User'
   belongs_to :creator, class_name: 'User'
   has_and_belongs_to_many :contributors, class_name: 'User'
+  belongs_to :updated_entry, class_name: 'Entry', foreign_key: 'updated_entry_id'
+  has_one :previous_entry, class_name: 'Entry', foreign_key: 'updated_entry_id'
 
   validates :text, :author_id, :content, presence: true
   validate :author_exists
