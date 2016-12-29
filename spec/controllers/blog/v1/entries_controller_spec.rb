@@ -132,6 +132,7 @@ RSpec.describe Blog::V1::EntriesController do
       entry.reload
       expect(response).to have_http_status(:success)
       expect(assigns(:record).description).to eq(update_params[:description])
+      expect(assigns(:record).text).to eq(entry.text)
       expect(entry.updated_entry_id).to eq(assigns(:record).id)
     end
   end
