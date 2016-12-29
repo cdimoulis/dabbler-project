@@ -25,7 +25,7 @@ RSpec.describe Blog::V1::TutorialGroupsController do
 
   # Tests for INDEX route
   context "#index" do
-    let!(:fly) {create(:domain_group, text: 'Fly Group')}
+    let!(:fly) {create(:published_group, text: 'Fly Group')}
     let!(:hotel) {create(:tutorial_group, text: 'Hotel Group')}
 
     before do

@@ -17,6 +17,7 @@ RSpec.describe Group do
 
   context 'associations' do
     it { is_expected.to belong_to(:domain) }
+    it { is_expected.to have_many(:topics) }
   end
 
   context '.save' do
@@ -39,7 +40,7 @@ RSpec.describe Group do
 
     it 'allows duplicate text (separate type)' do
       travel = create(:domain, text: "Travel")
-      group = create(:domain_group, text: 'Test Group', domain: travel)
+      group = create(:published_group, text: 'Test Group', domain: travel)
       duplicate_text = build(:tutorial_group, text: 'Test Group', domain: travel)
       expect(duplicate_text.save).to be_truthy
     end

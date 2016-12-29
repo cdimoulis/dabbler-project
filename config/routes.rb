@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   # root 'welcome#index'
   uuid_constraints = { id: /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i }
   exc_new_edit = [:new, :edit]
+  exc_create_update = [:create, :update]
 
   root "main#index"
 
@@ -11,16 +12,28 @@ Rails.application.routes.draw do
   #####
   namespace :blog do
     namespace :v1 do
-      resources :domains, except: (exc_new_edit + [:destroy]), constraints: uuid_constraints do
-        resources :domain_groups, except: exc_new_edit, parent: :domains
+      resources :domains, except: exc_new_edit + [:destroy], constraints: uuid_constraints do
+        resources :groups, except: exc_new_edit, parent: :domains
+        resources :published_groups, except: exc_new_edit, parent: :domains
+        resources :tutorial_groups, except: exc_new_edit, parent: :domains
+        resources :topics, except: exc_new_edit + exc_create_update, parent: :domains
       end
 
       # We will not create a group without it being DomainGroup or TutorialGroup
-      resources :groups, except: (exc_new_edit + [:create]), constraints: uuid_constraints
+      resources :groups, except: exc_new_edit + [:create], constraints: uuid_constraints do
+        resources :topics, except: exc_new_edit + [:update], parent: :groups
+      end
 
-      resources :domain_groups, except: exc_new_edit, constraints: uuid_constraints
+      resources :published_groups, except: exc_new_edit, constraints: uuid_constraints do
+        # resources :topics, except: exc_new_edit + exc_create_update, parent: :published_groups
+        resources :topics, except: exc_new_edit + [:update], parent: :published_groups
+      end
 
-      resources :tutorial_groups, except: exc_new_edit, constraints: uuid_constraints
+      resources :tutorial_groups, except: exc_new_edit, constraints: uuid_constraints do
+        resources :topics, except: exc_new_edit + [:update], parent: :tutorial_groups
+      end
+
+      resources :topics, except: exc_new_edit, constraints: uuid_constraints
 
       resources :users, except: exc_new_edit, constraints: uuid_constraints do
         resources :entries, to: 'users#entries', only: :index, parent: :users

@@ -15,10 +15,10 @@
 FactoryGirl.define do
 
   factory :tutorial_group do
-    text "Test Tutorial Group"
-    description { "#{text.sub(' Group','')} domain group" }
+    text { "Tutorial Group #{TutorialGroup.count} " }
+    description { "#{text.sub(' Group','')} test tutorial group" }
     created_at { DateTime.now.to_date.to_time }
     updated_at { DateTime.now.to_date.to_time }
-    domain { create(:domain, text: "#{text.sub(' Group','')}" ) }
+    domain { create(:domain) }
   end
 end

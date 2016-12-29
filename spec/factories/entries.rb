@@ -17,7 +17,7 @@
 FactoryGirl.define do
 
   factory :entry do
-    text 'Entry Title'
+    text { "Entry #{Entry.count + 1}" }
     description 'Some great information about stuff'
     author { create(:user) }
     content "Here is some info to know about..."

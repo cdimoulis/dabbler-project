@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161214185136) do
+ActiveRecord::Schema.define(version: 20161220012154) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -94,6 +94,22 @@ ActiveRecord::Schema.define(version: 20161214185136) do
   end
 
   add_index "people", ["creator_id"], name: "index_people_on_creator_id", using: :btree
+
+  create_table "topics", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
+    t.string   "text",        null: false
+    t.text     "description"
+    t.uuid     "domain_id",   null: false
+    t.uuid     "group_id",    null: false
+    t.uuid     "creator_id",  null: false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  add_index "topics", ["creator_id"], name: "index_topics_on_creator_id", using: :btree
+  add_index "topics", ["domain_id"], name: "index_topics_on_domain_id", using: :btree
+  add_index "topics", ["group_id"], name: "index_topics_on_group_id", using: :btree
+  add_index "topics", ["text", "group_id"], name: "index_topics_on_text_and_group_id", unique: true, using: :btree
+  add_index "topics", ["text"], name: "index_topics_on_text", using: :btree
 
   create_table "users", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
     t.string   "email",                          null: false

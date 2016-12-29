@@ -16,24 +16,37 @@
 FactoryGirl.define do
 
   factory :domain do
-    text "Test"
-    description { "#{text} domain" }
+    text { "Domain #{Domain.count + 1}" }
+    description { "#{text} test domain" }
     subdomain { text.downcase }
     active true
-    # created_at { DateTime.now.to_date.to_time }
-    # updated_at { DateTime.now.to_date.to_time }
 
-    # Domain with :domain_groups populated
+    # Domain with :published_groups populated
     factory :domain_with_groups do
       # Set the number of groups
       transient do
-        domain_groups_count 5
+        groups_count 5
       end
 
       after(:create) do |domain, evaluator|
         # Domain Group names must be different within same domain
-        (1..evaluator.domain_groups_count).step(1) do |i|
-          create(:domain_group, text: "#{domain.text} #{i} Group", domain: domain)
+        (1..evaluator.groups_count).step(1) do |i|
+          create(:published_group, text: "#{domain.text} #{i} Group", domain: domain)
+        end
+      end
+    end
+
+    # Domain with :tutorial_groups populated
+    factory :domain_with_tutorial_groups do
+      # Set the number of groups
+      transient do
+        groups_count 5
+      end
+
+      after(:create) do |domain, evaluator|
+        # Domain Group names must be different within same domain
+        (1..evaluator.groups_count).step(1) do |i|
+          create(:tutorial_group, text: "#{domain.text} #{i} Group", domain: domain)
         end
       end
     end
