@@ -135,13 +135,21 @@ RSpec.describe Blog::V1::EntriesController do
       sign_in_as admin
     end
 
+    it "succeeds if not locked" do
+      delete :destroy, id: entry.id, format: :json
+      expect(response).to have_http_status(:success)
+    end
+
     it "prevents without remove flag" do
+      entry.locked = true
+      entry.save
       delete :destroy, id: entry.id, format: :json
       expect(response).to have_http_status(422)
     end
 
     it "succeeds" do
       current = Entry.count
+      entry.locked = true
       entry.remove = true
       entry.save
       delete :destroy, id: entry.id, format: :json

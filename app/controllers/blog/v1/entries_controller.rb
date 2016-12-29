@@ -15,10 +15,14 @@ class Blog::V1::EntriesController < Blog::V1::BlogController
   def destroy
     entry_id = params[:id]
     @record = Entry.where('id = ?',entry_id).take
-    if !@record.nil? && @record.remove
+    if !@record.locked
       super
     else
-      render :json => {errors: {msg: "Entry is not flagged for removal."}}, :status => 422
+      if !@record.nil? && @record.remove
+        super
+      else
+        render :json => {errors: {msg: "Entry is not flagged for removal."}}, :status => 422
+      end
     end
   end
 
