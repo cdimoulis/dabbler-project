@@ -11,7 +11,7 @@
 #  updated_at  :datetime         not null
 #
 
-class PublishedGroup < Group
+class FeaturedGroup < Group
 
 
 end

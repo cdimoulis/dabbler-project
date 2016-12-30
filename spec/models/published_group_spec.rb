@@ -13,12 +13,12 @@
 
 require "rails_helper"
 
-RSpec.describe PublishedGroup do
+RSpec.describe FeaturedGroup do
 
   context 'inheritance' do
     it 'type is correct' do
-      domain_group = create(:published_group)
-      expect(domain_group.type).to eq('PublishedGroup')
+      domain_group = create(:featured_group)
+      expect(domain_group.type).to eq('FeaturedGroup')
     end
   end
 end

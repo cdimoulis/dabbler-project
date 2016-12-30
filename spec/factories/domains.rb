@@ -21,7 +21,7 @@ FactoryGirl.define do
     subdomain { text.downcase }
     active true
 
-    # Domain with :published_groups populated
+    # Domain with :featured_groups populated
     factory :domain_with_groups do
       # Set the number of groups
       transient do
@@ -31,7 +31,7 @@ FactoryGirl.define do
       after(:create) do |domain, evaluator|
         # Domain Group names must be different within same domain
         (1..evaluator.groups_count).step(1) do |i|
-          create(:published_group, text: "#{domain.text} #{i} Group", domain: domain)
+          create(:featured_group, text: "#{domain.text} #{i} Group", domain: domain)
         end
       end
     end

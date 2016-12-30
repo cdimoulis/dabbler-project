@@ -14,7 +14,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :domains, except: exc_new_edit + [:destroy], constraints: uuid_constraints do
         resources :groups, except: exc_new_edit, parent: :domains
-        resources :published_groups, except: exc_new_edit, parent: :domains
+        resources :featured_groups, except: exc_new_edit, parent: :domains
         resources :tutorial_groups, except: exc_new_edit, parent: :domains
         resources :topics, except: exc_new_edit + exc_create_update, parent: :domains
       end
@@ -24,9 +24,8 @@ Rails.application.routes.draw do
         resources :topics, except: exc_new_edit + [:update], parent: :groups
       end
 
-      resources :published_groups, except: exc_new_edit, constraints: uuid_constraints do
-        # resources :topics, except: exc_new_edit + exc_create_update, parent: :published_groups
-        resources :topics, except: exc_new_edit + [:update], parent: :published_groups
+      resources :featured_groups, except: exc_new_edit, constraints: uuid_constraints do
+        resources :topics, except: exc_new_edit + [:update], parent: :featured_groups
       end
 
       resources :tutorial_groups, except: exc_new_edit, constraints: uuid_constraints do

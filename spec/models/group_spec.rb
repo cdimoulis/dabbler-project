@@ -40,7 +40,7 @@ RSpec.describe Group do
 
     it 'allows duplicate text (separate type)' do
       travel = create(:domain, text: "Travel")
-      group = create(:published_group, text: 'Test Group', domain: travel)
+      group = create(:featured_group, text: 'Test Group', domain: travel)
       duplicate_text = build(:tutorial_group, text: 'Test Group', domain: travel)
       expect(duplicate_text.save).to be_truthy
     end
