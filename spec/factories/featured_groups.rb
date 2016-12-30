@@ -14,8 +14,8 @@
 #   Domain model
 FactoryGirl.define do
 
-  factory :published_group do
-    text { "Published Group #{PublishedGroup.count}" }
+  factory :featured_group do
+    text { "Featured Group #{FeaturedGroup.count}" }
     description { "#{text.sub(' Group','')} test domain group" }
     domain { create(:domain, text: "#{text.sub(' Group','')}") }
   end

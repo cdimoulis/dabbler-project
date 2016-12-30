@@ -26,9 +26,9 @@ RSpec.describe Blog::V1::TopicsController do
       expect(Topic.first.group.id).to eq(group.id)
     end
 
-    it "succeeds via published_group" do
-      group = create(:published_group, domain: domain)
-      route = blog_v1_published_group_topics_path(published_group_id: group.id)
+    it "succeeds via featured_group" do
+      group = create(:featured_group, domain: domain)
+      route = blog_v1_featured_group_topics_path(featured_group_id: group.id)
       post route, topic: topic.attributes, format: :json
       expect(response).to have_http_status(:success)
       expect(domain.topics.count).to eq(1)
@@ -70,11 +70,11 @@ RSpec.describe Blog::V1::TopicsController do
       expect(assigns(:records).pluck('id')).to match(order)
     end
 
-    it "fetches via published_group" do
+    it "fetches via featured_group" do
       group = topic.group
       topic_b = create(:topic, domain: topic.domain, group: group)
       topic_c = create(:topic)
-      route = blog_v1_published_group_topics_path(published_group_id: group.id)
+      route = blog_v1_featured_group_topics_path(featured_group_id: group.id)
       get route, format: :json
       order = [topic.id, topic_b.id]
       expect(assigns(:records).pluck('id')).to match(order)

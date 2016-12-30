@@ -16,7 +16,7 @@ class Domain < ApplicationRecord
   default_scope { order(text: :asc) }
 
   has_many :groups
-  has_many :published_groups
+  has_many :featured_groups
   has_many :tutorial_groups
   has_many :topics
 

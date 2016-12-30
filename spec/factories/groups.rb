@@ -19,7 +19,7 @@ FactoryGirl.define do
     text { "Group #{Group.count} " }
     description { "#{text} test group" }
     domain { create(:domain) }
-    type "PublishedGroup"
+    type "FeaturedGroup"
   end
 
 end

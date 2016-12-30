@@ -1,12 +1,12 @@
 require "rails_helper"
 
-RSpec.describe Blog::V1::PublishedGroupsController do
+RSpec.describe Blog::V1::FeaturedGroupsController do
   include RequestSpecHelper
 
   # Test nested creates
   context '#create' do
     let!(:travel) { create(:domain, text: 'Travel') }
-    let(:published_group_via_domain_path) { blog_v1_domain_published_groups_path(domain_id: travel.id) }
+    let(:featured_group_via_domain_path) { blog_v1_domain_featured_groups_path(domain_id: travel.id) }
     let(:create_params) { {text: "Fly Group", description: "Fly domain group"} }
     let!(:user) { create(:user) }
 
@@ -19,20 +19,20 @@ RSpec.describe Blog::V1::PublishedGroupsController do
     end
 
     it "succeeds via domain" do
-      post published_group_via_domain_path, published_group: create_params, format: :json
+      post featured_group_via_domain_path, featured_group: create_params, format: :json
       expect(response).to have_http_status(:success)
       expect(travel.groups.count).to eq(1)
-      expect(PublishedGroup.first.domain.id).to eq(travel.id)
+      expect(FeaturedGroup.first.domain.id).to eq(travel.id)
     end
   end
 
   # test nested index
   context '#index' do
     let!(:travel) { create(:domain_with_groups, text: 'Travel') }
-    let(:published_groups_via_domain_path) { blog_v1_domain_published_groups_path(domain_id: travel.id) }
+    let(:featured_groups_via_domain_path) { blog_v1_domain_featured_groups_path(domain_id: travel.id) }
 
     it "fetches via domain" do
-      get published_groups_via_domain_path, format: :json
+      get featured_groups_via_domain_path, format: :json
       expect(response).to have_http_status(:success)
       expect(travel.groups.count).to eq(5)
     end
