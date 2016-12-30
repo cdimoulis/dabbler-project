@@ -10,15 +10,39 @@ class Blog::V1::EntriesController < Blog::V1::BlogController
   ###
   # Standard CRUD Ops overrides
   ###
+  # If updating a locked entry then create a new one
+  def update
+    entry_id = params[:id]
+    entry = Entry.where('id = ?',entry_id).take
+    if !entry.locked
+      super
+    else
+      @record = entry.dup
+      @record.assign_attributes permitted_params
+      if @record.valid? && @record.save
+        entry.updated_entry = @record
+        entry.save
+        respond_with :blog, :v1, @record
+      else
+        puts "\n\nCould not update Entry record.\n#{@record.errors.inspect}\n\n"
+        Rails.logger.debug "\n\nCould not update Entry record.\n#{@record.errors.inspect}\n\n"
+        render :json => {errors: {msg: "Entry could not be updated."}}, :status => 422
+      end
+    end
+  end
 
   # Entries must be flagged removed before destroy will work
   def destroy
     entry_id = params[:id]
     @record = Entry.where('id = ?',entry_id).take
-    if !@record.nil? && @record.remove
+    if !@record.locked
       super
     else
-      render :json => {errors: {msg: "Entry is not flagged for removal."}}, :status => 422
+      if !@record.nil? && @record.remove
+        super
+      else
+        render :json => {errors: {msg: "Entry is not flagged for removal."}}, :status => 422
+      end
     end
   end
 

@@ -123,6 +123,18 @@ RSpec.describe Blog::V1::EntriesController do
       expect(response).to have_http_status(:success)
       expect(assigns(:record).description).to eq(update_params[:description])
     end
+
+    it "creates new when locked" do
+      entry.locked = true
+      entry.save
+      update_params = {description: "Some new information"}
+      put :update, id: entry.id, entry: update_params, format: :json
+      entry.reload
+      expect(response).to have_http_status(:success)
+      expect(assigns(:record).description).to eq(update_params[:description])
+      expect(assigns(:record).text).to eq(entry.text)
+      expect(entry.updated_entry_id).to eq(assigns(:record).id)
+    end
   end
 
   # Test for UPDATE route
@@ -135,13 +147,21 @@ RSpec.describe Blog::V1::EntriesController do
       sign_in_as admin
     end
 
+    it "succeeds if not locked" do
+      delete :destroy, id: entry.id, format: :json
+      expect(response).to have_http_status(:success)
+    end
+
     it "prevents without remove flag" do
+      entry.locked = true
+      entry.save
       delete :destroy, id: entry.id, format: :json
       expect(response).to have_http_status(422)
     end
 
     it "succeeds" do
       current = Entry.count
+      entry.locked = true
       entry.remove = true
       entry.save
       delete :destroy, id: entry.id, format: :json

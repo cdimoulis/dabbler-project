@@ -35,6 +35,8 @@ ActiveRecord::Schema.define(version: 20161220012154) do
     t.uuid     "author_id",                         null: false
     t.string   "default_image_url"
     t.text     "content",                           null: false
+    t.uuid     "updated_entry_id"
+    t.boolean  "locked",            default: false
     t.boolean  "remove",            default: false
     t.uuid     "creator_id",                        null: false
     t.datetime "created_at",                        null: false
@@ -44,6 +46,7 @@ ActiveRecord::Schema.define(version: 20161220012154) do
   add_index "entries", ["author_id"], name: "index_entries_on_author_id", using: :btree
   add_index "entries", ["creator_id"], name: "index_entries_on_creator_id", using: :btree
   add_index "entries", ["text"], name: "index_entries_on_text", using: :btree
+  add_index "entries", ["updated_entry_id"], name: "index_entries_on_updated_entry_id", using: :btree
 
   create_table "entries_users", id: false, force: :cascade do |t|
     t.uuid "entry_id"
