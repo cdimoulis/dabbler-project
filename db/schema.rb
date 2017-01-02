@@ -101,10 +101,9 @@ ActiveRecord::Schema.define(version: 20170102152422) do
   create_table "published_entries", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
     t.uuid     "author_id",        null: false
     t.uuid     "domain_id",        null: false
-    t.uuid     "group_id",         null: false
-    t.uuid     "topic_id",         null: false
     t.uuid     "entry_id",         null: false
     t.string   "image_url"
+    t.text     "notes"
     t.text     "tags",                          array: true
     t.uuid     "publishable_id"
     t.string   "publishable_type"
@@ -117,9 +116,7 @@ ActiveRecord::Schema.define(version: 20170102152422) do
   add_index "published_entries", ["creator_id"], name: "index_published_entries_on_creator_id", using: :btree
   add_index "published_entries", ["domain_id"], name: "index_published_entries_on_domain_id", using: :btree
   add_index "published_entries", ["entry_id"], name: "index_published_entries_on_entry_id", using: :btree
-  add_index "published_entries", ["group_id"], name: "index_published_entries_on_group_id", using: :btree
   add_index "published_entries", ["publishable_id"], name: "index_published_entries_on_publishable_id", using: :btree
-  add_index "published_entries", ["topic_id"], name: "index_published_entries_on_topic_id", using: :btree
 
   create_table "topics", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
     t.string   "text",        null: false

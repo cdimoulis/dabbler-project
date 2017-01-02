@@ -3,10 +3,9 @@ class CreatePublishedEntries < ActiveRecord::Migration
     create_table :published_entries, id: :uuid, default: "uuid_generate_v4()", force: true do |t|
       t.uuid :author_id, null: false
       t.uuid :domain_id, null: false
-      t.uuid :group_id, null: false
-      t.uuid :topic_id, null: false
       t.uuid :entry_id, null: false
       t.string :image_url
+      t.text :notes
       t.text :tags, array: true
 
       # Polymorphic associations
@@ -20,8 +19,6 @@ class CreatePublishedEntries < ActiveRecord::Migration
     add_index :published_entries, :author_id
     add_index :published_entries, :creator_id
     add_index :published_entries, :domain_id
-    add_index :published_entries, :group_id
-    add_index :published_entries, :topic_id
     add_index :published_entries, :entry_id
     add_index :published_entries, :publishable_id
   end

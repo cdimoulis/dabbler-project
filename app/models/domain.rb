@@ -20,7 +20,7 @@ class Domain < ApplicationRecord
   has_many :tutorial_groups
   has_many :topics
 
-has_many :tutorial_groups
+  has_many :tutorial_groups
   validates :text, :subdomain, presence: true, uniqueness: true
 
 end
