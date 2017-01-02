@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161220012154) do
+ActiveRecord::Schema.define(version: 20170102152422) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -97,6 +97,29 @@ ActiveRecord::Schema.define(version: 20161220012154) do
   end
 
   add_index "people", ["creator_id"], name: "index_people_on_creator_id", using: :btree
+
+  create_table "published_entries", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
+    t.uuid     "author_id",        null: false
+    t.uuid     "domain_id",        null: false
+    t.uuid     "group_id",         null: false
+    t.uuid     "topic_id",         null: false
+    t.uuid     "entry_id",         null: false
+    t.string   "image_url"
+    t.text     "tags",                          array: true
+    t.uuid     "publishable_id"
+    t.string   "publishable_type"
+    t.uuid     "creator_id",       null: false
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
+  end
+
+  add_index "published_entries", ["author_id"], name: "index_published_entries_on_author_id", using: :btree
+  add_index "published_entries", ["creator_id"], name: "index_published_entries_on_creator_id", using: :btree
+  add_index "published_entries", ["domain_id"], name: "index_published_entries_on_domain_id", using: :btree
+  add_index "published_entries", ["entry_id"], name: "index_published_entries_on_entry_id", using: :btree
+  add_index "published_entries", ["group_id"], name: "index_published_entries_on_group_id", using: :btree
+  add_index "published_entries", ["publishable_id"], name: "index_published_entries_on_publishable_id", using: :btree
+  add_index "published_entries", ["topic_id"], name: "index_published_entries_on_topic_id", using: :btree
 
   create_table "topics", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
     t.string   "text",        null: false

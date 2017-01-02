@@ -7,11 +7,13 @@ class CreatePublishedEntries < ActiveRecord::Migration
       t.uuid :topic_id, null: false
       t.uuid :entry_id, null: false
       t.string :image_url
-      t.array :tags
+      t.text :tags, array: true
 
+      # Polymorphic associations
       t.uuid :publishable_id
       t.string :publishable_type
 
+      t.uuid :creator_id, null: false   # The logged in user who actually published this
       t.timestamps null: false
     end
 
