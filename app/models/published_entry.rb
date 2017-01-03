@@ -16,7 +16,8 @@
 #  updated_at       :datetime         not null
 #
 
-class PublishedEntry < ActiveRecord::Base
+class PublishedEntry < ApplicationRecord
+  include AssociationAccessors
 
   default_scope { order(created_at: :asc) }
 
@@ -30,6 +31,18 @@ class PublishedEntry < ActiveRecord::Base
 
   validates :author_id, :domain_id, :entry_id, presence: true
   validate :entry_author, :domain_exists
+
+  # To send association attributes
+  def attributes
+    super.merge(:text => self.text)
+  end
+
+  protected
+
+  # For AssociationAccessors concern
+  def association_params
+    {:entry => [:text]}
+  end
 
   private
 

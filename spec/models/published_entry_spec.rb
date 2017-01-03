@@ -21,9 +21,17 @@ require 'rails_helper'
 RSpec.describe PublishedEntry, type: :model do
 
   context 'associations' do
-    it { is_expected.to belong_to(:domain) }
     it { is_expected.to belong_to(:author) }
+    it { is_expected.to belong_to(:domain) }
     it { is_expected.to belong_to(:entry) }
+    it { is_expected.to belong_to(:publishable) }
+
+    it "accesses entry text" do
+      published_entry = create(:published_entry)
+      entry = Entry.first
+      expect(published_entry.text).not_to eq(nil)
+      expect(published_entry.text).to eq(entry.text)
+    end
   end
 
   context 'validations' do
