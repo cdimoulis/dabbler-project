@@ -23,11 +23,6 @@ class User < ApplicationRecord
 
   default_scope { order(email: :asc) }
 
-  attr_accessor :prefix, :first_name, :middle_name, :last_name, :suffix, :gender,
-                :birth_date, :phone, :address_one, :address_two, :city, :state_region,
-                :country, :postal_code, :facebook_id, :facebook_link, :twitter_id,
-                :twitter_screen_name, :instagram_id, :instagram_username
-
   attr_accessor :password_confirmation
 
   belongs_to :person, dependent: :destroy
@@ -40,13 +35,6 @@ class User < ApplicationRecord
   validates :user_type, inclusion: { in: TYPE_OPTIONS }, allow_blank: true
   validate :password_match, on: :create
 
-  def first_name
-    if !person.nil? && !person.first_name.nil?
-      return person.first_name
-    else
-      return @first_name
-    end
-  end
 
   def password_confirmation=(val)
     # Needed to accept in controller
@@ -66,13 +54,28 @@ class User < ApplicationRecord
     current
   end
 
+  # To send association attributes
+  # def attributes
+  #   super.merge(:first_name => self.first_name, :middle_name => self.middle_name,
+  #     :last_name => self.last_name, :suffix => self.suffix, :prefix => self.prefix,
+  #     :gender => self.gender, :birth_date => self.birth_date, :phone => self.phone)
+  # end
 
-  protected
-
-  # For AssociatioAccessors concern
-  def association_params
+  ###
+  # For AssociationAccessors concern
+  ###
+  def association_attributes
     {:person => Person.column_names}
   end
+
+  def send_attributes
+    Person.column_names
+  end
+  ###
+  # End AssociationAccessorconcern
+  ###
+
+  protected
 
   def create_person
     # If no person_id then create new person

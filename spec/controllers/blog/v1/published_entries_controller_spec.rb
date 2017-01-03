@@ -17,8 +17,11 @@ RSpec.describe Blog::V1::PublishedEntriesController, type: :controller do
 
     it 'returns correct JSON' do
       # look_like_json found in support/matchers/json_matchers.rb
-      entry = published_entry.entry
       expect(response.body).to look_like_json
+    end
+
+    it 'includes association attributes' do
+      entry = published_entry.entry
       expect(JSON.parse(response.body)["text"]).to eq(entry.text)
     end
 

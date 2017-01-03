@@ -32,17 +32,21 @@ class PublishedEntry < ApplicationRecord
   validates :author_id, :domain_id, :entry_id, presence: true
   validate :entry_author, :domain_exists
 
-  # To send association attributes
-  def attributes
-    super.merge(:text => self.text)
-  end
-
-  protected
-
+  ###
   # For AssociationAccessors concern
-  def association_params
+  ###
+  def association_attributes
     {:entry => [:text]}
   end
+
+  def send_attributes
+    [:text]
+  end
+  ###
+  # End AssociationAccessorconcern
+  ###
+
+  protected
 
   private
 

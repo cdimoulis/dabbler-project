@@ -39,7 +39,7 @@ RSpec.describe Blog::V1::PeopleController do
   # Tests for SHOW route
   context "#show" do
     # Allow travel to be shared across all tests
-    let!(:chris) { create(:person, first_name: 'Chris') }
+    let!(:chris) { create(:person_with_user, first_name: 'Chris') }
 
     # Before running a test do this
     before do
@@ -51,6 +51,11 @@ RSpec.describe Blog::V1::PeopleController do
     it 'returns JSON' do
       # look_like_json found in support/matchers/json_matchers.rb
       expect(response.body).to look_like_json
+    end
+
+    it 'includes association attributes' do
+      user = chris.user
+      expect(JSON.parse(response.body)["email"]).to eq(user.email)
     end
 
     it { expect(assigns(:record)).to eq(chris) }

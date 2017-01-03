@@ -31,7 +31,6 @@
 class Person < ApplicationRecord
   include PersonLists
   include Addresses
-  include AssociationAccessors
 
   default_scope { order(last_name: :asc, first_name: :asc) }
 
@@ -43,11 +42,18 @@ class Person < ApplicationRecord
   validates :suffix, inclusion: { in: SUFFIXES }, allow_blank: true
   validate :countryExists, :stateExists
 
-  protected
-
-  # For AssociationAccessors concern
-  def association_params
-    {:user => [:email]}
+  def email
+    @user ||= self.user
+    if @email.nil? and !@user.nil?
+      @email = @user.email
+    end
+    @email
   end
+
+  def attributes
+    super.merge(:email => self.email)
+  end
+
+  protected
 
 end
