@@ -18,7 +18,7 @@
 
 FactoryGirl.define do
   factory :published_entry do
-    entry { create(:entry) }
+    entry { create(:entry_with_creator) }
     author { entry.author }
     domain { create(:domain) }
     notes "This entry has some notes"

@@ -24,18 +24,17 @@ class PublishedEntry < ActiveRecord::Base
   belongs_to :creator, class_name: 'User'
   belongs_to :domain
   belongs_to :entry
-
   belongs_to :publishable, polymorphic: true
 
   before_validation :set_author
 
-  validates :author_id, :domain_id, :entry_id, :creator_id, presence: true
+  validates :author_id, :domain_id, :entry_id, presence: true
   validate :entry_author, :domain_exists
 
   private
 
   def set_author
-    if !entry.nil?
+    if author_id.nil? and !entry.nil?
       self.author_id = entry.author_id
     end
   end
