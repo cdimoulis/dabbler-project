@@ -2,6 +2,25 @@ require 'rails_helper'
 
 RSpec.describe Blog::V1::PublishedEntriesController, type: :controller do
 
+  # Tests for INDEX route
+  context "#index" do
+    let!(:one) {create(:published_entry)}
+    let!(:two) {create(:published_entry)}
+
+    before do
+      get :index, format: :json
+    end
+
+    it { is_expected.to respond_with(:success) }
+
+    it 'returns JSON' do
+      # look_like_json found in support/matchers/json_matchers.rb
+      expect(response.body).to look_like_json
+      order = [one.id, two.id]
+      expect(assigns(:records).pluck('id')).to match(order)
+    end
+
+  end
 
   # Tests for SHOW route
   context "#show" do
