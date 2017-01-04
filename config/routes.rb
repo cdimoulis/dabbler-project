@@ -44,12 +44,13 @@ Rails.application.routes.draw do
       resources :entries, except: exc_new_edit, constraints: uuid_constraints do
         resource :author, to: 'entries#author', only: :show, parent: :entries
         resources :contributors, to: 'entries#contributors', only: :index, parent: :entries
+        resources :published_entries, only: [:create, :index], parent: :entries
       end
 
       # Only index and show.
       # Create, update, destroy done through associated FeaturedEntry or TutorialEntry
       resources :published_entries, except: exc_new_edit + exc_create_update + [:destroy], constraints: uuid_constraints do
-
+        resource :entry, only: :show, action: 'entry', parent: :published_entries
       end
 
     end

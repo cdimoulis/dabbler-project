@@ -54,6 +54,42 @@ class Blog::V1::EntriesController < Blog::V1::BlogController
   # Association methods
   ###
 
+  # Get the entry of a parent model
+  def entry
+    parent_name, parent_id = get_parent()
+    begin
+      parent_model = parent_name.classify.constantize
+      # Check that parent model exists
+      if parent_model.exists?(parent_id)
+        @parent = parent_model.find parent_id
+        # Does parent respond to the singular name?
+        if @parent.respond_to?(:entry)
+          @record = @parent.entry
+        # Does parent have entry_id
+        elsif @parent.respond_to(:entry_id)
+          # Does the entry exists?
+          if Entry.exists?(@parent.entry_id)
+            @record = Entry.find(@parent.entry_id)
+          else
+            errors = {msg: "Entry: Invalid Parent: #{parent_name} is not associated with entry."}
+          end
+        else
+          errors = {msg: "Entry: Invalid Parent: #{parent_name} is not associated with entry."}
+        end
+      else
+        errors = {msg: "Entry: Invalid Parent: #{parent_name} of id #{parent_id} does not exist."}
+      end
+    rescue NameError => e
+      errors = {msg: "Entry: Invalid parent: #{parent_name}", error: "#{e}"}
+    end
+
+    if errors.nil?
+      respond_with :blog, :v1, @record
+    else
+      render :json => {errors: errors}, :status => 404
+    end
+  end
+
   # Get the author of the entry
   def author
     entry_id = params[:entry_id]

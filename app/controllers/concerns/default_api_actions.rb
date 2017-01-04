@@ -7,7 +7,7 @@ module DefaultApiActions
   def create
     # TODO: Authorization
     #   Need to authorize when USERS are added
-    resource_name, resource_id, parent_name, parent_id = getResources()
+    resource_name, resource_id, parent_name, parent_id = get_resources()
     @resource = resource_name.classify.constantize
     begin
       @record = @resource.new permitted_params
@@ -15,12 +15,15 @@ module DefaultApiActions
       if !parent_name.nil? and !parent_id.nil?
         # Try block in case parent_name is not a model class
         begin
-          parent = parent_name.classify.constantize
-          if parent.exists?(parent_id) and @record.respond_to?(parent_name.singularize)
-            @record.send("#{parent_name.singularize}=",parent.find(parent_id))
+          parent_model = parent_name.classify.constantize
+          if parent_model.exists?(parent_id) and @record.respond_to?(parent_name.singularize)
+            @parent = parent_model.find(parent_id)
+            @record.send("#{parent_name.singularize}=", @parent)
           end
         rescue NameError => e
-          errors = {msg: "Possible invalid parent: #{parent_name.classify}", error: "#{e.inspect}"}
+          puts "\n\nPossible invalid parent: #{parent_name.classify}", error: "#{e.inspect}\n\n"
+          Rails.logger.debug "\n\nPossible invalid parent: #{parent_name.classify}", error: "#{e.inspect}\n\n"
+          errors = {msg: "Possible invalid parent: #{parent_name.classify}"}
         end
       end
 
@@ -53,30 +56,36 @@ module DefaultApiActions
 
 
   def index
-    resource_name, resource_id, parent_name, parent_id = getResources()
+    resource_name, resource_id, parent_name, parent_id = get_resources()
     @records = []
     # fetch from parent
     if !parent_name.nil? and !parent_id.nil?
       # Try block in case parent_name is not a model class
       begin
-        parent = parent_name.classify.constantize
+        parent_model = parent_name.classify.constantize
         # Check that the parent model with parent_id exists
-        if parent.exists?(parent_id)
-          parent_record = parent.find parent_id
+        if parent_model.exists?(parent_id)
+          @parent = parent_model.find parent_id
           # Does parent respond to the singular name?
-          if parent_record.respond_to?(resource_name.singularize)
-            @records = [parent_record.send(resource_name.singularize)]
+          if @parent.respond_to?(resource_name.singularize)
+            @records = [@parent.send(resource_name.singularize)]
           # Does parent respond to the pluralized name?
-          elsif parent_record.respond_to?(resource_name)
-            @records = parent_record.send(resource_name)
+          elsif @parent.respond_to?(resource_name)
+            @records = @parent.send(resource_name)
           else
+            puts "\n\nParent #{parent_name} does not respond to #{resource_name}\n\n"
+            Rails.logger.debug "\n\nParent #{parent_name} does not respond to #{resource_name}\n\n"
             errors = {msg: "Parent #{parent_name} does not respond to #{resource_name}"}
           end
         else
+          puts "\n\nInvalid Parent: #{parent_name} of id #{parent_id} does not exist.\n\n"
+          Rails.logger.debug "\n\nInvalid Parent: #{parent_name} of id #{parent_id} does not exist.\n\n"
           errors = {msg: "Invalid Parent: #{parent_name} of id #{parent_id} does not exist."}
         end
       rescue NameError => e
-        errors = {msg: "Invalid parent: #{parent_name}", error: "#{e}"}
+        puts "\n\nInvalid parent: #{parent_name}", error: "#{e}\n\n"
+        Rails.logger.debug "\n\nInvalid parent: #{parent_name}", error: "#{e}\n\n"
+        errors = {msg: "Invalid parent: #{parent_name}"}
       end
     else
       @resource = resource_name.classify.constantize
@@ -102,7 +111,7 @@ module DefaultApiActions
 
 
   def show
-    resource_name, resource_id = getResources()
+    resource_name, resource_id = get_resources()
     @resource = resource_name.classify.constantize
 
     @record = @resource.where("id = ?", resource_id).take
@@ -117,7 +126,7 @@ module DefaultApiActions
   def update
     # TODO: Authorization
     #   Need to authorize when USERS are added
-    resource_name, resource_id = getResources()
+    resource_name, resource_id = get_resources()
     @resource = resource_name.classify.constantize
 
     @record = @resource.where("id = ?", resource_id).take
@@ -132,7 +141,7 @@ module DefaultApiActions
   def destroy
     # TODO: Authorization
     #   Need to authorize when USERS are added
-    resource_name, resource_id = getResources()
+    resource_name, resource_id = get_resources()
     resource = resource_name.classify.constantize
 
     @record = resource.where("id = ?", resource_id).take
@@ -166,16 +175,21 @@ module DefaultApiActions
   # Get the resources for the request
   # This returns an array of model data
   # [resource_name, resource_id, parent_name, parent_id]
-  def getResources
+  def get_resources
+    parent_info = get_parent()
+    resource = controller_name
+    id = params[:id]
+
+    [resource, id] + parent_info
+  end
+
+  def get_parent
     if params.has_key?(:parent)
       id_string = "#{params[:parent].to_s.singularize}_id"
       parent_id = params[id_string]
       parent = params[:parent].to_s
     end
-    resource = controller_name
-    id = params[:id]
-
-    [resource, id, parent, parent_id]
+    [parent, parent_id]
   end
 
   # By default, permit all except
