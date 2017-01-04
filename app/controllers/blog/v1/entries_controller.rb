@@ -54,7 +54,8 @@ class Blog::V1::EntriesController < Blog::V1::BlogController
   # Association methods
   ###
 
-  # Get the entry of a parent model
+  # SHOW without id for any belongs_to association
+  # Get the entry of any parent model
   def entry
     parent_name, parent_id = get_parent()
     begin

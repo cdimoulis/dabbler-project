@@ -3,6 +3,17 @@ require 'rails_helper'
 RSpec.describe Blog::V1::EntriesController do
   include RequestSpecHelper
 
+  context '#entry' do
+    let!(:entry) { create(:entry_with_creator) }
+    let!(:published_entry) { create(:published_entry, entry: entry) }
+
+    it 'returns correct entry for published_entry' do
+      get blog_v1_published_entry_entry_path(published_entry_id: published_entry.id), format: :json
+      expect(assigns(:record)).to eq(entry)
+    end
+
+  end
+
   context '#author' do
     let!(:author_a) { create(:user, email: 'a@dabbler.fyi') }
     let!(:author_b) { create(:user, email: 'b@dabbler.fyi') }
