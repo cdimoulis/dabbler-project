@@ -25,6 +25,10 @@ RSpec.describe PublishedEntry, type: :model do
     it { is_expected.to belong_to(:domain) }
     it { is_expected.to belong_to(:entry) }
     it { is_expected.to belong_to(:publishable) }
+    it { expect(PublishedEntry.reflect_on_association(:groups).macro).to eq(:has_many)}
+    it { expect(PublishedEntry.reflect_on_association(:groups).options[:through]).to eq(:group_topic_published_entries)}
+    it { expect(PublishedEntry.reflect_on_association(:topics).macro).to eq(:has_many)}
+    it { expect(PublishedEntry.reflect_on_association(:topics).options[:through]).to eq(:group_topic_published_entries)}
 
     it "accesses entry text" do
       published_entry = create(:published_entry)
