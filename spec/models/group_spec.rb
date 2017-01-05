@@ -18,6 +18,9 @@ RSpec.describe Group do
   context 'associations' do
     it { is_expected.to belong_to(:domain) }
     it { is_expected.to have_many(:topics) }
+    it { expect(Group.reflect_on_association(:published_entries).macro).to eq(:has_many)}
+    # Appears to be an error in the shoulda matchers for have_many.through
+    # it { is_expected.to have_many(:published_entries).through(:group_topic_published_entries) }
   end
 
   context '.save' do

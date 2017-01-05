@@ -14,6 +14,12 @@ require 'rails_helper'
 
 RSpec.describe GroupTopicPublishedEntry, type: :model do
 
+  context 'associations' do
+    it { is_expected.to belong_to(:group) }
+    it { is_expected.to belong_to(:topic) }
+    it { is_expected.to belong_to(:published_entry) }
+  end
+
   context 'validations' do
 
     it 'is valid' do

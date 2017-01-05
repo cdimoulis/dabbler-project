@@ -26,6 +26,8 @@ class PublishedEntry < ApplicationRecord
   belongs_to :domain
   belongs_to :entry
   belongs_to :publishable, polymorphic: true
+  has_many :groups, through: :group_topic_published_entries
+  has_many :topics, through: :group_topic_published_entries
 
   before_validation :set_author
 
