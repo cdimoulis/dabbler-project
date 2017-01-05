@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Blog::V1::EntriesController do
   include RequestSpecHelper
 
-  context '#entry' do
+  context '#single_index' do
     let!(:entry) { create(:entry_with_creator) }
     let!(:published_entry) { create(:published_entry, entry: entry) }
 

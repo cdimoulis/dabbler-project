@@ -110,6 +110,46 @@ module DefaultApiActions
   end
 
 
+  def single_index
+    resource, resource_id, parent_name, parent_id = get_resources()
+    resource_name = resource.singularize
+    @resource = resource_name.classify.constantize
+    id_text = "#{resource_name}_id"
+    
+    begin
+      parent_model = parent_name.classify.constantize
+      # Check that parent model exists
+      if parent_model.exists?(parent_id)
+        @parent = parent_model.find parent_id
+        # Does parent respond to the singular name?
+        if @parent.respond_to?(resource_name)
+          @record = @parent.send(resource_name)
+        # Does parent have entry_id
+        elsif @parent.respond_to?(id_text.to_sym)
+          # Does the entry exists?
+          if @resource.exists?(@parent.send(id_text))
+            @record = @resource.find(@parent.send(id_text))
+          else
+            errors = {msg: "#{resource_name.classify}: Invalid Parent: #{parent_name} is not associated with entry."}
+          end
+        else
+          errors = {msg: "#{resource_name.classify}: Invalid Parent: #{parent_name} is not associated with entry."}
+        end
+      else
+        errors = {msg: "#{resource_name.classify}: Invalid Parent: #{parent_name} of id #{parent_id} does not exist."}
+      end
+    rescue NameError => e
+      errors = {msg: "#{resource_name.classify}: Invalid parent: #{parent_name}", error: "#{e}"}
+    end
+
+    if errors.nil?
+      respond_with :blog, :v1, @record
+    else
+      render :json => {errors: errors}, :status => 404
+    end
+  end
+
+
   def show
     resource_name, resource_id = get_resources()
     @resource = resource_name.classify.constantize
