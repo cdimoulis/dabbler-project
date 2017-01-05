@@ -32,13 +32,13 @@ class Topic < ApplicationRecord
 
   def domain_exists
     if attribute_present?(:domain_id) and !Domain.exists?(domain_id)
-      errors.add(:domain_id, "Invalid Domain: Does not exist")
+      errors.add(:domain_id, "Topic Model: Invalid Domain: Does not exist")
     end
   end
 
   def group_exists
     if attribute_present?(:group_id) and !Group.exists?(group_id)
-      errors.add(:group_id, "Invalid Group: Does not exist")
+      errors.add(:group_id, "Topic Model: Invalid Group: Does not exist")
     end
   end
 
@@ -46,7 +46,7 @@ class Topic < ApplicationRecord
   def domain_is_correct
     if !group.nil? and attribute_present?(:domain_id)
       if !(group.domain_id == domain_id)
-        errors.add(:domain_id, "Topic domain does not match group domain")
+        errors.add(:domain_id, "Topic Model: Topic domain does not match group domain")
       end
     end
   end
