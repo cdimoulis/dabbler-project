@@ -58,9 +58,9 @@ ActiveRecord::Schema.define(version: 20170105181734) do
   add_index "entries_users", ["user_id"], name: "index_entries_users_on_user_id", using: :btree
 
   create_table "group_topic_published_entries", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
-    t.uuid     "group_id"
+    t.uuid     "group_id",           null: false
     t.uuid     "topic_id"
-    t.uuid     "published_entry_id"
+    t.uuid     "published_entry_id", null: false
     t.datetime "created_at",         null: false
     t.datetime "updated_at",         null: false
   end
