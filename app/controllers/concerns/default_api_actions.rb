@@ -115,7 +115,7 @@ module DefaultApiActions
     resource_name = resource.singularize
     @resource = resource_name.classify.constantize
     id_text = "#{resource_name}_id"
-    
+
     begin
       parent_model = parent_name.classify.constantize
       # Check that parent model exists
@@ -124,16 +124,16 @@ module DefaultApiActions
         # Does parent respond to the singular name?
         if @parent.respond_to?(resource_name)
           @record = @parent.send(resource_name)
-        # Does parent have entry_id
+        # Does parent have #{record}_id
         elsif @parent.respond_to?(id_text.to_sym)
-          # Does the entry exists?
+          # Does the record exists?
           if @resource.exists?(@parent.send(id_text))
             @record = @resource.find(@parent.send(id_text))
           else
-            errors = {msg: "#{resource_name.classify}: Invalid Parent: #{parent_name} is not associated with entry."}
+            errors = {msg: "#{resource_name.classify}: Invalid Parent: #{parent_name} is not associated with #{resource_name}."}
           end
         else
-          errors = {msg: "#{resource_name.classify}: Invalid Parent: #{parent_name} is not associated with entry."}
+          errors = {msg: "#{resource_name.classify}: Invalid Parent: #{parent_name} is not associated with #{resource_name}."}
         end
       else
         errors = {msg: "#{resource_name.classify}: Invalid Parent: #{parent_name} of id #{parent_id} does not exist."}
