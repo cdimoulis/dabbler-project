@@ -17,6 +17,7 @@ Rails.application.routes.draw do
         resources :featured_groups, except: exc_new_edit, parent: :domains
         resources :tutorial_groups, except: exc_new_edit, parent: :domains
         resources :topics, except: exc_new_edit + exc_create_update, parent: :domains
+        resources :published_entries, only: :index, parent: :domains
       end
 
       # We will not create a group without it being DomainGroup or TutorialGroup
@@ -50,6 +51,7 @@ Rails.application.routes.draw do
       # Only index and show.
       # Create, update, destroy done through associated FeaturedEntry or TutorialEntry
       resources :published_entries, except: exc_new_edit + exc_create_update + [:destroy], constraints: uuid_constraints do
+        resource :domain, only: :show, action: 'domain', parent: :published_entries
         resource :entry, only: :show, action: 'entry', parent: :published_entries
       end
 
