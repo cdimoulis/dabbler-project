@@ -16,11 +16,20 @@ class GroupTopicPublishedEntry < ApplicationRecord
   belongs_to :topic
   belongs_to :published_entry
 
+  before_validation :set_group
+
   validates :group_id, :published_entry_id, presence: true
   validate :valid_group, :valid_domain
 
 
   protected
+
+  def set_group
+    # If no group_id and topic is not nil, then set group from topic
+    if !attribute_present?(:group_id) and !topic.nil?
+      self.group_id = topic.group_id
+    end
+  end
 
   def valid_group
     if !topic.nil?

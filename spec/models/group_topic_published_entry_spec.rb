@@ -24,7 +24,7 @@ RSpec.describe GroupTopicPublishedEntry, type: :model do
 
     it 'is valid' do
       model_a = build(:group_topic_published_entry)
-      model_b = build(:group_topic_published_entry_without_topic)
+      model_b = build(:group_topic_published_entry, topic: nil)
       expect(model_a.valid?).to be_truthy
       expect(model_b.valid?).to be_truthy
     end

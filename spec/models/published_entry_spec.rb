@@ -36,6 +36,32 @@ RSpec.describe PublishedEntry, type: :model do
       expect(published_entry.text).not_to eq(nil)
       expect(published_entry.text).to eq(entry.text)
     end
+
+    it "access topics" do
+      published_entry = create(:published_entry)
+      topic_a = create(:topic, domain: published_entry.domain)
+      topic_b = create(:topic, domain: published_entry.domain)
+      topic_c = create(:topic, domain: published_entry.domain)
+      published_entry.topics << topic_b
+      published_entry.topics << topic_c
+
+      expect(published_entry.topics).to match([topic_b, topic_c])
+      join = GroupTopicPublishedEntry.where(published_entry_id: published_entry.id)
+      expect(join.length).to eq(2)
+    end
+
+    it "access groups" do
+      published_entry = create(:published_entry)
+      group_a = create(:featured_group, domain: published_entry.domain)
+      group_b = create(:featured_group, domain: published_entry.domain)
+      group_c = create(:tutorial_group, domain: published_entry.domain)
+      published_entry.groups << group_b
+      published_entry.groups << group_c
+
+      expect(published_entry.groups).to match([group_b, group_c])
+      join = GroupTopicPublishedEntry.where(published_entry_id: published_entry.id)
+      expect(join.length).to eq(2)
+    end
   end
 
   context 'validations' do

@@ -26,6 +26,8 @@ class PublishedEntry < ApplicationRecord
   belongs_to :domain
   belongs_to :entry
   belongs_to :publishable, polymorphic: true
+
+  has_many :group_topic_published_entries, dependent: :destroy
   has_many :groups, through: :group_topic_published_entries
   has_many :topics, through: :group_topic_published_entries
 
@@ -59,7 +61,7 @@ class PublishedEntry < ApplicationRecord
   end
 
   def entry_author
-    if attribute_present?(:author_id) and attribute_present?(:entry_id)
+    if attribute_present?(:author_id) and !entry.nil?
       if author_id != entry.author_id
         errors.add(:author_id, "Is not the same as Entry author")
         puts "\n\nPublishedEntry error: Invalid author_id #{author_id}\nEntry:#{entry.inspect}\n\n"

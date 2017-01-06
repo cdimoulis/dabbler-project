@@ -16,8 +16,5 @@ FactoryGirl.define do
     topic { create(:topic, group: group, domain: group.domain) }
     published_entry { create(:published_entry, domain: group.domain) }
 
-    factory :group_topic_published_entry_without_topic do
-      topic nil
-    end
   end
 end
