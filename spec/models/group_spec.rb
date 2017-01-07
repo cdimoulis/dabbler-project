@@ -22,6 +22,19 @@ RSpec.describe Group do
     it { expect(Group.reflect_on_association(:published_entries).options[:through]).to eq(:group_topic_published_entries)}
     # Appears to be an error in the shoulda matchers for have_many.through
     # it { is_expected.to have_many(:published_entries).through(:group_topic_published_entries) }
+
+    it 'accesses published_entries' do
+      group = create(:group)
+      published_entry_a = create(:published_entry, domain: group.domain)
+      published_entry_b = create(:published_entry, domain: group.domain)
+      published_entry_c = create(:published_entry, domain: group.domain)
+
+      group.published_entries << published_entry_b
+      group.published_entries << published_entry_c
+      expect(group.published_entries).to match([published_entry_b, published_entry_c])
+      join = GroupTopicPublishedEntry.where(group_id: group.id)
+      expect(join.length).to eq(2)
+    end
   end
 
   context '.save' do

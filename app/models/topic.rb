@@ -21,6 +21,7 @@ class Topic < ApplicationRecord
   belongs_to :tutorial_group, foreign_key: 'group_id'
   belongs_to :featured_group, foreign_key: 'group_id'
   belongs_to :creator, class_name: "User"
+  has_many :group_topic_published_entries
   has_many :published_entries, through: :group_topic_published_entries
 
   before_validation :set_domain_id, if: "domain_id.nil?"
