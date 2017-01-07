@@ -21,7 +21,7 @@ RSpec.describe Blog::V1::PublishedEntriesController do
       expect(assigns(:records).pluck('id')).to match(order)
     end
 
-    it 'domain returns curret published entries' do
+    it 'domain returns correct published entries' do
       domain = create(:domain)
       published_entry_a = create(:published_entry, domain: domain)
       published_entry_b = create(:published_entry, domain: domain)
@@ -32,6 +32,36 @@ RSpec.describe Blog::V1::PublishedEntriesController do
       order = [published_entry_a.id, published_entry_b.id]
       expect(assigns(:records).pluck('id')).to match(order)
     end
+
+    it 'group returns correct published entries' do
+      group = create(:group)
+      published_entry_a = create(:published_entry, domain: group.domain)
+      published_entry_b = create(:published_entry, domain: group.domain)
+      published_entry_c = create(:published_entry, domain: group.domain)
+
+      group.published_entries << published_entry_b
+      group.published_entries << published_entry_c
+
+      get blog_v1_group_published_entries_path(group_id: group.id), format: :json
+      expect(response).to have_http_status(:success)
+      order = [published_entry_b.id, published_entry_c.id]
+      expect(assigns(:records).pluck('id')).to match(order)
+    end
+  end
+
+  it 'topic returns correct published entries' do
+    topic = create(:topic)
+    published_entry_a = create(:published_entry, domain: topic.domain)
+    published_entry_b = create(:published_entry, domain: topic.domain)
+    published_entry_c = create(:published_entry, domain: topic.domain)
+
+    topic.published_entries << published_entry_b
+    topic.published_entries << published_entry_c
+
+    get blog_v1_topic_published_entries_path(topic_id: topic.id), format: :json
+    expect(response).to have_http_status(:success)
+    order = [published_entry_b.id, published_entry_c.id]
+    expect(assigns(:records).pluck('id')).to match(order)
   end
 
 end

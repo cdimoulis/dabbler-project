@@ -34,7 +34,9 @@ Rails.application.routes.draw do
         resources :topics, except: exc_new_edit + [:update], parent: :tutorial_groups
       end
 
-      resources :topics, except: exc_new_edit, constraints: uuid_constraints
+      resources :topics, except: exc_new_edit, constraints: uuid_constraints do
+        resources :published_entries, only: :index, parent: :topics
+      end
 
       resources :users, except: exc_new_edit, constraints: uuid_constraints do
         resources :entries, to: 'users#entries', only: :index, parent: :users
