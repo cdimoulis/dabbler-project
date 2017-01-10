@@ -8,8 +8,6 @@ class CreatePublishedEntries < ActiveRecord::Migration
       t.text :notes
       t.text :tags, array: true
 
-      # Polymorphic associations
-      # t.uuid :publishable_id
       t.string :type
       t.json :data
 
@@ -21,6 +19,5 @@ class CreatePublishedEntries < ActiveRecord::Migration
     add_index :published_entries, :creator_id
     add_index :published_entries, :domain_id
     add_index :published_entries, :entry_id
-    # add_index :published_entries, :publishable_id
   end
 end

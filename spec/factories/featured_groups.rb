@@ -10,8 +10,6 @@
 #  updated_at  :datetime         not null
 #
 
-# Factory for
-#   Domain model
 FactoryGirl.define do
 
   factory :featured_group do
