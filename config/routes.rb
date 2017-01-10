@@ -57,6 +57,7 @@ Rails.application.routes.draw do
       resources :published_entries, except: exc_new_edit + exc_create_update + [:destroy], constraints: uuid_constraints do
         resource :domain, only: :show, action: 'single_index', parent: :published_entries
         resource :entry, only: :show, action: 'single_index', parent: :published_entries
+        resources :groups, only: :index, parent: :published_entries
       end
 
       resources :featured_entries, except: exc_new_edit, constraints: uuid_constraints do
