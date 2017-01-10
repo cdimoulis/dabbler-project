@@ -9,8 +9,9 @@ class CreatePublishedEntries < ActiveRecord::Migration
       t.text :tags, array: true
 
       # Polymorphic associations
-      t.uuid :publishable_id
-      t.string :publishable_type
+      # t.uuid :publishable_id
+      t.string :type
+      t.json :data
 
       t.uuid :creator_id, null: false   # The logged in user who actually published this
       t.timestamps null: false
@@ -20,6 +21,6 @@ class CreatePublishedEntries < ActiveRecord::Migration
     add_index :published_entries, :creator_id
     add_index :published_entries, :domain_id
     add_index :published_entries, :entry_id
-    add_index :published_entries, :publishable_id
+    # add_index :published_entries, :publishable_id
   end
 end
