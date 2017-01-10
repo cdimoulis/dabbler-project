@@ -23,6 +23,8 @@ FactoryGirl.define do
     domain { create(:domain) }
     notes "This entry has some notes"
     tags ['tag_a', 'tag_b']
+    type 'PublishedEntry'
+    data { {published_at: DateTime.now} }
     creator { entry.author }
   end
 end
