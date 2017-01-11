@@ -29,10 +29,12 @@ Rails.application.routes.draw do
       end
 
       resources :featured_groups, except: exc_new_edit, constraints: uuid_constraints do
+        resource :domain, only: :show, action: 'single_index', parent: :featured_groups
         resources :topics, except: exc_new_edit + [:update], parent: :featured_groups
       end
 
       resources :tutorial_groups, except: exc_new_edit, constraints: uuid_constraints do
+        resource :domain, only: :show, action: 'single_index', parent: :tutorial_groups
         resources :topics, except: exc_new_edit + [:update], parent: :tutorial_groups
       end
 

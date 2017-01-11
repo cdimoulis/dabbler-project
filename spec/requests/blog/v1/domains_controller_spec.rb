@@ -12,6 +12,18 @@ RSpec.describe Blog::V1::DomainsController do
       expect(assigns(:record)).to eq(domain)
     end
 
+    it 'returns correct domain for featured_group' do
+      group = create(:featured_group, domain: domain)
+      get blog_v1_group_domain_path(group_id: group.id), format: :json
+      expect(assigns(:record)).to eq(domain)
+    end
+
+    it 'returns correct domain for tutorial_group' do
+      group = create(:tutorial_group, domain: domain)
+      get blog_v1_group_domain_path(group_id: group.id), format: :json
+      expect(assigns(:record)).to eq(domain)
+    end
+
     it 'returns correct domain for topic' do
       topic = create(:topic, domain: domain)
       get blog_v1_topic_domain_path(topic_id: topic.id), format: :json
