@@ -3,6 +3,8 @@ class Blog::V1::PublishedEntriesController < Blog::V1::BlogController
   include PageRecords
   include DateRange
 
+  before_action :require_login, only: [:create, :update, :destroy]
+  
   respond_to :json
 
 

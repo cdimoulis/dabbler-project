@@ -18,6 +18,7 @@ RSpec.describe Blog::V1::PeopleController do
       person = {prefix: "Mr.", first_name: "Chris", last_name: "Dimoulis", gender: "Male"}
       user = {email: 'user_test@dabbler.com', password: '12345678', password_confirmation: '12345678', person: person}
       post blog_v1_users_path, user: user, format: :json
+      expect(response).to have_http_status(:success)
       expect(admin.id).to eq(assigns(:record).person.creator_id)
     end
 
