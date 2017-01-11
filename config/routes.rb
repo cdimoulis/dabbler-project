@@ -23,6 +23,7 @@ Rails.application.routes.draw do
 
       # We will not create a group without it being DomainGroup or TutorialGroup
       resources :groups, except: exc_new_edit + [:create], constraints: uuid_constraints do
+        resource :domain, only: :show, action: 'single_index', parent: :groups
         resources :topics, except: exc_new_edit + [:update], parent: :groups
         resources :published_entries, only: :index, parent: :groups
       end
@@ -36,6 +37,7 @@ Rails.application.routes.draw do
       end
 
       resources :topics, except: exc_new_edit, constraints: uuid_constraints do
+        resource :domain, only: :show, action: 'single_index', parent: :topics
         resources :published_entries, only: :index, parent: :topics
       end
 
