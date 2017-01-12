@@ -19,6 +19,8 @@ class Group < ApplicationRecord
   has_many :topics
   has_many :group_topic_published_entries
   has_many :published_entries, through: :group_topic_published_entries
+  has_many :featured_entries, through: :group_topic_published_entries
+  has_many :tutorial_entries, through: :group_topic_published_entries
 
   validates :text, :domain_id, :type, presence: true
   validates :text, uniqueness: {scope: [:domain_id, :type], message: "Domain text must be unique"}

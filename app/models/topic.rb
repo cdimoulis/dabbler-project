@@ -23,6 +23,8 @@ class Topic < ApplicationRecord
   belongs_to :creator, class_name: "User"
   has_many :group_topic_published_entries
   has_many :published_entries, through: :group_topic_published_entries
+  has_many :featured_entries, through: :group_topic_published_entries
+  has_many :tutorial_entries, through: :group_topic_published_entries
 
   before_validation :set_domain_id, if: "domain_id.nil?"
 

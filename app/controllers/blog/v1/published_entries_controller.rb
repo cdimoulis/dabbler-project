@@ -4,7 +4,7 @@ class Blog::V1::PublishedEntriesController < Blog::V1::BlogController
   include DateRange
 
   before_action :require_login, only: [:create, :update, :destroy]
-  
+
   respond_to :json
 
 
@@ -12,8 +12,7 @@ class Blog::V1::PublishedEntriesController < Blog::V1::BlogController
 
   def permitted_params
     params.require(:published_entry).permit(:author_id, :domain_id, :entry_id,
-                                            :image_url, :notes, :tags, :publishable_id,
-                                            :publishable_type)
+                                            :image_url, :notes, :tags, :data, :type)
   end
 
 end

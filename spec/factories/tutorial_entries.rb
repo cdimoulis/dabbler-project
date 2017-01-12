@@ -17,13 +17,13 @@
 #
 
 FactoryGirl.define do
-  factory :featured_entry do
+  factory :tutorial_entry do
     entry { create(:entry_with_creator) }
     author { entry.author }
     domain { create(:domain) }
-    notes { "Notes for entry" }
+    notes { "Notes for entry #{entry.text}" }
     tags ['tag_a', 'tag_b']
-    data { {published_at: DateTime.now} }
+    data { {order: TutorialEntry.count} }
     creator { entry.author }
   end
 end
