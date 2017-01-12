@@ -18,6 +18,11 @@
 
 class FeaturedEntry < PublishedEntry
 
-  default_scope { order("data ->> 'published_at' ASC")}
+  default_scope { order("data ->> 'published_at' DESC") }
+  # default_scope { order("created_at ASC")}
+
+  def default_date_attribute
+    "data ->> 'published_at'"
+  end
 
 end
