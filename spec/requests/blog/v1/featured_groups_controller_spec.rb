@@ -30,7 +30,7 @@ RSpec.describe Blog::V1::FeaturedGroupsController do
   context '#index' do
     it "fetches via domain" do
       domain = create(:domain_with_groups)
-      get blog_v1_domain_groups_path(domain-id: domain.id), format: :json
+      get blog_v1_domain_groups_path(domain_id: domain.id), format: :json
       expect(response).to have_http_status(:success)
       expect(domain.groups.count).to eq(5)
     end

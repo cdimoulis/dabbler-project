@@ -23,7 +23,7 @@ RSpec.describe FeaturedEntry, type: :model do
   context 'inheritance' do
     it 'type is correct' do
       featured_entry = create(:featured_entry)
-      expect(featured_entry.type).to eq('TutorialGroup')
+      expect(featured_entry.type).to eq('FeaturedEntry')
     end
   end
 end
