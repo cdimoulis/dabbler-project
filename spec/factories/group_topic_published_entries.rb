@@ -12,9 +12,9 @@
 
 FactoryGirl.define do
   factory :group_topic_published_entry do
-    group { create(:group) }
+    group { create(:featured_group) }
     topic { create(:topic, group: group, domain: group.domain) }
-    published_entry { create(:published_entry, domain: group.domain) }
+    published_entry { create(:featured_entry, domain: group.domain) }
 
   end
 end

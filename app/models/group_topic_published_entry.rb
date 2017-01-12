@@ -21,7 +21,7 @@ class GroupTopicPublishedEntry < ApplicationRecord
   before_validation :set_group
 
   validates :group_id, :published_entry_id, presence: true
-  validate :valid_group, :valid_domain
+  validate :valid_group, :valid_domain, :valid_types
 
 
   protected
@@ -46,6 +46,14 @@ class GroupTopicPublishedEntry < ApplicationRecord
       if group.domain != published_entry.domain
         errors.add(:group_id, "GroupTopicPublishedEntry Model: group domain does not match published_entry domain")
       end
+    end
+  end
+
+  def valid_types
+    if (published_entry.type == "FeaturedEntry") && (group.type != "FeaturedGroup")
+      errors.add(:types, "Type Missmatch error: Published entry is #{published_entry.type} but group is #{group.type}")
+    elsif (published_entry.type == "TutorialEntry") && (group.type != "TutorialGroup")
+      errors.add(:types, "Type Missmatch error: Published entry is #{published_entry.type} but group is #{group.type}")
     end
   end
 
