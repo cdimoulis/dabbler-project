@@ -16,7 +16,7 @@
 #  updated_at :datetime         not null
 #
 
-class TutorialEntry < ActiveRecord::Base
+class TutorialEntry < PublishedEntry
 
   default_scope { order("data ->> 'order' ASC")}
 

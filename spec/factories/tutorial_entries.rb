@@ -21,7 +21,7 @@ FactoryGirl.define do
     entry { create(:entry_with_creator) }
     author { entry.author }
     domain { create(:domain) }
-    notes { "Notes for entry #{entry.text}" }
+    notes { "Notes for entry" }
     tags ['tag_a', 'tag_b']
     data { {order: TutorialEntry.count} }
     creator { entry.author }

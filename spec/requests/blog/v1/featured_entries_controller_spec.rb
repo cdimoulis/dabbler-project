@@ -54,11 +54,11 @@ RSpec.describe Blog::V1::FeaturedEntriesController do
       featured_entry_a = create(:featured_entry, domain: group.domain)
       featured_entry_b = create(:featured_entry, domain: group.domain)
       featured_entry_c = create(:featured_entry, domain: group.domain)
-      published_entry = create(:published_entry, doamin: group.domain)
+      tutorial_entry = create(:tutorial_entry, domain: group.domain)
 
       group.featured_entries << featured_entry_b
       group.featured_entries << featured_entry_c
-      group.published_entries << published_entry
+      group.tutorial_entries << tutorial_entry
 
       get blog_v1_group_featured_entries_path(group_id: group.id), format: :json
       expect(response).to have_http_status(:success)
@@ -71,9 +71,11 @@ RSpec.describe Blog::V1::FeaturedEntriesController do
       featured_entry_a = create(:featured_entry, domain: topic.domain)
       featured_entry_b = create(:featured_entry, domain: topic.domain)
       featured_entry_c = create(:featured_entry, domain: topic.domain)
+      tutorial_entry = create(:tutorial_entry, domain: topic.domain)
 
       topic.featured_entries << featured_entry_b
       topic.featured_entries << featured_entry_c
+      topic.tutorial_entries << tutorial_entry
 
       get blog_v1_topic_featured_entries_path(topic_id: topic.id), format: :json
       expect(response).to have_http_status(:success)

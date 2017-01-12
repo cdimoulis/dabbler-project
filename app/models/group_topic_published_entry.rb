@@ -15,6 +15,8 @@ class GroupTopicPublishedEntry < ApplicationRecord
   belongs_to :group
   belongs_to :topic
   belongs_to :published_entry
+  belongs_to :featured_entry, foreign_key: 'published_entry_id'
+  belongs_to :tutorial_entry, foreign_key: 'published_entry_id'
 
   before_validation :set_group
 
