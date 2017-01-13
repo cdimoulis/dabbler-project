@@ -27,9 +27,9 @@ RSpec.describe Blog::V1::FeaturedEntriesController do
 
     it 'entry returns correct featured entries' do
       entry = create(:entry_with_creator)
-      featured_entry_a = create(:featured_entry, entry: entry)
-      featured_entry_b = create(:featured_entry, entry: entry)
-      featured_entry_c = create(:featured_entry)
+      featured_entry_a = create(:featured_entry, entry: entry, data: {published_at: (DateTime.now - 1.days).strftime})
+      featured_entry_b = create(:featured_entry, entry: entry, data: {published_at: (DateTime.now - 2.days).strftime})
+      featured_entry_c = create(:featured_entry, data: {published_at: (DateTime.now - 1.days).strftime})
 
       get blog_v1_entry_featured_entries_path(entry_id: entry.id), format: :json
       expect(response).to have_http_status(:success)
@@ -39,9 +39,9 @@ RSpec.describe Blog::V1::FeaturedEntriesController do
 
     it 'domain returns correct featured entries' do
       domain = create(:domain)
-      featured_entry_a = create(:featured_entry, domain: domain)
-      featured_entry_b = create(:featured_entry, domain: domain)
-      featured_entry_c = create(:featured_entry)
+      featured_entry_a = create(:featured_entry, domain: domain, data: {published_at: (DateTime.now - 1.days).strftime})
+      featured_entry_b = create(:featured_entry, domain: domain, data: {published_at: (DateTime.now - 2.days).strftime})
+      featured_entry_c = create(:featured_entry, data: {published_at: (DateTime.now - 1.days).strftime})
 
       get blog_v1_domain_featured_entries_path(domain_id: domain.id), format: :json
       expect(response).to have_http_status(:success)
@@ -52,10 +52,10 @@ RSpec.describe Blog::V1::FeaturedEntriesController do
     it 'group returns correct featured entries' do
       group = create(:group)
       other_group = create(:group)
-      featured_entry_a = create(:featured_entry, domain: group.domain)
-      featured_entry_b = create(:featured_entry, domain: group.domain)
-      featured_entry_c = create(:featured_entry, domain: group.domain)
-      other_entry = create(:featured_entry, domain: other_group.domain)
+      featured_entry_a = create(:featured_entry, domain: group.domain, data: {published_at: (DateTime.now - 1.days).strftime})
+      featured_entry_b = create(:featured_entry, domain: group.domain, data: {published_at: (DateTime.now - 2.days).strftime})
+      featured_entry_c = create(:featured_entry, domain: group.domain, data: {published_at: (DateTime.now - 3.days).strftime})
+      other_entry = create(:featured_entry, domain: other_group.domain, data: {published_at: (DateTime.now - 1.days).strftime})
 
       group.featured_entries << featured_entry_b
       group.featured_entries << featured_entry_c
@@ -70,10 +70,10 @@ RSpec.describe Blog::V1::FeaturedEntriesController do
     it 'featured group returns correct featured entries' do
       group = create(:featured_group)
       other_group = create(:featured_group)
-      featured_entry_a = create(:featured_entry, domain: group.domain)
-      featured_entry_b = create(:featured_entry, domain: group.domain)
-      featured_entry_c = create(:featured_entry, domain: group.domain)
-      other_entry = create(:featured_entry, domain: other_group.domain)
+      featured_entry_a = create(:featured_entry, domain: group.domain, data: {published_at: (DateTime.now - 1.days).strftime})
+      featured_entry_b = create(:featured_entry, domain: group.domain, data: {published_at: (DateTime.now - 2.days).strftime})
+      featured_entry_c = create(:featured_entry, domain: group.domain, data: {published_at: (DateTime.now - 3.days).strftime})
+      other_entry = create(:featured_entry, domain: other_group.domain, data: {published_at: (DateTime.now - 1.days).strftime})
 
       group.featured_entries << featured_entry_b
       group.featured_entries << featured_entry_c
@@ -88,10 +88,10 @@ RSpec.describe Blog::V1::FeaturedEntriesController do
     it 'topic returns correct featured entries' do
       topic = create(:topic)
       other_topic = create(:topic)
-      featured_entry_a = create(:featured_entry, domain: topic.domain)
-      featured_entry_b = create(:featured_entry, domain: topic.domain)
-      featured_entry_c = create(:featured_entry, domain: topic.domain)
-      other_entry = create(:featured_entry, domain: other_topic.domain)
+      featured_entry_a = create(:featured_entry, domain: topic.domain, data: {published_at: (DateTime.now - 1.days).strftime})
+      featured_entry_b = create(:featured_entry, domain: topic.domain, data: {published_at: (DateTime.now - 2.days).strftime})
+      featured_entry_c = create(:featured_entry, domain: topic.domain, data: {published_at: (DateTime.now - 3.days).strftime})
+      other_entry = create(:featured_entry, domain: other_topic.domain, data: {published_at: (DateTime.now - 1.days).strftime})
 
       topic.featured_entries << featured_entry_b
       topic.featured_entries << featured_entry_c

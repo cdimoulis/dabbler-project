@@ -16,7 +16,7 @@ RSpec.describe Blog::V1::GroupsController do
 
     it "succeeds via domain" do
       group = attributes_for(:group)
-      domain = group.domain
+      domain = Domain.find(group[:domain_id])
       post blog_v1_domain_groups_path(domain_id: domain.id), group: group, format: :json
       expect(response).to have_http_status(:success)
       expect(domain.groups.count).to eq(1)

@@ -16,7 +16,7 @@ RSpec.describe Blog::V1::PublishedEntriesController do
 
     it 'creates via entries' do
       entry = create(:entry_with_creator)
-      published_entry = attributes_fo(:published_entry, entry: nil, author: nil, creator: admin)
+      published_entry = attributes_for(:published_entry, entry: nil, author: nil, creator: admin)
       post blog_v1_entry_published_entries_path(entry_id: entry.id), published_entry: published_entry, format: :json
       expect(response).to have_http_status(:success)
       expect(entry.id).to eq(assigns(:record).entry_id)
@@ -33,8 +33,8 @@ RSpec.describe Blog::V1::PublishedEntriesController do
 
       get blog_v1_entry_published_entries_path(entry_id: entry.id), format: :json
       expect(response).to have_http_status(:success)
-      order = [published_entry_a.id, published_entry_b.id]
-      expect(assigns(:records).pluck('id')).to match(order)
+      expect(assigns(:records).pluck('id')).to include(published_entry_a.id)
+      expect(assigns(:records).pluck('id')).to include(published_entry_b.id)
     end
 
     it 'domain returns correct published entries' do
@@ -45,8 +45,8 @@ RSpec.describe Blog::V1::PublishedEntriesController do
 
       get blog_v1_domain_published_entries_path(domain_id: domain.id), format: :json
       expect(response).to have_http_status(:success)
-      order = [published_entry_a.id, published_entry_b.id]
-      expect(assigns(:records).pluck('id')).to match(order)
+      expect(assigns(:records).pluck('id')).to include(published_entry_a.id)
+      expect(assigns(:records).pluck('id')).to include(published_entry_b.id)
     end
 
     it 'group returns correct published entries' do
@@ -60,8 +60,8 @@ RSpec.describe Blog::V1::PublishedEntriesController do
 
       get blog_v1_group_published_entries_path(group_id: group.id), format: :json
       expect(response).to have_http_status(:success)
-      order = [published_entry_b.id, published_entry_c.id]
-      expect(assigns(:records).pluck('id')).to match(order)
+      expect(assigns(:records).pluck('id')).to include(published_entry_b.id)
+      expect(assigns(:records).pluck('id')).to include(published_entry_c.id)
     end
 
     it 'topic returns correct published entries' do
@@ -75,8 +75,8 @@ RSpec.describe Blog::V1::PublishedEntriesController do
 
       get blog_v1_topic_published_entries_path(topic_id: topic.id), format: :json
       expect(response).to have_http_status(:success)
-      order = [published_entry_b.id, published_entry_c.id]
-      expect(assigns(:records).pluck('id')).to match(order)
+      expect(assigns(:records).pluck('id')).to include(published_entry_b.id)
+      expect(assigns(:records).pluck('id')).to include(published_entry_c.id)
     end
   end
 
