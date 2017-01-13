@@ -15,8 +15,8 @@ RSpec.describe Blog::V1::TutorialGroupsController do
 
     it 'succeeds' do
       current = TutorialGroup.count
-      tutorial_group = build(:tutorial_group)
-      post :create, tutorial_group: tutorial_group.attributes, format: :json
+      tutorial_group = attributes_for(:tutorial_group)
+      post :create, tutorial_group: tutorial_group, format: :json
       expect(response).to have_http_status(:success)
       expect(TutorialGroup.count).to eq(current+1)
     end

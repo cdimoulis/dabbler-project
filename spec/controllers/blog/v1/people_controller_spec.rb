@@ -6,8 +6,8 @@ RSpec.describe Blog::V1::PeopleController do
   context "#create" do
     it 'succeeds' do
       current = Person.count
-      person = build(:person)
-      post :create, person: person.attributes, format: :json
+      person = attributes_for(:person)
+      post :create, person: person, format: :json
       expect(response).to have_http_status(:success)
       expect(Person.count).to eq(current+1)
     end

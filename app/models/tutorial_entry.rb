@@ -18,6 +18,21 @@
 
 class TutorialEntry < PublishedEntry
 
-  default_scope { order("data ->> 'order' ASC")}
+  default_scope { order("data ->> 'order' DESC")}
+
+  validate :valid_data
+
+  protected
+
+  def valid_data
+    # Data needs to have published_at key
+    if self.data.nil?
+      errors.add(:data, 'Data Error: Data is nil')
+    else
+      if !self.data.has_key?('order') || data['order'].nil?
+        errors.add(:order, 'Data Error: FeaturedEntry data object required order')
+      end
+    end
+  end
 
 end

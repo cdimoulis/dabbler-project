@@ -15,8 +15,8 @@ RSpec.describe Blog::V1::DomainsController do
 
     it 'succeeds' do
       current = Domain.count
-      domain = build(:domain)
-      post :create, domain: domain.attributes, format: :json
+      domain = attributes_for(:domain)
+      post :create, domain: domain, format: :json
       expect(response).to have_http_status(:success)
       expect(Domain.count).to eq(current+1)
     end

@@ -15,8 +15,8 @@ RSpec.describe Blog::V1::FeaturedEntriesController, type: :controller do
 
     it 'succeeds' do
       current = FeaturedEntry.count
-      featured_entry = build(:featured_entry)
-      post :create, featured_entry: featured_entry.attributes, format: :json
+      featured_entry = attributes_for(:featured_entry)
+      post :create, featured_entry: featured_entry, format: :json
       expect(response).to have_http_status(:success)
       expect(FeaturedEntry.count).to eq(current+1)
     end

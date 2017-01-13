@@ -15,8 +15,8 @@ RSpec.describe Blog::V1::FeaturedGroupsController do
 
     it 'succeeds' do
       current = FeaturedGroup.count
-      featured_group = build(:featured_group)
-      post :create, featured_group: featured_group.attributes, format: :json
+      featured_group = attributes_for(:featured_group)
+      post :create, featured_group: featured_group, format: :json
       expect(response).to have_http_status(:success)
       expect(FeaturedGroup.count).to eq(current+1)
     end

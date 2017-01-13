@@ -13,7 +13,7 @@ class Blog::V1::TutorialEntriesController < Blog::V1::BlogController
   def permitted_params
     params.require(:tutorial_entry).permit(:author_id, :domain_id, :entry_id,
                                             :image_url, :notes, :tags, :data).tap do |whitelist|
-      whitelist[:data] = params[:featured_entry][:data]
+      whitelist[:data] = params[:tutorial_entry][:data]
     end
   end
 end
