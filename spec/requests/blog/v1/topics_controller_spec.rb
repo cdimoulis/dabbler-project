@@ -6,7 +6,7 @@ RSpec.describe Blog::V1::TopicsController do
   # Test nested creates
   context '#create' do
     let!(:domain) { create(:domain) }
-    let!(:topic) { build(:topic_without_group, domain: domain) }
+    let!(:topic) { attributes_for(:topic_without_group, domain: domain) }
     let!(:user) { create(:user) }
 
     before do
@@ -20,7 +20,7 @@ RSpec.describe Blog::V1::TopicsController do
     it "succeeds via group" do
       group = create(:group, domain: domain)
       route = blog_v1_group_topics_path(group_id: group.id)
-      post route, topic: topic.attributes, format: :json
+      post route, topic: topic, format: :json
       expect(response).to have_http_status(:success)
       expect(domain.topics.count).to eq(1)
       expect(Topic.first.group.id).to eq(group.id)
@@ -29,7 +29,7 @@ RSpec.describe Blog::V1::TopicsController do
     it "succeeds via featured_group" do
       group = create(:featured_group, domain: domain)
       route = blog_v1_featured_group_topics_path(featured_group_id: group.id)
-      post route, topic: topic.attributes, format: :json
+      post route, topic: topic, format: :json
       expect(response).to have_http_status(:success)
       expect(domain.topics.count).to eq(1)
       expect(Topic.first.group.id).to eq(group.id)
@@ -38,7 +38,7 @@ RSpec.describe Blog::V1::TopicsController do
     it "succeeds via tutorial_group" do
       group = create(:tutorial_group, domain: domain)
       route = blog_v1_tutorial_group_topics_path(tutorial_group_id: group.id)
-      post route, topic: topic.attributes, format: :json
+      post route, topic: topic, format: :json
       expect(response).to have_http_status(:success)
       expect(domain.topics.count).to eq(1)
       expect(Topic.first.group.id).to eq(group.id)

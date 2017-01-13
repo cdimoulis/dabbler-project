@@ -22,6 +22,7 @@ FactoryGirl.define do
     text { "Entry #{Entry.count + 1}" }
     description 'Some great information about stuff'
     author { create(:user) }
+    author_id { author.id }
     content "Here is some info to know about..."
 
     factory :entry_with_creator do
@@ -30,6 +31,7 @@ FactoryGirl.define do
 
     factory :entry_without_author do
       author nil
+      author_id nil
       creator { create(:user) }
     end
 

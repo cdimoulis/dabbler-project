@@ -18,7 +18,7 @@
 
 class TutorialEntry < PublishedEntry
 
-  default_scope { order("data ->> 'order' DESC")}
+  default_scope { order("data ->> 'order' ASC")}
 
   validate :valid_data
 

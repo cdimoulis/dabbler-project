@@ -38,7 +38,6 @@ RSpec.describe Blog::V1::FeaturedEntriesController, type: :controller do
 
     it 'returns JSON' do
       # look_like_json found in support/matchers/json_matchers.rb
-      puts "\n\n#{one.data['published_at']} - #{one.created_at}\n\n"
       expect(response.body).to look_like_json
       order = [one.id, two.id, three.id, four.id, five.id]
       expect(assigns(:records).pluck('id')).to match(order)

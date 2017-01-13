@@ -16,8 +16,8 @@ RSpec.describe Blog::V1::PublishedEntriesController do
 
     it 'creates via entries' do
       entry = create(:entry_with_creator)
-      published_entry = build(:published_entry, entry: nil, author: nil, creator: admin)
-      post blog_v1_entry_published_entries_path(entry_id: entry.id), published_entry: published_entry.attributes, format: :json
+      published_entry = attributes_fo(:published_entry, entry: nil, author: nil, creator: admin)
+      post blog_v1_entry_published_entries_path(entry_id: entry.id), published_entry: published_entry, format: :json
       expect(response).to have_http_status(:success)
       expect(entry.id).to eq(assigns(:record).entry_id)
     end

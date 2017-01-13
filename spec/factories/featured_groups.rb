@@ -16,5 +16,6 @@ FactoryGirl.define do
     text { "Featured Group #{FeaturedGroup.count}" }
     description { "#{text.sub(' Group','')} test domain group" }
     domain { create(:domain, text: "#{text.sub(' Group','')}") }
+    domain_id { domain.id }
   end
 end

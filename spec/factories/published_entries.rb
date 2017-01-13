@@ -19,8 +19,11 @@
 FactoryGirl.define do
   factory :published_entry do
     entry { create(:entry_with_creator) }
+    entry_id { entry.id }
     author { entry.author }
+    author_id { author.id }
     domain { create(:domain) }
+    domain_id { domain.id }
     notes "This entry has some notes"
     tags ['tag_a', 'tag_b']
     type 'PublishedEntry'

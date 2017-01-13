@@ -16,8 +16,8 @@ RSpec.describe Blog::V1::FeaturedEntriesController do
 
     it 'creates via entries' do
       entry = create(:entry_with_creator)
-      featured_entry = build(:featured_entry, entry: nil, author: nil, creator: admin)
-      post blog_v1_entry_featured_entries_path(entry_id: entry.id), featured_entry: featured_entry.attributes, format: :json
+      featured_entry = attributes_for(:featured_entry, entry: nil, author: nil, creator: admin)
+      post blog_v1_entry_featured_entries_path(entry_id: entry.id), featured_entry: featured_entry, format: :json
       expect(response).to have_http_status(:success)
       expect(entry.id).to eq(assigns(:record).entry_id)
     end

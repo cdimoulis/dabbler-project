@@ -19,8 +19,11 @@
 FactoryGirl.define do
   factory :featured_entry do
     entry { create(:entry_with_creator) }
+    entry_id { entry.id }
     author { entry.author }
+    author_id { author.id }
     domain { create(:domain) }
+    domain_id { domain.id }
     notes "Notes for entry"
     tags ['tag_a', 'tag_b']
     data { {published_at: DateTime.now} }
