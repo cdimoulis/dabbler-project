@@ -19,10 +19,20 @@
 class FeaturedEntry < PublishedEntry
 
   default_scope { order("data ->> 'published_at' DESC") }
-  # default_scope { order("created_at ASC")}
+
+  validate :valid_data
 
   def default_date_attribute
     "data ->> 'published_at'"
+  end
+
+  protected
+
+  def valid_data
+    # Data needs to have published_at key
+    if !data.has_key?('published_at') || data['published_at'].nil?
+      errors.add(:published_at, 'Data Error: FeaturedEntry data object required published_at')
+    end
   end
 
 end

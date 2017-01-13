@@ -26,4 +26,11 @@ RSpec.describe FeaturedEntry, type: :model do
       expect(featured_entry.type).to eq('FeaturedEntry')
     end
   end
+
+  context 'validations' do
+    it 'fails without published_at' do
+      feat_entry = build(:featured_entry, data: {})
+      expect(feat_entry.valid?).to be_falsy
+    end
+  end
 end
