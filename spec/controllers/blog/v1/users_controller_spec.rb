@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe Blog::V1::UsersController, type: :controller do
   include RequestSpecHelper
 
+  # Tests for CREATE route
   context '#create' do
     it 'succeeds - existing person' do
       current_user = User.count
@@ -109,7 +110,7 @@ RSpec.describe Blog::V1::UsersController, type: :controller do
     end
   end
 
-  # Test for UPDATE route
+  # Test for DESTROY route
   context "#destroy" do
     # Allow travel to be shared across all tests
     let!(:admin) { create(:user) }

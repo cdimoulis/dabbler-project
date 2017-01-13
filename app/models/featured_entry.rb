@@ -22,6 +22,7 @@ class FeaturedEntry < PublishedEntry
 
   validate :valid_data
 
+  # For date_range concern
   def default_date_attribute
     "data ->> 'published_at'"
   end
@@ -30,8 +31,12 @@ class FeaturedEntry < PublishedEntry
 
   def valid_data
     # Data needs to have published_at key
-    if !data.has_key?('published_at') || data['published_at'].nil?
-      errors.add(:published_at, 'Data Error: FeaturedEntry data object required published_at')
+    if self.data.nil?
+      errors.add(:data, 'Data Error: Data is nil')
+    else
+      if !self.data.has_key?('published_at') || data['published_at'].nil?
+        errors.add(:published_at, 'Data Error: FeaturedEntry data object required published_at')
+      end
     end
   end
 

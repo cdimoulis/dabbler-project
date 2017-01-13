@@ -86,7 +86,7 @@ RSpec.describe Blog::V1::TopicsController, type: :controller do
     end
   end
 
-  # Test for UPDATE route
+  # Test for DESTROY route
   context "#destroy" do
     # Allow travel to be shared across all tests
     let!(:topic) { create(:topic) }
