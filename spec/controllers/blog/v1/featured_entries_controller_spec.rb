@@ -91,4 +91,24 @@ RSpec.describe Blog::V1::FeaturedEntriesController, type: :controller do
       expect(assigns(:records).pluck('id')).to match(order)
     end
   end
+
+  # Test for DESTROY route
+  context "#destroy" do
+    # Allow travel to be shared across all tests
+    let!(:featured_entry) { create(:featured_entry) }
+
+    before do
+      sign_in
+      featured_entry.groups << create(:group, domain: featured_entry.domain)
+    end
+
+    it "succeeds" do
+      count = FeaturedEntry.count
+      join_count = GroupTopicPublishedEntry.count
+      delete :destroy, id: featured_entry.id, format: :json
+      expect(response).to have_http_status(:success)
+      expect(FeaturedEntry.count).to eq(count-1)
+      expect(GroupTopicPublishedEntry.count).to eq(join_count-1)
+    end
+  end
 end
