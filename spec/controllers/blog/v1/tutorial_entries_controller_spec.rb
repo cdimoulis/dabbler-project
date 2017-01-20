@@ -22,6 +22,7 @@ RSpec.describe Blog::V1::TutorialEntriesController, type: :controller do
     end
 
   end
+  
   # Tests for INDEX route
   context "#index" do
     let!(:five) { create(:tutorial_entry, data: {order: 5}, created_at: (DateTime.now - 6.days).strftime) }
@@ -30,16 +31,32 @@ RSpec.describe Blog::V1::TutorialEntriesController, type: :controller do
     let!(:two) { create(:tutorial_entry, data: {order: 2}, created_at: (DateTime.now - 9.days).strftime) }
     let!(:one) { create(:tutorial_entry, data: {order: 1}, created_at: (DateTime.now - 10.days).strftime) }
 
-    before do
+    it 'returns correct records' do
       get :index, format: :json
-    end
-
-    it { is_expected.to respond_with(:success) }
-
-    it 'returns JSON' do
+      expect(response).to have_http_status(:success)
       # look_like_json found in support/matchers/json_matchers.rb
       expect(response.body).to look_like_json
       order = [one.id, two.id, three.id, four.id, five.id]
+      expect(assigns(:records).pluck('id')).to match(order)
+    end
+
+    it 'pages records' do
+      # count only
+      get :index, count: 2, format: :json
+      expect(assigns(:records).length).to eq(2)
+      order = [one.id, two.id]
+      expect(assigns(:records).pluck('id')).to match(order)
+
+      # start only
+      get :index, start: 2, format: :json
+      expect(assigns(:records).length).to eq(3)
+      order = [three.id, four.id, five.id]
+      expect(assigns(:records).pluck('id')).to match(order)
+
+      # count andd start
+      get :index, start: 1, count: 2, format: :json
+      expect(assigns(:records).length).to eq(2)
+      order = [two.id, three.id]
       expect(assigns(:records).pluck('id')).to match(order)
     end
 

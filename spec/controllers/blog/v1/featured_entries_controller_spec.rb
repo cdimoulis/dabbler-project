@@ -62,6 +62,26 @@ RSpec.describe Blog::V1::FeaturedEntriesController, type: :controller do
       expect(assigns(:records).pluck('id')).to match(order)
     end
 
+    it 'pages records' do
+      # count only
+      get :index, count: 2, format: :json
+      expect(assigns(:records).length).to eq(2)
+      order = [one.id, two.id]
+      expect(assigns(:records).pluck('id')).to match(order)
+
+      # start only
+      get :index, start: 2, format: :json
+      expect(assigns(:records).length).to eq(3)
+      order = [three.id, four.id, five.id]
+      expect(assigns(:records).pluck('id')).to match(order)
+
+      # count andd start
+      get :index, start: 1, count: 2, format: :json
+      expect(assigns(:records).length).to eq(2)
+      order = [two.id, three.id]
+      expect(assigns(:records).pluck('id')).to match(order)
+    end
+
   end
 
   # Tests for SHOW route
