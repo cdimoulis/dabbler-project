@@ -19,11 +19,11 @@ module DateRange
       # If the column exists in the table
       if @resource.column_names.include?(params[:date_attribute])
         date_attribute = params[:date_attribute]
-      elsif self.responds_to?(:default_date_attribute) && !self.default_date_attribute.nil?
-        date_attribute = self.default_date_attribute
       end
+    elsif @resource.respond_to?(:default_date_attribute) && !@resource.default_date_attribute.nil?
+      date_attribute = @resource.default_date_attribute
     end
-
+    
     # Starting date, no ending date
     if to.nil? and !from.nil?
       @records = @records.where("#{date_attribute} >= ?", from)

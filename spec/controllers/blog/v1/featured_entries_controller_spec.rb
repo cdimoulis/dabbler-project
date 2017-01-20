@@ -24,22 +24,41 @@ RSpec.describe Blog::V1::FeaturedEntriesController, type: :controller do
   end
   # Tests for INDEX route
   context "#index" do
-    let!(:one) { create(:featured_entry, data: {published_at: (DateTime.now - 1.days).strftime}, created_at: (DateTime.now - 10.days).strftime) }
-    let!(:two) { create(:featured_entry, data: {published_at: (DateTime.now - 2.days).strftime}, created_at: (DateTime.now - 9.days).strftime) }
-    let!(:three) { create(:featured_entry, data: {published_at: (DateTime.now - 3.days).strftime}, created_at: (DateTime.now - 8.days).strftime) }
-    let!(:four) { create(:featured_entry, data: {published_at: (DateTime.now - 4.days).strftime}, created_at: (DateTime.now - 7.days).strftime) }
-    let!(:five) { create(:featured_entry, data: {published_at: (DateTime.now - 5.days).strftime}, created_at: (DateTime.now - 6.days).strftime) }
+    let!(:one) { create(:featured_entry, data: {published_at: (DateTime.now - 1.days).strftime}, created_at: (DateTime.now - 8.days).strftime) }
+    let!(:two) { create(:featured_entry, data: {published_at: (DateTime.now - 2.days).strftime}, created_at: (DateTime.now - 7.days).strftime) }
+    let!(:three) { create(:featured_entry, data: {published_at: (DateTime.now - 3.days).strftime}, created_at: (DateTime.now - 6.days).strftime) }
+    let!(:four) { create(:featured_entry, data: {published_at: (DateTime.now - 4.days).strftime}, created_at: (DateTime.now - 5.days).strftime) }
+    let!(:five) { create(:featured_entry, data: {published_at: (DateTime.now - 5.days).strftime}, created_at: (DateTime.now - 4.days).strftime) }
 
-    before do
+    it 'returns correct records' do
       get :index, format: :json
-    end
-
-    it { is_expected.to respond_with(:success) }
-
-    it 'returns JSON' do
+      expect(response).to have_http_status(:success)
       # look_like_json found in support/matchers/json_matchers.rb
       expect(response.body).to look_like_json
       order = [one.id, two.id, three.id, four.id, five.id]
+      expect(assigns(:records).pluck('id')).to match(order)
+    end
+
+    it 'handles date range' do
+      # From only
+      get :index, from: 3.days.ago, format: :json
+      # puts "\n\n#{assigns(:records).pluck("data ->> 'published_at'")}\n\n"
+      expect(assigns(:records).length).to eq(3)
+      order = [one.id, two.id, three.id]
+      expect(assigns(:records).pluck('id')).to match(order)
+
+      # To only
+      get :index, to: 3.days.ago, format: :json
+      # puts "\n\n#{assigns(:records).pluck("data ->> 'published_at'")}\n\n"
+      expect(assigns(:records).length).to eq(2)
+      order = [four.id, five.id]
+      expect(assigns(:records).pluck('id')).to match(order)
+
+      # From only
+      get :index, from: 4.days.ago, to: 2.days.ago, format: :json
+      # puts "\n\n#{assigns(:records).pluck("data ->> 'published_at'")}\n\n"
+      expect(assigns(:records).length).to eq(2)
+      order = [three.id, four.id]
       expect(assigns(:records).pluck('id')).to match(order)
     end
 

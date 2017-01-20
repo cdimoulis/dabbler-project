@@ -23,7 +23,7 @@ class FeaturedEntry < PublishedEntry
   validate :valid_data
 
   # For date_range concern
-  def default_date_attribute
+  def self.default_date_attribute
     "data ->> 'published_at'"
   end
 
