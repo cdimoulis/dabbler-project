@@ -22,6 +22,7 @@ RSpec.describe Blog::V1::FeaturedEntriesController, type: :controller do
     end
 
   end
+  
   # Tests for INDEX route
   context "#index" do
     let!(:one) { create(:featured_entry, data: {published_at: (DateTime.now - 1.days).strftime}, created_at: (DateTime.now - 8.days).strftime) }

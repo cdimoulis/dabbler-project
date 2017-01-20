@@ -5,13 +5,24 @@ RSpec.describe Blog::V1::EntriesController do
 
   context '#single_index' do
     let!(:entry) { create(:entry_with_creator) }
-    let!(:published_entry) { create(:published_entry, entry: entry) }
 
     it 'returns correct entry for published_entry' do
+      published_entry = create(:published_entry, entry: entry)
       get blog_v1_published_entry_entry_path(published_entry_id: published_entry.id), format: :json
       expect(assigns(:record)).to eq(entry)
     end
 
+    it 'returns correct entry for featured_entry' do
+      featured_entry = create(:featured_entry, entry: entry)
+      get blog_v1_featured_entry_entry_path(featured_entry_id: featured_entry.id), format: :json
+      expect(assigns(:record)).to eq(entry)
+    end
+
+    it 'returns correct entry for tutorial_entry' do
+      tutorial_entry = create(:tutorial_entry, entry: entry)
+      get blog_v1_tutorial_entry_entry_path(tutorial_entry_id: tutorial_entry.id), format: :json
+      expect(assigns(:record)).to eq(entry)
+    end
   end
 
   context '#author' do

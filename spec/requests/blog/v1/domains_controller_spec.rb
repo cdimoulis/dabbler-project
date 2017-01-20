@@ -36,5 +36,16 @@ RSpec.describe Blog::V1::DomainsController do
       expect(assigns(:record)).to eq(domain)
     end
 
+    it 'returns correct domain for featured_entry' do
+      featured_entry = create(:featured_entry, domain: domain)
+      get blog_v1_featured_entry_domain_path(featured_entry_id: featured_entry.id), format: :json
+      expect(assigns(:record)).to eq(domain)
+    end
+
+    it 'returns correct domain for tutorial_entry' do
+      tutorial_entry = create(:tutorial_entry, domain: domain)
+      get blog_v1_tutorial_entry_domain_path(tutorial_entry_id: tutorial_entry.id), format: :json
+      expect(assigns(:record)).to eq(domain)
+    end
   end
 end
