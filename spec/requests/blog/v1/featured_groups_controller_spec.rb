@@ -48,4 +48,13 @@ RSpec.describe Blog::V1::FeaturedGroupsController do
       expect(assigns(:records).pluck('id')).to match(order)
     end
   end
+
+  context '#single_index' do
+    it 'fetches via topic' do
+      group = create(:featured_group)
+      topic = create(:topic, group: group, domain: group.domain)
+      get blog_v1_topic_featured_group_path(topic_id: topic.id), format: :json
+      expect(assigns(:record)).to eq(group)
+    end
+  end
 end
