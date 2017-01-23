@@ -58,6 +58,7 @@ Rails.application.routes.draw do
         resources :contributors, to: 'entries#contributors', only: :index, parent: :entries
         resources :published_entries, only: [:create, :index], parent: :entries
         resources :featured_entries, only: [:create, :index], parent: :entries
+        resources :tutorial_entries, only: [:create, :index], parent: :entries
       end
 
       # Only index and show.
