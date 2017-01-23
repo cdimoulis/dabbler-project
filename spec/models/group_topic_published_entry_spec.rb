@@ -16,8 +16,12 @@ RSpec.describe GroupTopicPublishedEntry, type: :model do
 
   context 'associations' do
     it { is_expected.to belong_to(:group) }
+    it { is_expected.to belong_to(:featured_group) }
+    it { is_expected.to belong_to(:tutorial_group) }
     it { is_expected.to belong_to(:topic) }
     it { is_expected.to belong_to(:published_entry) }
+    it { is_expected.to belong_to(:featured_entry) }
+    it { is_expected.to belong_to(:tutorial_entry) }
   end
 
   context 'validations' do

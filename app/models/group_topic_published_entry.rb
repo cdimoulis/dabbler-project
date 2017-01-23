@@ -13,6 +13,8 @@
 class GroupTopicPublishedEntry < ApplicationRecord
 
   belongs_to :group
+  belongs_to :featured_group, foreign_key: 'group_id'
+  belongs_to :tutorial_group, foreign_key: 'group_id'
   belongs_to :topic
   belongs_to :published_entry
   belongs_to :featured_entry, foreign_key: 'published_entry_id'

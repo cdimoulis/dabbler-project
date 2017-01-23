@@ -27,6 +27,8 @@ class PublishedEntry < ApplicationRecord
 
   has_many :group_topic_published_entries, dependent: :destroy
   has_many :groups, through: :group_topic_published_entries
+  has_many :featured_groups, through: :group_topic_published_entries
+  has_many :tutorial_groups, through: :group_topic_published_entries
   has_many :topics, through: :group_topic_published_entries
 
   before_validation :set_author

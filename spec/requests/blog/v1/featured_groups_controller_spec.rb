@@ -34,5 +34,18 @@ RSpec.describe Blog::V1::FeaturedGroupsController do
       expect(response).to have_http_status(:success)
       expect(domain.groups.count).to eq(5)
     end
+
+    it "fetches via featured_entry" do
+      featured_entry = create(:featured_entry)
+      group_a = create(:featured_group, domain: featured_entry.domain)
+      group_b = create(:featured_group, domain: featured_entry.domain)
+      group_c = create(:featured_group, domain: featured_entry.domain)
+      featured_entry.groups << group_b
+      featured_entry.groups << group_c
+      route = blog_v1_featured_entry_featured_groups_path(featured_entry_id: featured_entry.id)
+      get route, format: :json
+      order = [group_b.id, group_c.id]
+      expect(assigns(:records).pluck('id')).to match(order)
+    end
   end
 end
