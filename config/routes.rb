@@ -19,6 +19,7 @@ Rails.application.routes.draw do
         resources :topics, except: exc_new_edit + exc_create_update, parent: :domains
         resources :published_entries, only: :index, parent: :domains
         resources :featured_entries, except: exc_new_edit, parent: :domains
+        resources :tutorial_entries, except: exc_new_edit, parent: :domains
       end
 
       # We will not create a group without it being DomainGroup or TutorialGroup
