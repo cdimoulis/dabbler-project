@@ -34,6 +34,7 @@ Rails.application.routes.draw do
         resource :domain, only: :show, action: 'single_index', parent: :featured_entries
         resource :entry, only: :show, action: 'single_index', parent: :featured_entries
         resources :featured_groups, only: :index, parent: :featured_entries
+        resources :topics, only: :index, parent: :featured_entries
       end
 
       resources :featured_groups, except: exc_new_edit, constraints: uuid_constraints do
@@ -59,6 +60,7 @@ Rails.application.routes.draw do
         resource :domain, only: :show, action: 'single_index', parent: :published_entries
         resource :entry, only: :show, action: 'single_index', parent: :published_entries
         resources :groups, only: :index, parent: :published_entries
+        resources :topics, only: :index, parent: :published_entries
       end
 
       resources :topics, except: exc_new_edit, constraints: uuid_constraints do
@@ -72,6 +74,7 @@ Rails.application.routes.draw do
         resource :domain, only: :show, action: 'single_index', parent: :tutorial_entries
         resource :entry, only: :show, action: 'single_index', parent: :tutorial_entries
         resources :tutorial_groups, only: :index, parent: :tutorial_entries
+        resources :topics, only: :index, parent: :tutorial_entries
       end
 
       resources :tutorial_groups, except: exc_new_edit, constraints: uuid_constraints do
