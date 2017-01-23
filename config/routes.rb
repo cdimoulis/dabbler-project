@@ -47,6 +47,7 @@ Rails.application.routes.draw do
         resource :domain, only: :show, action: 'single_index', parent: :topics
         resources :published_entries, only: :index, parent: :topics
         resources :featured_entries, only: :index, parent: :topics
+        resources :tutorial_entries, only: :index, parent: :topics
       end
 
       resources :users, except: exc_new_edit, constraints: uuid_constraints do
