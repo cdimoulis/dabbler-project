@@ -48,5 +48,23 @@ RSpec.describe Blog::V1::TutorialEntriesController do
       order = [tutorial_entry_a.id, tutorial_entry_b.id]
       expect(assigns(:records).pluck('id')).to match(order)
     end
+
+    it 'group returns correct tutorial entries' do
+      group = create(:tutorial_group)
+      other_group = create(:tutorial_group)
+      tutorial_entry_a = create(:tutorial_entry, domain: group.domain, data: {order: 1})
+      tutorial_entry_b = create(:tutorial_entry, domain: group.domain, data: {order: 2})
+      tutorial_entry_c = create(:tutorial_entry, domain: group.domain, data: {order: 3})
+      other_entry = create(:tutorial_entry, domain: other_group.domain, data: {order: 4})
+
+      group.tutorial_entries << tutorial_entry_b
+      group.tutorial_entries << tutorial_entry_c
+      other_group.tutorial_entries << other_entry
+
+      get blog_v1_group_tutorial_entries_path(group_id: group.id), format: :json
+      expect(response).to have_http_status(:success)
+      order = [tutorial_entry_b.id, tutorial_entry_c.id]
+      expect(assigns(:records).pluck('id')).to match(order)
+    end
   end
 end

@@ -28,6 +28,7 @@ Rails.application.routes.draw do
         resources :topics, except: exc_new_edit + [:update], parent: :groups
         resources :published_entries, only: :index, parent: :groups
         resources :featured_entries, only: :index, parent: :groups
+        resources :tutorial_entries, only: :index, parent: :groups
       end
 
       resources :featured_groups, except: exc_new_edit, constraints: uuid_constraints do
@@ -39,6 +40,7 @@ Rails.application.routes.draw do
       resources :tutorial_groups, except: exc_new_edit, constraints: uuid_constraints do
         resource :domain, only: :show, action: 'single_index', parent: :tutorial_groups
         resources :topics, except: exc_new_edit + [:update], parent: :tutorial_groups
+        resources :tutorial_entries, only: :index, parent: :tutorial_groups
       end
 
       resources :topics, except: exc_new_edit, constraints: uuid_constraints do

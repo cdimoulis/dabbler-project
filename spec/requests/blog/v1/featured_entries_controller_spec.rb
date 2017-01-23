@@ -50,8 +50,8 @@ RSpec.describe Blog::V1::FeaturedEntriesController do
     end
 
     it 'group returns correct featured entries' do
-      group = create(:group)
-      other_group = create(:group)
+      group = create(:featured_group)
+      other_group = create(:featured_group)
       featured_entry_a = create(:featured_entry, domain: group.domain, data: {published_at: (DateTime.now - 1.days).strftime})
       featured_entry_b = create(:featured_entry, domain: group.domain, data: {published_at: (DateTime.now - 2.days).strftime})
       featured_entry_c = create(:featured_entry, domain: group.domain, data: {published_at: (DateTime.now - 3.days).strftime})
