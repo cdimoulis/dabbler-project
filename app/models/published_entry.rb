@@ -23,7 +23,6 @@ class PublishedEntry < ApplicationRecord
   belongs_to :creator, class_name: 'User'
   belongs_to :domain
   belongs_to :entry
-  belongs_to :publishable, polymorphic: true
 
   has_many :group_topic_published_entries, dependent: :destroy
   has_many :groups, through: :group_topic_published_entries
