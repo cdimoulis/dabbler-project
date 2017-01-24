@@ -22,7 +22,7 @@ RSpec.describe Blog::V1::FeaturedEntriesController, type: :controller do
     end
 
   end
-  
+
   # Tests for INDEX route
   context "#index" do
     let!(:one) { create(:featured_entry, data: {published_at: (DateTime.now - 1.days).strftime}, created_at: (DateTime.now - 8.days).strftime) }
@@ -128,6 +128,18 @@ RSpec.describe Blog::V1::FeaturedEntriesController, type: :controller do
       get :index, format: :json
       order = [feat_entry.id, featured_entry.id]
       expect(assigns(:records).pluck('id')).to match(order)
+    end
+
+    it 'updates group_topic_published_entries' do
+      gtpe_a = attributes_for(:group_topic_published_entry, domain: featured_entry.domain)
+      gtpe_b = attributes_for(:group_topic_published_entry, domain: featured_entry.domain)
+
+      update_params = {group_topic_published_entries: [gtpe_a, gtpe_b]}
+      current = GroupTopicPublishedEntry.count
+      put :update, id: featured_entry.id, featured_entry: update_params, format: :json
+      puts "\n\nfeatured_entry #{featured_entry.topics.count}\n\n"
+      expect(featured_entry.group_topic_published_entries.pluck('id')).to match([gtpe_a.id, gtpe_b.id])
+      expect(GroupTopicPublishedEntry.count).to eq(current+2)
     end
   end
 

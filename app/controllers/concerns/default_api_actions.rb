@@ -8,6 +8,7 @@ module DefaultApiActions
     # TODO: Authorization
     #   Need to authorize when USERS are added
     resource_name, resource_id, parent_name, parent_id = get_resources()
+    @errors = {}
     @resource = resource_name.classify.constantize
     begin
       @record = @resource.new permitted_params
@@ -23,11 +24,11 @@ module DefaultApiActions
         rescue NameError => e
           puts "\n\nPossible invalid parent: #{parent_name.classify}", error: "#{e.inspect}\n\n"
           Rails.logger.debug "\n\nPossible invalid parent: #{parent_name.classify}", error: "#{e.inspect}\n\n"
-          errors = {msg: "Possible invalid parent: #{parent_name.classify}"}
+          @errors[:msg] = "Possible invalid parent: #{parent_name.classify}"
         end
       end
 
-      if errors.nil?
+      if @errors.empty?
         # If HasCreator is included then add creator
         if self.class.included_modules.include?(HasCreator)
           add_creator()
@@ -41,9 +42,9 @@ module DefaultApiActions
           render :json => {errors: @record.errors}, :status => 422
         end
       else
-        puts "\n\nCould not create #{@resource} record.\n#{errors.inspect}\n\n"
-        Rails.logger.debug "\n\nCould not create #{@resource} record.\n#{errors.inspect}\n\n"
-        render :json => {errors: errors}, :status => 422
+        puts "\n\nCould not create #{@resource} record.\n#{@errors.inspect}\n\n"
+        Rails.logger.debug "\n\nCould not create #{@resource} record.\n#{@errors.inspect}\n\n"
+        render :json => {errors: @errors}, :status => 422
       end
 
     # No model data sent
@@ -58,6 +59,7 @@ module DefaultApiActions
   def index
     resource_name, resource_id, parent_name, parent_id = get_resources()
     @records = []
+    @errors = {}
     # fetch from parent
     if !parent_name.nil? and !parent_id.nil?
       # Try block in case parent_name is not a model class
@@ -75,17 +77,17 @@ module DefaultApiActions
           else
             puts "\n\nParent #{parent_name} does not respond to #{resource_name}\n\n"
             Rails.logger.debug "\n\nParent #{parent_name} does not respond to #{resource_name}\n\n"
-            errors = {msg: "Parent #{parent_name} does not respond to #{resource_name}"}
+            @errors[:msg] = "Parent #{parent_name} does not respond to #{resource_name}"
           end
         else
           puts "\n\nInvalid Parent: #{parent_name} of id #{parent_id} does not exist.\n\n"
           Rails.logger.debug "\n\nInvalid Parent: #{parent_name} of id #{parent_id} does not exist.\n\n"
-          errors = {msg: "Invalid Parent: #{parent_name} of id #{parent_id} does not exist."}
+          @errors[:msg] = "Invalid Parent: #{parent_name} of id #{parent_id} does not exist."
         end
       rescue NameError => e
         puts "\n\nInvalid parent: #{parent_name}", error: "#{e}\n\n"
         Rails.logger.debug "\n\nInvalid parent: #{parent_name}", error: "#{e}\n\n"
-        errors = {msg: "Invalid parent: #{parent_name}"}
+        @errors[:msg] = "Invalid parent: #{parent_name}"
       end
     else
       @resource = resource_name.classify.constantize
@@ -102,10 +104,12 @@ module DefaultApiActions
       pageRecords()
     end
 
-    if errors.nil?
+    if @errors.empty?
       respond_with :blog, :v1, @records
     else
-      render :json => {errors: errors}, :status => 422
+      puts "\n\nIndex error for #{@resource} record.\n#{@errors.inspect}\n\n"
+      Rails.logger.debug "\n\nIndex error for #{@resource} record.\n#{@errors.inspect}\n\n"
+      render :json => {errors: @errors}, :status => 422
     end
   end
 
@@ -115,6 +119,7 @@ module DefaultApiActions
     resource_name = resource.singularize
     @resource = resource_name.classify.constantize
     id_text = "#{resource_name}_id"
+    @errors = {}
 
     begin
       parent_model = parent_name.classify.constantize
@@ -132,28 +137,30 @@ module DefaultApiActions
           else
             puts "\n\n#{resource_name.classify}: Invalid Parent: #{parent_name} is not associated with #{resource_name}.\n\n"
             Rails.logger.debug "\n\n#{resource_name.classify}: Invalid Parent: #{parent_name} is not associated with #{resource_name}.\n\n"
-            errors = {msg: "#{resource_name.classify}: Invalid Parent: #{parent_name} is not associated with #{resource_name}."}
+            @errors[:msg] = "#{resource_name.classify}: Invalid Parent: #{parent_name} is not associated with #{resource_name}."
           end
         else
           puts "\n\n#{resource_name.classify}: Invalid Parent: #{parent_name} is not associated with #{resource_name}.\n\n"
           Rails.logger.debug "\n\n#{resource_name.classify}: Invalid Parent: #{parent_name} is not associated with #{resource_name}.\n\n"
-          errors = {msg: "#{resource_name.classify}: Invalid Parent: #{parent_name} is not associated with #{resource_name}."}
+          @errors[:msg] = "#{resource_name.classify}: Invalid Parent: #{parent_name} is not associated with #{resource_name}."
         end
       else
         puts "\n\n#{resource_name.classify}: Invalid Parent: #{parent_name} of id #{parent_id} does not exist.\n\n"
         Rails.logger.debug "\n\n#{resource_name.classify}: Invalid Parent: #{parent_name} of id #{parent_id} does not exist.\n\n"
-        errors = {msg: "#{resource_name.classify}: Invalid Parent: #{parent_name} of id #{parent_id} does not exist."}
+        @errors[:msg] = "#{resource_name.classify}: Invalid Parent: #{parent_name} of id #{parent_id} does not exist."
       end
     rescue NameError => e
       puts "\n\n#{resource_name.classify}: Invalid parent: #{parent_name}", error: "#{e}\n\n"
       Rails.logger.debug "\n\n#{resource_name.classify}: Invalid parent: #{parent_name}", error: "#{e}\n\n"
-      errors = {msg: "#{resource_name.classify}: Invalid parent: #{parent_name}"}
+      @errors[:msg] = "#{resource_name.classify}: Invalid parent: #{parent_name}"
     end
 
-    if errors.nil?
+    if @errors.empty?
       respond_with :blog, :v1, @record
     else
-      render :json => {errors: errors}, :status => 404
+      puts "\n\nSingle Index error for #{@resource} record.\n#{@errors.inspect}\n\n"
+      Rails.logger.debug "\n\nSingle Index error for #{@resource} record.\n#{@errors.inspect}\n\n"
+      render :json => {errors: @errors}, :status => 404
     end
   end
 
@@ -176,11 +183,12 @@ module DefaultApiActions
     #   Need to authorize when USERS are added
     resource_name, resource_id = get_resources()
     @resource = resource_name.classify.constantize
-
     @record = @resource.where("id = ?", resource_id).take
-    if @record.update(permitted_params)
+
+    if !@record.nil? and @record.update(permitted_params)
       respond_with :blog, :v1, @record
     else
+      puts "\n\n*** ERRORS #{@record.errors.inspect}***\n\n"
       render :json => {errors: @record.errors}, :status => 424
     end
   end

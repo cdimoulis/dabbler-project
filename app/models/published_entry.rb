@@ -43,7 +43,7 @@ class PublishedEntry < ApplicationRecord
   end
 
   def send_attributes
-    [:text]
+    [:text, :group_topic_published_entries]
   end
   ###
   # End AssociationAccessorconcern
@@ -72,6 +72,8 @@ class PublishedEntry < ApplicationRecord
   def domain_exists
     if attribute_present?(:domain_id) and !Domain.exists?(domain_id)
       errors.add(:domain_id, "Invalid Domain: Does not exist")
+      puts "\n\nPublishedEntry error: Invalid domain_id #{domain_id}\nEntry:#{entry.inspect}\n\n"
+      Rails.logger.info "\n\nPublishedEntry error: Invalid domain_id #{domain_id}\nEntry:#{entry.inspect}\n\n"
     end
   end
 
