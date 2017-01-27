@@ -30,10 +30,19 @@ class PublishedEntry < ApplicationRecord
   has_many :tutorial_groups, through: :group_topic_published_entries
   has_many :topics, through: :group_topic_published_entries
 
+  accepts_nested_attributes_for :group_topic_published_entries
+
   before_validation :set_author
 
   validates :author_id, :domain_id, :entry_id, presence: true
   validate :entry_author, :domain_exists
+
+  # Clear out old join models
+  def group_topic_published_entries_attributes=(*args)
+    self.group_topic_published_entries.clear
+    super(*args)
+  end
+
 
   ###
   # For AssociationAccessors concern

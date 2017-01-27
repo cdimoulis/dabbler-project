@@ -184,11 +184,10 @@ module DefaultApiActions
     resource_name, resource_id = get_resources()
     @resource = resource_name.classify.constantize
     @record = @resource.where("id = ?", resource_id).take
-
+    
     if !@record.nil? and @record.update(permitted_params)
       respond_with :blog, :v1, @record
     else
-      puts "\n\n*** ERRORS #{@record.errors.inspect}***\n\n"
       render :json => {errors: @record.errors}, :status => 424
     end
   end

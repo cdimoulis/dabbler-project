@@ -22,7 +22,7 @@ RSpec.describe Blog::V1::TutorialEntriesController, type: :controller do
     end
 
   end
-  
+
   # Tests for INDEX route
   context "#index" do
     let!(:five) { create(:tutorial_entry, data: {order: 5}, created_at: (DateTime.now - 6.days).strftime) }
@@ -98,13 +98,43 @@ RSpec.describe Blog::V1::TutorialEntriesController, type: :controller do
 
     it "succeeds" do
       tut_entry = create(:tutorial_entry, data: {order: 2})
+      group = create(:tutorial_group, domain: tutorial_entry.domain)
+      # To ensure the join model does not dissapear on update
+      gtpe_a = create(:group_topic_published_entry, domain: tutorial_entry.domain, group: group, published_entry: tutorial_entry)
+      count = GroupTopicPublishedEntry.count
+
       update_params = {data: {order: 3}}
       put :update, id: tutorial_entry.id, tutorial_entry: update_params, format: :json
       expect(response).to have_http_status(:success)
       expect(assigns(:record).data['published_at']).to eq(update_params[:data][:published_at])
+      expect(GroupTopicPublishedEntry.count).to eq(count)
+
       get :index, format: :json
       order = [tut_entry.id, tutorial_entry.id]
       expect(assigns(:records).pluck('id')).to match(order)
+    end
+
+    it 'updates group_topic_published_entries' do
+      group = create(:tutorial_group, domain: tutorial_entry.domain)
+      gtpe_a = attributes_for(:group_topic_published_entry, domain: tutorial_entry.domain, group: group, published_entry: nil)
+      gtpe_b = attributes_for(:group_topic_published_entry, domain: tutorial_entry.domain, group: group, published_entry: nil)
+
+      gtpe_c = attributes_for(:group_topic_published_entry, domain: tutorial_entry.domain, group: group, published_entry: nil)
+      gtpe_d = attributes_for(:group_topic_published_entry, domain: tutorial_entry.domain, group: group, published_entry: nil)
+
+      # First set
+      update_params = {group_topic_published_entries_attributes: [gtpe_a, gtpe_b]}
+      current = GroupTopicPublishedEntry.count
+      put :update, id: tutorial_entry.id, tutorial_entry: update_params, format: :json
+      expect(tutorial_entry.group_topic_published_entries.pluck('id')).to match(GroupTopicPublishedEntry.pluck('id'))
+      expect(GroupTopicPublishedEntry.count).to eq(2)
+
+      # Second set
+      update_params = {group_topic_published_entries_attributes: [gtpe_a, gtpe_b]}
+      current = GroupTopicPublishedEntry.count
+      put :update, id: tutorial_entry.id, tutorial_entry: update_params, format: :json
+      expect(tutorial_entry.group_topic_published_entries.pluck('id')).to match(GroupTopicPublishedEntry.pluck('id'))
+      expect(GroupTopicPublishedEntry.count).to eq(2)
     end
   end
 

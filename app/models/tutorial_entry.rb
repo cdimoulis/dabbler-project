@@ -22,6 +22,13 @@ class TutorialEntry < PublishedEntry
 
   validate :valid_data
 
+  # Clear out old join models
+  def group_topic_published_entries_attributes=(*args)
+    self.group_topic_published_entries.clear
+    super(*args)
+  end
+
+
   protected
 
   def valid_data

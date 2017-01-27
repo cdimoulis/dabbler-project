@@ -51,8 +51,8 @@ RSpec.describe GroupTopicPublishedEntry, type: :model do
       tutorial_group = create(:tutorial_group)
       featured_entry = create(:featured_entry, domain: tutorial_group.domain)
       tutorial_entry = create(:tutorial_entry, domain: featured_group.domain)
-      featured_model = build(:group_topic_published_entry, published_entry: tutorial_entry, group: featured_group)
-      tutorial_model = build(:group_topic_published_entry, published_entry: featured_entry, group: tutorial_group)
+      featured_model = build(:group_topic_published_entry, published_entry: tutorial_entry, group: featured_group, domain: featured_group.domain)
+      tutorial_model = build(:group_topic_published_entry, published_entry: featured_entry, group: tutorial_group, domain: tutorial_group.domain)
 
       expect(featured_model.valid?).to be_falsy
       expect(tutorial_model.valid?).to be_falsy

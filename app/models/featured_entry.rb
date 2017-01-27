@@ -22,6 +22,12 @@ class FeaturedEntry < PublishedEntry
 
   validate :valid_data
 
+  # Clear out old join models
+  def group_topic_published_entries_attributes=(*args)
+    self.group_topic_published_entries.clear
+    super(*args)
+  end
+
   # For date_range concern
   def self.default_date_attribute
     "data ->> 'published_at'"

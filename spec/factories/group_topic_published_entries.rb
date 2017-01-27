@@ -12,7 +12,10 @@
 
 FactoryGirl.define do
   factory :group_topic_published_entry do
-    domain { create(:domain) }
+    transient do
+      domain { create(:domain) }
+    end
+    
     group { create(:featured_group, domain: domain) }
     group_id { group.id }
     topic { create(:topic, group: group, domain: domain) }

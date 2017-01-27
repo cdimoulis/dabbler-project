@@ -43,21 +43,18 @@ RSpec.describe Blog::V1::FeaturedEntriesController, type: :controller do
     it 'handles date range' do
       # From only
       get :index, from: 3.days.ago, format: :json
-      # puts "\n\n#{assigns(:records).pluck("data ->> 'published_at'")}\n\n"
       expect(assigns(:records).length).to eq(3)
       order = [one.id, two.id, three.id]
       expect(assigns(:records).pluck('id')).to match(order)
 
       # To only
       get :index, to: 3.days.ago, format: :json
-      # puts "\n\n#{assigns(:records).pluck("data ->> 'published_at'")}\n\n"
       expect(assigns(:records).length).to eq(2)
       order = [four.id, five.id]
       expect(assigns(:records).pluck('id')).to match(order)
 
       # From only
       get :index, from: 4.days.ago, to: 2.days.ago, format: :json
-      # puts "\n\n#{assigns(:records).pluck("data ->> 'published_at'")}\n\n"
       expect(assigns(:records).length).to eq(2)
       order = [three.id, four.id]
       expect(assigns(:records).pluck('id')).to match(order)
@@ -121,25 +118,41 @@ RSpec.describe Blog::V1::FeaturedEntriesController, type: :controller do
 
     it "succeeds" do
       feat_entry = create(:featured_entry, data: {published_at: (DateTime.now - 1.days).strftime})
+      # To ensure the join model does not dissapear on update
+      gtpe_a = create(:group_topic_published_entry, domain: featured_entry.domain, published_entry: featured_entry)
+      count = GroupTopicPublishedEntry.count
+
       update_params = {data: {published_at: (DateTime.now - 2.days).strftime}}
       put :update, id: featured_entry.id, featured_entry: update_params, format: :json
       expect(response).to have_http_status(:success)
       expect(assigns(:record).data['published_at']).to eq(update_params[:data][:published_at])
+      expect(GroupTopicPublishedEntry.count).to eq(count)
+
       get :index, format: :json
       order = [feat_entry.id, featured_entry.id]
       expect(assigns(:records).pluck('id')).to match(order)
     end
 
     it 'updates group_topic_published_entries' do
-      gtpe_a = attributes_for(:group_topic_published_entry, domain: featured_entry.domain)
-      gtpe_b = attributes_for(:group_topic_published_entry, domain: featured_entry.domain)
+      gtpe_a = attributes_for(:group_topic_published_entry, domain: featured_entry.domain, published_entry: nil)
+      gtpe_b = attributes_for(:group_topic_published_entry, domain: featured_entry.domain, published_entry: nil)
 
-      update_params = {group_topic_published_entries: [gtpe_a, gtpe_b]}
+      gtpe_c = attributes_for(:group_topic_published_entry, domain: featured_entry.domain, published_entry: nil)
+      gtpe_d = attributes_for(:group_topic_published_entry, domain: featured_entry.domain, published_entry: nil)
+
+      # First set
+      update_params = {group_topic_published_entries_attributes: [gtpe_a, gtpe_b]}
       current = GroupTopicPublishedEntry.count
       put :update, id: featured_entry.id, featured_entry: update_params, format: :json
-      puts "\n\nfeatured_entry #{featured_entry.topics.count}\n\n"
-      expect(featured_entry.group_topic_published_entries.pluck('id')).to match([gtpe_a.id, gtpe_b.id])
-      expect(GroupTopicPublishedEntry.count).to eq(current+2)
+      expect(featured_entry.group_topic_published_entries.pluck('id')).to match(GroupTopicPublishedEntry.pluck('id'))
+      expect(GroupTopicPublishedEntry.count).to eq(2)
+
+      # Second set
+      update_params = {group_topic_published_entries_attributes: [gtpe_a, gtpe_b]}
+      current = GroupTopicPublishedEntry.count
+      put :update, id: featured_entry.id, featured_entry: update_params, format: :json
+      expect(featured_entry.group_topic_published_entries.pluck('id')).to match(GroupTopicPublishedEntry.pluck('id'))
+      expect(GroupTopicPublishedEntry.count).to eq(2)
     end
   end
 
