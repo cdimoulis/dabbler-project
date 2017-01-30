@@ -22,7 +22,7 @@ class GroupTopicPublishedEntry < ApplicationRecord
 
   before_validation :set_group
 
-  validates :group_id, :published_entry_id, presence: true
+  validates :group_id, :published_entry, presence: true
   validate :valid_group, :valid_domain, :valid_types
 
 

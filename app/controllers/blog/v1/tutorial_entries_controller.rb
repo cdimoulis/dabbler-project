@@ -4,7 +4,7 @@ class Blog::V1::TutorialEntriesController < Blog::V1::BlogController
   include DateRange
 
   before_action :require_login, only: [:create, :update, :destroy]
-  before_action :check_data, only: :update
+  before_action :check_data, only: [:create, :update]
 
   respond_to :json
 

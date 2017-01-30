@@ -24,7 +24,7 @@ class PublishedEntry < ApplicationRecord
   belongs_to :domain
   belongs_to :entry
 
-  has_many :group_topic_published_entries, dependent: :destroy
+  has_many :group_topic_published_entries, dependent: :destroy, inverse_of: :published_entry
   has_many :groups, through: :group_topic_published_entries
   has_many :featured_groups, through: :group_topic_published_entries
   has_many :tutorial_groups, through: :group_topic_published_entries

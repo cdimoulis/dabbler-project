@@ -21,6 +21,18 @@ RSpec.describe Blog::V1::FeaturedEntriesController, type: :controller do
       expect(FeaturedEntry.count).to eq(current+1)
     end
 
+    it 'succeeds with group_topic_published_entries' do
+      count = GroupTopicPublishedEntry.count
+      featured_entry = attributes_for(:featured_entry)
+      gtpe_a = attributes_for(:group_topic_published_entry, domain: featured_entry[:domain], published_entry: nil)
+      gtpe_b = attributes_for(:group_topic_published_entry, domain: featured_entry[:domain], published_entry: nil)
+      featured_entry[:group_topic_published_entries_attributes] = [gtpe_a, gtpe_b]
+      post :create, featured_entry: featured_entry, format: :json
+      expect(response).to have_http_status(:success)
+      expect(GroupTopicPublishedEntry.count).to eq(count+2)
+      expect(GroupTopicPublishedEntry.first.published_entry_id).to eq(FeaturedEntry.first.id)
+    end
+
   end
 
   # Tests for INDEX route

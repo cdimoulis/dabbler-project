@@ -4,14 +4,14 @@ class Blog::V1::FeaturedEntriesController < Blog::V1::BlogController
   include DateRange
 
   before_action :require_login, only: [:create, :update, :destroy]
-  before_action :check_data, only: :update
+  before_action :check_data, only: [:create, :update]
 
   respond_to :json
 
   # Check json data on update
   def check_data
     # When updating
-    if !params[:featured_entry].include?(:data) or params[:featured_entry][:data].nil?
+    if params.include?(:featured_entry) and (!params[:featured_entry].include?(:data) or params[:featured_entry][:data].nil?)
       record = FeaturedEntry.where('id = ?', params[:id]).take
       params[:featured_entry][:data] = record.data
     end
