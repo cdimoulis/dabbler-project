@@ -32,7 +32,6 @@ RSpec.describe Blog::V1::FeaturedEntriesController, type: :controller do
       expect(GroupTopicPublishedEntry.count).to eq(count+2)
       expect(GroupTopicPublishedEntry.first.published_entry_id).to eq(FeaturedEntry.first.id)
     end
-
   end
 
   # Tests for INDEX route

@@ -21,6 +21,18 @@ RSpec.describe Blog::V1::TutorialEntriesController, type: :controller do
       expect(TutorialEntry.count).to eq(current+1)
     end
 
+    it 'succeeds with group_topic_published_entries' do
+      count = GroupTopicPublishedEntry.count
+      tutorial_entry = attributes_for(:tutorial_entry)
+      group = create(:tutorial_group, domain: tutorial_entry[:domain])
+      gtpe_a = attributes_for(:group_topic_published_entry, group: group, domain: tutorial_entry[:domain], published_entry: nil)
+      gtpe_b = attributes_for(:group_topic_published_entry, group: group, domain: tutorial_entry[:domain], published_entry: nil)
+      tutorial_entry[:group_topic_published_entries_attributes] = [gtpe_a, gtpe_b]
+      post :create, tutorial_entry: tutorial_entry, format: :json
+      expect(response).to have_http_status(:success)
+      expect(GroupTopicPublishedEntry.count).to eq(count+2)
+      expect(GroupTopicPublishedEntry.first.published_entry_id).to eq(TutorialEntry.first.id)
+    end
   end
 
   # Tests for INDEX route

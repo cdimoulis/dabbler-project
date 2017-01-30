@@ -11,7 +11,7 @@ class Blog::V1::PublishedEntriesController < Blog::V1::BlogController
   # Check json data on update
   def check_data
     # When updating
-    if !params[:published_entry].include?(:data) or params[:published_entry][:data].nil?
+    if params.include?(:published_entry) and (!params[:published_entry].include?(:data) or params[:published_entry][:data].nil?)
       record = PublishedEntry.where('id = ?', params[:id]).take
       params[:published_entry][:data] = record.data
     end
