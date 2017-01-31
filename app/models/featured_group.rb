@@ -13,5 +13,6 @@
 
 class FeaturedGroup < Group
 
+  has_many :featured_entries, through: :group_topic_published_entries, foreign_key: 'published_entry_id'
 
 end

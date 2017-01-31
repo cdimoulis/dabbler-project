@@ -28,6 +28,23 @@ RSpec.describe FeaturedEntry, type: :model do
     end
   end
 
+  context 'associations' do
+    it 'associates updated entries' do
+      fe_a = create(:featured_entry)
+      fe_b = create(:featured_entry)
+      fe_c = create(:featured_entry)
+      fe_c.revised_featured_entry = fe_b
+      fe_c.save
+      fe_b.revised_featured_entry = fe_a
+      fe_b.save
+      expect(fe_a.revised_featured_entry).to eq(nil)
+      expect(fe_a.previous_featured_entry).to eq(fe_b)
+      expect(fe_b.revised_published_entry_id).to eq(fe_a.id)
+      expect(fe_b.previous_featured_entry).to eq(fe_c)
+      expect(fe_c.revised_published_entry_id).to eq(fe_b.id)
+    end
+  end
+
   context 'validations' do
     it 'fails without published_at' do
       feat_entry = build(:featured_entry, data: {})

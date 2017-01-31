@@ -21,6 +21,9 @@ class FeaturedEntry < PublishedEntry
 
   default_scope { order("data ->> 'published_at' DESC") }
 
+  belongs_to :revised_featured_entry, class_name: 'FeaturedEntry', foreign_key: 'revised_published_entry_id'
+  has_one :previous_featured_entry, class_name: 'FeaturedEntry', foreign_key: 'revised_published_entry_id'
+
   validate :valid_data
 
   # Clear out old join models

@@ -28,6 +28,23 @@ RSpec.describe TutorialEntry, type: :model do
     end
   end
 
+  context 'associations' do
+    it 'associates updated entries' do
+      te_a = create(:tutorial_entry)
+      te_b = create(:tutorial_entry)
+      te_c = create(:tutorial_entry)
+      te_c.revised_tutorial_entry = te_b
+      te_c.save
+      te_b.revised_tutorial_entry = te_a
+      te_b.save
+      expect(te_a.revised_tutorial_entry).to eq(nil)
+      expect(te_a.previous_tutorial_entry).to eq(te_b)
+      expect(te_b.revised_published_entry_id).to eq(te_a.id)
+      expect(te_b.previous_tutorial_entry).to eq(te_c)
+      expect(te_c.revised_published_entry_id).to eq(te_b.id)
+    end
+  end
+
   context 'validations' do
     it 'fails without order' do
       tut_entry = build(:tutorial_entry, data: {})

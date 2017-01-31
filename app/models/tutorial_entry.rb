@@ -21,6 +21,9 @@ class TutorialEntry < PublishedEntry
 
   default_scope { order("data ->> 'order' ASC")}
 
+  belongs_to :revised_tutorial_entry, class_name: 'TutorialEntry', foreign_key: 'revised_published_entry_id'
+  has_one :previous_tutorial_entry, class_name: 'TutorialEntry', foreign_key: 'revised_published_entry_id'
+
   validate :valid_data
 
   # Clear out old join models
