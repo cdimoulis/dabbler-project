@@ -23,7 +23,7 @@ class Group < ApplicationRecord
   has_many :tutorial_entries, through: :group_topic_published_entries
 
   validates :text, :domain_id, :type, presence: true
-  validates :text, uniqueness: {scope: [:domain_id, :type], message: "Domain text must be unique"}
+  validates :text, uniqueness: {scope: [:domain_id, :type], message: "Group text must be unique within a Domain"}
   validate :domain_exists
 
 
