@@ -7,9 +7,9 @@ class CreatePublishedEntries < ActiveRecord::Migration
       t.string :image_url
       t.text :notes
       t.text :tags, array: true
-
       t.string :type
       t.json :data
+      t.uuid :revised_published_entry_id
 
       t.uuid :creator_id, null: false   # The logged in user who actually published this
       t.timestamps null: false
@@ -19,5 +19,6 @@ class CreatePublishedEntries < ActiveRecord::Migration
     add_index :published_entries, :creator_id
     add_index :published_entries, :domain_id
     add_index :published_entries, :entry_id
+    add_index :published_entries, :revised_published_entry_id
   end
 end
