@@ -18,14 +18,12 @@ module DateRange
     if params.has_key?(:date_attribute)
       # If the column exists in the table
       if @resource.column_names.include?(params[:date_attribute])
-        attr_type = @resource.columns_hash[params[:date_attribute]].type
-        # If the type is date rangable
-        if attr_type.eql?(:datetime) || attr_type.eql?(:date)
-          date_attribute = params[:date_attribute]
-        end
+        date_attribute = params[:date_attribute]
       end
+    elsif @resource.respond_to?(:default_date_attribute) && !@resource.default_date_attribute.nil?
+      date_attribute = @resource.default_date_attribute
     end
-
+    
     # Starting date, no ending date
     if to.nil? and !from.nil?
       @records = @records.where("#{date_attribute} >= ?", from)

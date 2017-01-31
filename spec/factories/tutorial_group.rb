@@ -10,8 +10,6 @@
 #  updated_at  :datetime         not null
 #
 
-# Factory for
-#   Domain model
 FactoryGirl.define do
 
   factory :tutorial_group do
@@ -20,5 +18,6 @@ FactoryGirl.define do
     created_at { DateTime.now.to_date.to_time }
     updated_at { DateTime.now.to_date.to_time }
     domain { create(:domain) }
+    domain_id { domain.id }
   end
 end

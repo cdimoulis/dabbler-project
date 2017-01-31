@@ -22,8 +22,10 @@ RSpec.describe Entry, type: :model do
 
   context 'associations' do
     it { is_expected.to belong_to(:author) }
+    it { is_expected.to have_and_belong_to_many(:contributors).class_name('User') }
     it { is_expected.to belong_to(:updated_entry) }
     it { is_expected.to have_one(:previous_entry) }
+    it { is_expected.to have_many(:published_entries) }
 
     it 'associates updated entries' do
       entry_a = create(:entry_with_creator)

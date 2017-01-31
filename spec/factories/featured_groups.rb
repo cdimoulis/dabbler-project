@@ -10,13 +10,12 @@
 #  updated_at  :datetime         not null
 #
 
-# Factory for
-#   Domain model
 FactoryGirl.define do
 
   factory :featured_group do
     text { "Featured Group #{FeaturedGroup.count}" }
     description { "#{text.sub(' Group','')} test domain group" }
     domain { create(:domain, text: "#{text.sub(' Group','')}") }
+    domain_id { domain.id }
   end
 end

@@ -47,5 +47,11 @@ FactoryGirl.define do
     country "United States"
     postal_code "60061"
 
+    factory :person_with_user do
+      after(:create) do |person|
+        create(:user, person: person)
+      end
+    end
+
   end
 end

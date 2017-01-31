@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161220012154) do
+ActiveRecord::Schema.define(version: 20170105181734) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -57,6 +57,18 @@ ActiveRecord::Schema.define(version: 20161220012154) do
   add_index "entries_users", ["entry_id"], name: "index_entries_users_on_entry_id", using: :btree
   add_index "entries_users", ["user_id"], name: "index_entries_users_on_user_id", using: :btree
 
+  create_table "group_topic_published_entries", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
+    t.uuid     "group_id",           null: false
+    t.uuid     "topic_id"
+    t.uuid     "published_entry_id", null: false
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
+  end
+
+  add_index "group_topic_published_entries", ["group_id"], name: "index_group_topic_published_entries_on_group_id", using: :btree
+  add_index "group_topic_published_entries", ["published_entry_id"], name: "index_group_topic_published_entries_on_published_entry_id", using: :btree
+  add_index "group_topic_published_entries", ["topic_id"], name: "index_group_topic_published_entries_on_topic_id", using: :btree
+
   create_table "groups", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
     t.string   "text",        null: false
     t.text     "description"
@@ -97,6 +109,25 @@ ActiveRecord::Schema.define(version: 20161220012154) do
   end
 
   add_index "people", ["creator_id"], name: "index_people_on_creator_id", using: :btree
+
+  create_table "published_entries", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
+    t.uuid     "author_id",  null: false
+    t.uuid     "domain_id",  null: false
+    t.uuid     "entry_id",   null: false
+    t.string   "image_url"
+    t.text     "notes"
+    t.text     "tags",                    array: true
+    t.string   "type"
+    t.json     "data"
+    t.uuid     "creator_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "published_entries", ["author_id"], name: "index_published_entries_on_author_id", using: :btree
+  add_index "published_entries", ["creator_id"], name: "index_published_entries_on_creator_id", using: :btree
+  add_index "published_entries", ["domain_id"], name: "index_published_entries_on_domain_id", using: :btree
+  add_index "published_entries", ["entry_id"], name: "index_published_entries_on_entry_id", using: :btree
 
   create_table "topics", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
     t.string   "text",        null: false

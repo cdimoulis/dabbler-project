@@ -28,13 +28,33 @@ RSpec.describe Blog::V1::FeaturedGroupsController do
 
   # test nested index
   context '#index' do
-    let!(:travel) { create(:domain_with_groups, text: 'Travel') }
-    let(:featured_groups_via_domain_path) { blog_v1_domain_featured_groups_path(domain_id: travel.id) }
-
     it "fetches via domain" do
-      get featured_groups_via_domain_path, format: :json
+      domain = create(:domain_with_groups)
+      get blog_v1_domain_groups_path(domain_id: domain.id), format: :json
       expect(response).to have_http_status(:success)
-      expect(travel.groups.count).to eq(5)
+      expect(domain.groups.count).to eq(5)
+    end
+
+    it "fetches via featured_entry" do
+      featured_entry = create(:featured_entry)
+      group_a = create(:featured_group, domain: featured_entry.domain)
+      group_b = create(:featured_group, domain: featured_entry.domain)
+      group_c = create(:featured_group, domain: featured_entry.domain)
+      featured_entry.groups << group_b
+      featured_entry.groups << group_c
+      route = blog_v1_featured_entry_featured_groups_path(featured_entry_id: featured_entry.id)
+      get route, format: :json
+      order = [group_b.id, group_c.id]
+      expect(assigns(:records).pluck('id')).to match(order)
+    end
+  end
+
+  context '#single_index' do
+    it 'fetches via topic' do
+      group = create(:featured_group)
+      topic = create(:topic, group: group, domain: group.domain)
+      get blog_v1_topic_featured_group_path(topic_id: topic.id), format: :json
+      expect(assigns(:record)).to eq(group)
     end
   end
 end

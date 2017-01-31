@@ -36,5 +36,27 @@ RSpec.describe Blog::V1::TutorialGroupsController do
       expect(response).to have_http_status(:success)
       expect(travel.groups.count).to eq(5)
     end
+
+    it "fetches via tutorial_entry" do
+      tutorial_entry = create(:tutorial_entry)
+      group_a = create(:tutorial_group, domain: tutorial_entry.domain)
+      group_b = create(:tutorial_group, domain: tutorial_entry.domain)
+      group_c = create(:tutorial_group, domain: tutorial_entry.domain)
+      tutorial_entry.groups << group_b
+      tutorial_entry.groups << group_c
+      route = blog_v1_tutorial_entry_tutorial_groups_path(tutorial_entry_id: tutorial_entry.id)
+      get route, format: :json
+      order = [group_b.id, group_c.id]
+      expect(assigns(:records).pluck('id')).to match(order)
+    end
+  end
+
+  context '#single_index' do
+    it 'fetches via topic' do
+      group = create(:tutorial_group)
+      topic = create(:topic, group: group, domain: group.domain)
+      get blog_v1_topic_tutorial_group_path(topic_id: topic.id), format: :json
+      expect(assigns(:record)).to eq(group)
+    end
   end
 end

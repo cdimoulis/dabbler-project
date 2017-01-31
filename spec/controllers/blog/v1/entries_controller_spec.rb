@@ -15,8 +15,8 @@ RSpec.describe Blog::V1::EntriesController do
 
     it 'succeeds' do
       current = Entry.count
-      entry = build(:entry)
-      post :create, entry: entry.attributes, format: :json
+      entry = attributes_for(:entry)
+      post :create, entry: entry, format: :json
       expect(response).to have_http_status(:success)
       expect(Entry.count).to eq(current+1)
     end
@@ -137,7 +137,7 @@ RSpec.describe Blog::V1::EntriesController do
     end
   end
 
-  # Test for UPDATE route
+  # Test for DESTROY route
   context "#destroy" do
     # Allow travel to be shared across all tests
     let!(:admin) { create(:user) }

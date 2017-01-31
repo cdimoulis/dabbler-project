@@ -6,8 +6,8 @@ RSpec.describe Blog::V1::PeopleController do
   context "#create" do
     it 'succeeds' do
       current = Person.count
-      person = build(:person)
-      post :create, person: person.attributes, format: :json
+      person = attributes_for(:person)
+      post :create, person: person, format: :json
       expect(response).to have_http_status(:success)
       expect(Person.count).to eq(current+1)
     end
@@ -39,7 +39,7 @@ RSpec.describe Blog::V1::PeopleController do
   # Tests for SHOW route
   context "#show" do
     # Allow travel to be shared across all tests
-    let!(:chris) { create(:person, first_name: 'Chris') }
+    let!(:chris) { create(:person_with_user, first_name: 'Chris') }
 
     # Before running a test do this
     before do
@@ -51,6 +51,11 @@ RSpec.describe Blog::V1::PeopleController do
     it 'returns JSON' do
       # look_like_json found in support/matchers/json_matchers.rb
       expect(response.body).to look_like_json
+    end
+
+    it 'includes association attributes' do
+      user = chris.user
+      expect(JSON.parse(response.body)["email"]).to eq(user.email)
     end
 
     it { expect(assigns(:record)).to eq(chris) }
@@ -80,7 +85,7 @@ RSpec.describe Blog::V1::PeopleController do
     end
   end
 
-  # Test for UPDATE route
+  # Test for DESTROY route
   context "#destroy" do
     # Allow travel to be shared across all tests
     let!(:admin) { create(:user) }

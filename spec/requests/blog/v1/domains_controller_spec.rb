@@ -1,0 +1,51 @@
+require 'rails_helper'
+
+RSpec.describe Blog::V1::DomainsController do
+  include RequestSpecHelper
+
+  context '#single_index' do
+    let!(:domain) { create(:domain) }
+
+    it 'returns correct domain for group' do
+      group = create(:group, domain: domain)
+      get blog_v1_group_domain_path(group_id: group.id), format: :json
+      expect(assigns(:record)).to eq(domain)
+    end
+
+    it 'returns correct domain for featured_group' do
+      group = create(:featured_group, domain: domain)
+      get blog_v1_group_domain_path(group_id: group.id), format: :json
+      expect(assigns(:record)).to eq(domain)
+    end
+
+    it 'returns correct domain for tutorial_group' do
+      group = create(:tutorial_group, domain: domain)
+      get blog_v1_group_domain_path(group_id: group.id), format: :json
+      expect(assigns(:record)).to eq(domain)
+    end
+
+    it 'returns correct domain for topic' do
+      topic = create(:topic, domain: domain)
+      get blog_v1_topic_domain_path(topic_id: topic.id), format: :json
+      expect(assigns(:record)).to eq(domain)
+    end
+
+    it 'returns correct domain for published_entry' do
+      published_entry = create(:published_entry, domain: domain)
+      get blog_v1_published_entry_domain_path(published_entry_id: published_entry.id), format: :json
+      expect(assigns(:record)).to eq(domain)
+    end
+
+    it 'returns correct domain for featured_entry' do
+      featured_entry = create(:featured_entry, domain: domain)
+      get blog_v1_featured_entry_domain_path(featured_entry_id: featured_entry.id), format: :json
+      expect(assigns(:record)).to eq(domain)
+    end
+
+    it 'returns correct domain for tutorial_entry' do
+      tutorial_entry = create(:tutorial_entry, domain: domain)
+      get blog_v1_tutorial_entry_domain_path(tutorial_entry_id: tutorial_entry.id), format: :json
+      expect(assigns(:record)).to eq(domain)
+    end
+  end
+end

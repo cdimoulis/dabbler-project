@@ -22,6 +22,8 @@ RSpec.describe User, type: :model do
 
   context 'associations' do
     it { is_expected.to belong_to(:person) }
+    it { is_expected.to have_many(:entries) }
+    it { is_expected.to have_and_belong_to_many(:contributions).class_name('Entry') }
   end
 
   context '.save' do

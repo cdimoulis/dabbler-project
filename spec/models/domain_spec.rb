@@ -18,6 +18,9 @@ RSpec.describe Domain do
   context 'associations' do
     it { is_expected.to have_many(:groups) }
     it { is_expected.to have_many(:topics) }
+    it { is_expected.to have_many(:featured_groups) }
+    it { is_expected.to have_many(:tutorial_groups) }
+    it { is_expected.to have_many(:published_entries) }
   end
 
   context '.save' do

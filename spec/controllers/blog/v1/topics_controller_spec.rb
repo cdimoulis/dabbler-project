@@ -15,8 +15,8 @@ RSpec.describe Blog::V1::TopicsController, type: :controller do
 
     it 'succeeds' do
       current = Topic.count
-      topic = build(:topic)
-      post :create, topic: topic.attributes, format: :json
+      topic = attributes_for(:topic)
+      post :create, topic: topic, format: :json
       expect(response).to have_http_status(:success)
       expect(Topic.count).to eq(current+1)
     end
@@ -86,7 +86,7 @@ RSpec.describe Blog::V1::TopicsController, type: :controller do
     end
   end
 
-  # Test for UPDATE route
+  # Test for DESTROY route
   context "#destroy" do
     # Allow travel to be shared across all tests
     let!(:topic) { create(:topic) }

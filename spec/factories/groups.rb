@@ -11,14 +11,13 @@
 #  updated_at  :datetime         not null
 #
 
-# Factory for
-#   Domain model
 FactoryGirl.define do
 
   factory :group do
     text { "Group #{Group.count} " }
     description { "#{text} test group" }
     domain { create(:domain) }
+    domain_id { domain.id }
     type "FeaturedGroup"
   end
 
