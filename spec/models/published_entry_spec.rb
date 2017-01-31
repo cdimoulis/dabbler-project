@@ -62,6 +62,21 @@ RSpec.describe PublishedEntry, type: :model do
       join = GroupTopicPublishedEntry.where(published_entry_id: published_entry.id)
       expect(join.length).to eq(2)
     end
+
+    it 'associates updated entries' do
+      pe_a = create(:published_entry)
+      pe_b = create(:published_entry)
+      pe_c = create(:published_entry)
+      pe_c.revised_published_entry = pe_b
+      pe_c.save
+      pe_b.revised_published_entry = pe_a
+      pe_b.save
+      expect(pe_a.revised_published_entry).to eq(nil)
+      expect(pe_a.previous_published_entry).to eq(pe_b)
+      expect(pe_b.revised_published_entry_id).to eq(pe_a.id)
+      expect(pe_b.previous_published_entry).to eq(pe_c)
+      expect(pe_c.revised_published_entry_id).to eq(pe_b.id)
+    end
   end
 
   context 'validations' do

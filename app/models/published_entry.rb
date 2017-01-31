@@ -30,6 +30,8 @@ class PublishedEntry < ApplicationRecord
   has_many :featured_groups, through: :group_topic_published_entries
   has_many :tutorial_groups, through: :group_topic_published_entries
   has_many :topics, through: :group_topic_published_entries
+  belongs_to :revised_published_entry, class_name: 'PublishedEntry', foreign_key: 'revised_published_entry_id'
+  has_one :previous_published_entry, class_name: 'PublishedEntry', foreign_key: 'revised_published_entry_id'
 
   accepts_nested_attributes_for :group_topic_published_entries
 
