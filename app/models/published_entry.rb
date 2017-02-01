@@ -39,7 +39,7 @@ class PublishedEntry < ApplicationRecord
   before_destroy :check_revision
 
   validates :author_id, :domain_id, :entry_id, presence: true
-  validate :entry_author, :domain_exists
+  validate :entry_author, :domain_exists, :revision_type
 
   # Clear out old join models
   def group_topic_published_entries_attributes=(*args)
@@ -66,9 +66,9 @@ class PublishedEntry < ApplicationRecord
 
   def check_revision
     # If this modes has revised a previous published_entry
-    if !previous_published_entry.nil?
+    if previous_published_entry.present?
       # If there is a revision of this published entry then set it as the revision of the previous
-      if !revised_published_entry.nil?
+      if revised_published_entry.present?
         previous_published_entry.revised_published_entry = revised_published_entry
         if !(previous_published_entry.valid? and previous_published_entry.save)
           puts "\n\nCould not link previous and revised published entries #{revised_published_entry.errors.inspect}\n\n"
@@ -88,13 +88,13 @@ class PublishedEntry < ApplicationRecord
   private
 
   def set_author
-    if author_id.nil? and !entry.nil?
+    if author_id.nil? and entry.present?
       self.author_id = entry.author_id
     end
   end
 
   def entry_author
-    if attribute_present?(:author_id) and !entry.nil?
+    if attribute_present?(:author_id) and entry.present?
       if author_id != entry.author_id
         errors.add(:author_id, "Is not the same as Entry author")
         puts "\n\nPublishedEntry error: Invalid author_id #{author_id}\nEntry:#{entry.inspect}\n\n"
@@ -108,6 +108,16 @@ class PublishedEntry < ApplicationRecord
       errors.add(:domain_id, "Invalid Domain: Does not exist")
       puts "\n\nPublishedEntry error: Invalid domain_id #{domain_id}\nEntry:#{entry.inspect}\n\n"
       Rails.logger.info "\n\nPublishedEntry error: Invalid domain_id #{domain_id}\nEntry:#{entry.inspect}\n\n"
+    end
+  end
+
+  def revision_type
+    if revised_published_entry.present?
+      if revised_published_entry.type != type
+        errors.add(:revised_published_entry_id, "New revised published entry type #{revised_published_entry.type} does not match #{type}")
+        puts "\n\nPublishedEntry error: Invalid revised_published_entry type #{revised_published_entry.type} compared to #{type}\n\n"
+        Rails.logger.info "\n\nPublishedEntry error: Invalid revised_published_entry type #{revised_published_entry.type} compared to #{type}\n\n"
+      end
     end
   end
 

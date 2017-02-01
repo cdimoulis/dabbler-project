@@ -96,6 +96,11 @@ RSpec.describe PublishedEntry, type: :model do
       published_entry.domain_id = "52af11a3-0527-454e-bab2-ded1dcdb4ac7"
       expect(published_entry.valid?).to be_falsy
     end
+
+    it 'requires revision type match' do
+      tutorial_entry = build(:tutorial_entry, revised_published_entry: published_entry)
+      expect(tutorial_entry.valid?).to be_falsy
+    end
   end
 
   context 'destroy' do
