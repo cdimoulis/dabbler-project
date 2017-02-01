@@ -43,6 +43,19 @@ RSpec.describe FeaturedEntry, type: :model do
       expect(fe_b.previous_featured_entry).to eq(fe_c)
       expect(fe_c.revised_published_entry_id).to eq(fe_b.id)
     end
+
+    it "access groups" do
+      featured_entry = create(:featured_entry)
+      group_a = create(:featured_group, domain: featured_entry.domain)
+      group_b = create(:featured_group, domain: featured_entry.domain)
+      group_c = create(:featured_group, domain: featured_entry.domain)
+      featured_entry.featured_groups << group_b
+      featured_entry.groups << group_c
+
+      expect(featured_entry.groups).to match([group_b, group_c])
+      join = GroupTopicPublishedEntry.where(published_entry_id: featured_entry.id)
+      expect(join.length).to eq(2)
+    end
   end
 
   context 'validations' do

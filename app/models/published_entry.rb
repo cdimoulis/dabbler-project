@@ -27,8 +27,6 @@ class PublishedEntry < ApplicationRecord
 
   has_many :group_topic_published_entries, dependent: :destroy, inverse_of: :published_entry
   has_many :groups, through: :group_topic_published_entries
-  has_many :featured_groups, through: :group_topic_published_entries
-  has_many :tutorial_groups, through: :group_topic_published_entries
   has_many :topics, through: :group_topic_published_entries
   belongs_to :revised_published_entry, class_name: 'PublishedEntry', foreign_key: 'revised_published_entry_id'
   has_one :previous_published_entry, class_name: 'PublishedEntry', foreign_key: 'revised_published_entry_id'

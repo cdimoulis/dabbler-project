@@ -21,6 +21,7 @@ class TutorialEntry < PublishedEntry
 
   default_scope { order("data ->> 'order' ASC")}
 
+  has_many :tutorial_groups, through: :group_topic_published_entries, foreign_key: 'group_id'
   belongs_to :revised_tutorial_entry, class_name: 'TutorialEntry', foreign_key: 'revised_published_entry_id'
   has_one :previous_tutorial_entry, class_name: 'TutorialEntry', foreign_key: 'revised_published_entry_id'
 

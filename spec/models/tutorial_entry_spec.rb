@@ -43,6 +43,19 @@ RSpec.describe TutorialEntry, type: :model do
       expect(te_b.previous_tutorial_entry).to eq(te_c)
       expect(te_c.revised_published_entry_id).to eq(te_b.id)
     end
+
+    it "access groups" do
+      tutorial_entry = create(:tutorial_entry)
+      group_a = create(:tutorial_group, domain: tutorial_entry.domain)
+      group_b = create(:tutorial_group, domain: tutorial_entry.domain)
+      group_c = create(:tutorial_group, domain: tutorial_entry.domain)
+      tutorial_entry.tutorial_groups << group_b
+      tutorial_entry.groups << group_c
+
+      expect(tutorial_entry.groups).to match([group_b, group_c])
+      join = GroupTopicPublishedEntry.where(published_entry_id: tutorial_entry.id)
+      expect(join.length).to eq(2)
+    end
   end
 
   context 'validations' do

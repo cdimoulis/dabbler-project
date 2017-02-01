@@ -21,6 +21,7 @@ class FeaturedEntry < PublishedEntry
 
   default_scope { order("data ->> 'published_at' DESC") }
 
+  has_many :featured_groups, through: :group_topic_published_entries, foreign_key: 'group_id'
   belongs_to :revised_featured_entry, class_name: 'FeaturedEntry', foreign_key: 'revised_published_entry_id'
   has_one :previous_featured_entry, class_name: 'FeaturedEntry', foreign_key: 'revised_published_entry_id'
 
