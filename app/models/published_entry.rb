@@ -36,6 +36,7 @@ class PublishedEntry < ApplicationRecord
   accepts_nested_attributes_for :group_topic_published_entries
 
   before_validation :set_author
+  before_destroy :check_revision
 
   validates :author_id, :domain_id, :entry_id, presence: true
   validate :entry_author, :domain_exists
@@ -62,6 +63,27 @@ class PublishedEntry < ApplicationRecord
   ###
 
   protected
+
+  def check_revision
+    # If this modes has revised a previous published_entry
+    if !previous_published_entry.nil?
+      # If there is a revision of this published entry then set it as the revision of the previous
+      if !revised_published_entry.nil?
+        previous_published_entry.revised_published_entry = revised_published_entry
+        if !(previous_published_entry.valid? and previous_published_entry.save)
+          puts "\n\nCould not link previous and revised published entries #{revised_published_entry.errors.inspect}\n\n"
+          Rails.logger.info "\n\nCould not link previous and revised published entries #{revised_published_entry.errors.inspect}\n\n"
+        end
+      else
+        # Nullify the previous_published_entry.revised_published_entry_id
+        previous_published_entry.revised_published_entry_id = nil
+        if !(previous_published_entry.valid? and previous_published_entry.save)
+          puts "\n\nCould not nullify previous_published_entry revised entry #{revised_published_entry.errors.inspect}\n\n"
+          Rails.logger.info "\n\nCould not nullify previous_published_entry revised entry #{revised_published_entry.errors.inspect}\n\n"
+        end
+      end
+    end
+  end
 
   private
 

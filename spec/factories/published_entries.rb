@@ -30,5 +30,7 @@ FactoryGirl.define do
     type 'PublishedEntry'
     data { {published_at: DateTime.now} }
     creator { entry.author }
+    revised_published_entry nil
+    revised_published_entry_id { revised_published_entry ? revised_published_entry.id : nil }
   end
 end

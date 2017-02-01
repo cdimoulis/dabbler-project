@@ -98,4 +98,22 @@ RSpec.describe PublishedEntry, type: :model do
     end
   end
 
+  context 'destroy' do
+    let!(:published_entry) { create(:published_entry) }
+
+    it 'removes revised_published_entry_id from previous' do
+      revised = create(:published_entry, revised_published_entry: published_entry)
+      published_entry.destroy
+      revised.reload
+      expect(revised.revised_published_entry_id).to eq(nil)
+    end
+
+    it 'links previous and revised published entries' do
+      revised = create(:published_entry, revised_published_entry: published_entry)
+      previous = create(:published_entry, revised_published_entry: revised)
+      revised.destroy
+      previous.reload
+      expect(previous.revised_published_entry_id).to eq(published_entry.id)
+    end
+  end
 end
