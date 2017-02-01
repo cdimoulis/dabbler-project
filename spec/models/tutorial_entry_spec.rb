@@ -51,4 +51,23 @@ RSpec.describe TutorialEntry, type: :model do
       expect(tut_entry.valid?).to be_falsy
     end
   end
+
+  context 'destroy' do
+    let!(:tutorial_entry) { create(:tutorial_entry) }
+
+    it 'removes revised_tutorial_entry_id from previous' do
+      revised = create(:tutorial_entry, revised_tutorial_entry: tutorial_entry)
+      tutorial_entry.destroy
+      revised.reload
+      expect(revised.revised_published_entry_id).to eq(nil)
+    end
+
+    it 'links previous and revised tutorial entries' do
+      revised = create(:tutorial_entry, revised_tutorial_entry: tutorial_entry)
+      previous = create(:tutorial_entry, revised_tutorial_entry: revised)
+      revised.destroy
+      previous.reload
+      expect(previous.revised_published_entry_id).to eq(tutorial_entry.id)
+    end
+  end
 end

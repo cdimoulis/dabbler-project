@@ -52,4 +52,23 @@ RSpec.describe FeaturedEntry, type: :model do
     end
   end
 
+  context 'destroy' do
+    let!(:featured_entry) { create(:featured_entry) }
+
+    it 'removes revised_featured_entry_id from previous' do
+      revised = create(:featured_entry, revised_featured_entry: featured_entry)
+      featured_entry.destroy
+      revised.reload
+      expect(revised.revised_published_entry_id).to eq(nil)
+    end
+
+    it 'links previous and revised featured entries' do
+      revised = create(:featured_entry, revised_featured_entry: featured_entry)
+      previous = create(:featured_entry, revised_featured_entry: revised)
+      revised.destroy
+      previous.reload
+      expect(previous.revised_published_entry_id).to eq(featured_entry.id)
+    end
+  end
+
 end
