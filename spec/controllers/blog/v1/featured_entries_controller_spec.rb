@@ -95,7 +95,7 @@ RSpec.describe Blog::V1::FeaturedEntriesController, type: :controller do
 
   # Tests for SHOW route
   context "#show" do
-    # Allow travel to be shared across all tests
+
     let!(:featured_entry) { create(:featured_entry) }
 
     # Before running a test do this
@@ -124,7 +124,7 @@ RSpec.describe Blog::V1::FeaturedEntriesController, type: :controller do
       sign_in
     end
 
-    # Allow travel to be shared across all tests
+
     let!(:featured_entry) { create(:featured_entry) }
 
     it "succeeds" do
@@ -169,7 +169,6 @@ RSpec.describe Blog::V1::FeaturedEntriesController, type: :controller do
 
   # Test for DESTROY route
   context "#destroy" do
-    # Allow travel to be shared across all tests
     let!(:featured_entry) { create(:featured_entry) }
 
     before do

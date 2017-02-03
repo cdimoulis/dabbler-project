@@ -76,7 +76,7 @@ RSpec.describe Blog::V1::TutorialEntriesController, type: :controller do
 
   # Tests for SHOW route
   context "#show" do
-    # Allow travel to be shared across all tests
+
     let!(:tutorial_entry) { create(:tutorial_entry) }
 
     # Before running a test do this
@@ -105,7 +105,7 @@ RSpec.describe Blog::V1::TutorialEntriesController, type: :controller do
       sign_in
     end
 
-    # Allow travel to be shared across all tests
+
     let!(:tutorial_entry) { create(:tutorial_entry, data: {order: 1}) }
 
     it "succeeds" do
@@ -152,7 +152,6 @@ RSpec.describe Blog::V1::TutorialEntriesController, type: :controller do
 
   # Test for DESTROY route
   context "#destroy" do
-    # Allow travel to be shared across all tests
     let!(:tutorial_entry) { create(:tutorial_entry) }
 
     before do

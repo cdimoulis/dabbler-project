@@ -38,7 +38,7 @@ RSpec.describe Blog::V1::PeopleController do
 
   # Tests for SHOW route
   context "#show" do
-    # Allow travel to be shared across all tests
+
     let!(:chris) { create(:person_with_user, first_name: 'Chris') }
 
     # Before running a test do this
@@ -64,7 +64,7 @@ RSpec.describe Blog::V1::PeopleController do
 
   # Test for UPDATE route
   context "#update" do
-    # Allow travel to be shared across all tests
+
     let!(:chris) {create(:person, first_name: 'Chris', last_name: 'Dimoulis')}
 
     before do
@@ -87,7 +87,6 @@ RSpec.describe Blog::V1::PeopleController do
 
   # Test for DESTROY route
   context "#destroy" do
-    # Allow travel to be shared across all tests
     let!(:admin) { create(:user) }
     let!(:chris) { create(:person, first_name: 'Chris', last_name: 'Dimoulis') }
     let!(:current) { Person.count }

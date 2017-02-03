@@ -24,7 +24,7 @@ RSpec.describe Blog::V1::PublishedEntriesController, type: :controller do
 
   # Tests for SHOW route
   context "#show" do
-    # Allow travel to be shared across all tests
+    
     let!(:published_entry) { create(:published_entry) }
 
     # Before running a test do this

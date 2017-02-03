@@ -40,7 +40,6 @@ RSpec.describe Blog::V1::TutorialGroupsController do
 
   # Tests for SHOW route
   context "#show" do
-    # Allow travel to be shared across all tests
     let!(:fly) { create(:tutorial_group, text: "Fly Group") }
 
     # Before running a test do this

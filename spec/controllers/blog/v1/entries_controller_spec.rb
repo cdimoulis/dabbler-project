@@ -90,7 +90,7 @@ RSpec.describe Blog::V1::EntriesController do
 
   # Tests for SHOW route
   context "#show" do
-    # Allow travel to be shared across all tests
+    
     let!(:entry) { create(:entry_with_creator) }
 
     # Before running a test do this
@@ -114,7 +114,7 @@ RSpec.describe Blog::V1::EntriesController do
       sign_in
     end
 
-    # Allow travel to be shared across all tests
+    
     let!(:entry) { create(:entry_with_creator) }
 
     it "succeeds" do
@@ -139,7 +139,7 @@ RSpec.describe Blog::V1::EntriesController do
 
   # Test for DESTROY route
   context "#destroy" do
-    # Allow travel to be shared across all tests
+    
     let!(:admin) { create(:user) }
     let!(:entry) { create(:entry_with_creator) }
 

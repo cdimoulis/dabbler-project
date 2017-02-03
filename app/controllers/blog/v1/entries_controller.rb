@@ -54,28 +54,34 @@ class Blog::V1::EntriesController < Blog::V1::BlogController
   # Association methods
   ###
 
-  # Get the author of the entry
-  def author
-    entry_id = params[:entry_id]
-    entry = Entry.where('id = ?', entry_id).take
+  # Get the entries this user is author of
+  def entries
+    user_id = params[:user_id]
+    user = User.where('id = ?', user_id).take
 
-    if entry.nil?
+    if user.nil?
       render :json => {}, :status => 404
     else
-      @record = entry.author
-      respond_with :blog, :v1, @record
+      @records = user.entries
+
+      # Page the records if desired
+      if params.has_key?(:count) || params.has_key?(:start)
+        pageRecords()
+      end
+
+      respond_with :blog, :v1, @records
     end
   end
 
-  # Get the contributors of the entry
-  def contributors
-    entry_id = params[:entry_id]
-    entry = Entry.where('id = ?', entry_id).take
+  # Get the entries this user is a contributor of
+  def contributions
+    user_id = params[:user_id]
+    user = User.where('id = ?', user_id).take
 
-    if entry.nil?
+    if user.nil?
       render :json => {}, :status => 404
     else
-      @records = entry.contributors
+      @records = user.contributions
 
       # Page the records if desired
       if params.has_key?(:count) || params.has_key?(:start)

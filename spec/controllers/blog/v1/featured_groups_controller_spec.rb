@@ -40,7 +40,6 @@ RSpec.describe Blog::V1::FeaturedGroupsController do
 
   # Tests for SHOW route
   context "#show" do
-    # Allow travel to be shared across all tests
     let!(:fly) { create(:featured_group, text: "Fly Group") }
 
     # Before running a test do this
