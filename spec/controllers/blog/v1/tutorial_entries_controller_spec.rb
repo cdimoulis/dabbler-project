@@ -72,6 +72,17 @@ RSpec.describe Blog::V1::TutorialEntriesController, type: :controller do
       expect(assigns(:records).pluck('id')).to match(order)
     end
 
+    it 'fetched current entries only' do
+      five.revised_published_entry_id = three.id
+      five.save
+      three.revised_published_entry_id = two.id
+      three.save
+
+      get :index, current: true, format: :json
+      order = [one.id, two.id, four.id]
+      expect(assigns(:records).pluck('id')).to match(order)
+    end
+
   end
 
   # Tests for SHOW route
@@ -104,7 +115,6 @@ RSpec.describe Blog::V1::TutorialEntriesController, type: :controller do
     before do
       sign_in
     end
-
 
     let!(:tutorial_entry) { create(:tutorial_entry, data: {order: 1}) }
 

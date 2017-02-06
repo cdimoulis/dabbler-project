@@ -39,6 +39,15 @@ class PublishedEntry < ApplicationRecord
   validates :author_id, :domain_id, :entry_id, presence: true
   validate :entry_author, :domain_exists, :revision_type
 
+  ###
+  # Scopes
+  ###
+  scope :current, -> { where(revised_published_entry_id: nil) }
+
+  ###
+  # End Scopes
+  ###
+
   # Clear out old join models
   def group_topic_published_entries_attributes=(*args)
     self.group_topic_published_entries.clear
