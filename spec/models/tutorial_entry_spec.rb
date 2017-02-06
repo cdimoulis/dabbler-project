@@ -65,7 +65,24 @@ RSpec.describe TutorialEntry, type: :model do
     end
   end
 
-  context 'destroy' do
+  context 'scopes' do
+    let!(:five) { create(:tutorial_entry, data: {order: 5}, created_at: (DateTime.now - 6.days).strftime) }
+    let!(:four) { create(:tutorial_entry, data: {order: 4}, created_at: (DateTime.now - 7.days).strftime) }
+    let!(:three) { create(:tutorial_entry, data: {order: 3}, created_at: (DateTime.now - 8.days).strftime) }
+    let!(:two) { create(:tutorial_entry, data: {order: 2}, created_at: (DateTime.now - 9.days).strftime) }
+    let!(:one) { create(:tutorial_entry, data: {order: 1}, created_at: (DateTime.now - 10.days).strftime) }
+
+    it 'show current' do
+      five.revised_published_entry_id = three.id
+      five.save
+      three.revised_published_entry_id = two.id
+      three.save
+
+      expect(TutorialEntry.current).to match([one,two,four])
+    end
+  end
+
+  context '.destroy' do
     let!(:tutorial_entry) { create(:tutorial_entry) }
 
     it 'removes revised_tutorial_entry_id from previous' do
