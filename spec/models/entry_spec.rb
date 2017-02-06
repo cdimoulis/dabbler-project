@@ -43,6 +43,19 @@ RSpec.describe Entry, type: :model do
     end
   end
 
+  context 'scopes' do
+    it 'shows unpublished' do
+      one = create(:entry_with_creator)
+      two = create(:entry_with_creator)
+      three = create(:entry_with_creator)
+      four = create(:entry_with_creator)
+
+      create(:published_entry, entry: two)
+      create(:published_entry, entry: four)
+      expect(Entry.unpublished.to_a).to match([one,three])
+    end
+  end
+
   context '.save' do
     it 'succeeds' do
       entry = build(:entry_with_creator)

@@ -32,6 +32,17 @@ class Entry < ApplicationRecord
   validates :text, :author_id, :content, presence: true
   validate :author_exists
 
+  ###
+  # Scopes
+  ###
+  def self.unpublished
+    entry_ids = PublishedEntry.pluck('entry_id').uniq
+    where.not(id: entry_ids)
+  end
+  ###
+  # End Scopes
+  ###
+
 
   protected
 
