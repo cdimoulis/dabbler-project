@@ -35,6 +35,7 @@ class PublishedEntry < ApplicationRecord
 
   before_validation :set_author
   before_destroy :check_revision
+  after_create :lock_entry
 
   validates :author_id, :domain_id, :entry_id, presence: true
   validate :entry_author, :domain_exists, :revision_type
@@ -89,6 +90,13 @@ class PublishedEntry < ApplicationRecord
           Rails.logger.info "\n\nCould not nullify previous_published_entry revised entry #{revised_published_entry.errors.inspect}\n\n"
         end
       end
+    end
+  end
+
+  def lock_entry
+    if not entry.locked
+      entry.locked = true
+      entry.save
     end
   end
 

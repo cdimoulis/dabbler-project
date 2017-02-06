@@ -103,6 +103,16 @@ RSpec.describe PublishedEntry, type: :model do
     end
   end
 
+  context 'save' do
+    it 'locks entry on creation' do
+      entry = create(:entry_with_creator)
+      expect(entry.locked).to be_falsy
+      published_entry = create(:published_entry, entry: entry)
+      entry.reload
+      expect(entry.locked).to be_truthy
+    end
+  end
+
   context 'destroy' do
     let!(:published_entry) { create(:published_entry) }
 
