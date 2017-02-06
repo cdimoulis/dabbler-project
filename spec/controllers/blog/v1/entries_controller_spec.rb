@@ -35,8 +35,7 @@ RSpec.describe Blog::V1::EntriesController do
       # look_like_json found in support/matchers/json_matchers.rb
       expect(response).to have_http_status(:success)
       expect(response.body).to look_like_json
-      order = [first.id, second.id, third.id, fourth.id]
-      expect(assigns(:records).pluck('id')).to match(order)
+      expect(assigns(:records).to_a).to match([first,second,third,fourth])
     end
 
     it 'handles date range' do
@@ -50,47 +49,48 @@ RSpec.describe Blog::V1::EntriesController do
       # From only
       get :index, from: 6.days.ago, format: :json
       expect(assigns(:records).length).to eq(2)
-      order = [first.id, second.id]
-      expect(assigns(:records).pluck('id')).to match(order)
+      expect(assigns(:records).to_a).to match([first,second])
 
       # To only
       get :index, to: 6.days.ago, format: :json
       expect(assigns(:records).length).to eq(2)
-      order = [third.id, fourth.id]
-      expect(assigns(:records).pluck('id')).to match(order)
+      expect(assigns(:records).to_a).to match([third,fourth])
 
       # To and from
       get :index, from: 12.days.ago, to: 3.days.ago, format: :json
       expect(assigns(:records).length).to eq(2)
-      order = [second.id, third.id]
-      expect(assigns(:records).pluck('id')).to match(order)
+      expect(assigns(:records).to_a).to match([second,third])
     end
 
     it 'pages records' do
       # count only
       get :index, count: 2, format: :json
       expect(assigns(:records).length).to eq(2)
-      order = [first.id, second.id]
-      expect(assigns(:records).pluck('id')).to match(order)
+      expect(assigns(:records).to_a).to match([first,second])
 
       # start only
       get :index, start: 2, format: :json
       expect(assigns(:records).length).to eq(2)
-      order = [third.id, fourth.id]
-      expect(assigns(:records).pluck('id')).to match(order)
+      expect(assigns(:records).to_a).to match([third,fourth])
 
       # count andd start
       get :index, start: 1, count: 2, format: :json
       expect(assigns(:records).length).to eq(2)
-      order = [second.id, third.id]
-      expect(assigns(:records).pluck('id')).to match(order)
+      expect(assigns(:records).to_a).to match([second,third])
+    end
+
+    it 'shows unpublished' do
+      create(:published_entry, entry: first)
+      create(:published_entry, entry: third)
+      get :index, unpublished: true, format: :json
+      expect(assigns(:records).to_a).to match([second,fourth])
     end
 
   end
 
   # Tests for SHOW route
   context "#show" do
-    
+
     let!(:entry) { create(:entry_with_creator) }
 
     # Before running a test do this
@@ -114,7 +114,7 @@ RSpec.describe Blog::V1::EntriesController do
       sign_in
     end
 
-    
+
     let!(:entry) { create(:entry_with_creator) }
 
     it "succeeds" do
@@ -139,7 +139,7 @@ RSpec.describe Blog::V1::EntriesController do
 
   # Test for DESTROY route
   context "#destroy" do
-    
+
     let!(:admin) { create(:user) }
     let!(:entry) { create(:entry_with_creator) }
 

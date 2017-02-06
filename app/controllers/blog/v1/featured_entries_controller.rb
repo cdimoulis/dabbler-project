@@ -18,13 +18,6 @@ class Blog::V1::FeaturedEntriesController < Blog::V1::BlogController
     end
   end
 
-  def set_scopes
-    @scopes = @scopes || []
-    if params[:current]
-      @scopes.push :current
-    end
-  end
-
 
   protected
 
@@ -33,6 +26,13 @@ class Blog::V1::FeaturedEntriesController < Blog::V1::BlogController
                                           {group_topic_published_entries_attributes: [:id, :group_id, :topic_id, :published_entry_id]},
                                           :image_url, :notes, :tags, :data, :current).tap do |whitelist|
       whitelist[:data] = params[:featured_entry][:data]
+    end
+  end
+
+  def set_scopes
+    @scopes = @scopes || []
+    if params[:current]
+      @scopes.push :current
     end
   end
 end

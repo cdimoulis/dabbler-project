@@ -4,6 +4,7 @@ class Blog::V1::EntriesController < Blog::V1::BlogController
   include HasCreator
 
   before_action :require_login, only: [:create, :update, :destroy]
+  before_action :set_scopes, only: [:index]
 
   respond_to :json
 
@@ -100,7 +101,14 @@ class Blog::V1::EntriesController < Blog::V1::BlogController
 
   def permitted_params
     params.require(:entry).permit(:text, :description, :author_id, :default_image_url,
-                                  :content, :remove)
+                                  :content, :remove, :unpublished)
+  end
+
+  def set_scopes
+    @scopes = @scopes || []
+    if params[:unpublished]
+      @scopes.push :unpublished
+    end
   end
 
 end
