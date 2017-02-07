@@ -73,21 +73,21 @@ class PublishedEntry < ApplicationRecord
   protected
 
   def check_revision
-    # If this modes has revised a previous published_entry
+    # If this model has revised a previous published_entry
     if previous_published_entry.present?
       # If there is a revision of this published entry then set it as the revision of the previous
       if revised_published_entry.present?
         previous_published_entry.revised_published_entry = revised_published_entry
         if !(previous_published_entry.valid? and previous_published_entry.save)
-          puts "\n\nCould not link previous and revised published entries #{revised_published_entry.errors.inspect}\n\n"
-          Rails.logger.info "\n\nCould not link previous and revised published entries #{revised_published_entry.errors.inspect}\n\n"
+          puts "\n\nCould not link previous and revised published entries\n#{previous_published_entry.errors.inspect}\n\n"
+          Rails.logger.info "\n\nCould not link previous and revised published entries\n#{previous_published_entry.errors.inspect}\n\n"
         end
       else
         # Nullify the previous_published_entry.revised_published_entry_id
         previous_published_entry.revised_published_entry_id = nil
         if !(previous_published_entry.valid? and previous_published_entry.save)
-          puts "\n\nCould not nullify previous_published_entry revised entry #{revised_published_entry.errors.inspect}\n\n"
-          Rails.logger.info "\n\nCould not nullify previous_published_entry revised entry #{revised_published_entry.errors.inspect}\n\n"
+          puts "\n\nCould not nullify previous_published_entry revised entry\n#{revised_published_entry.errors.inspect}\n\n"
+          Rails.logger.info "\n\nCould not nullify previous_published_entry revised entry\n#{revised_published_entry.errors.inspect}\n\n"
         end
       end
     end

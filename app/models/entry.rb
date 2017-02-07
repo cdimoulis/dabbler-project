@@ -29,6 +29,8 @@ class Entry < ApplicationRecord
   has_many :featured_entries
   has_many :tutorial_entries
 
+  before_destroy :check_update
+
   validates :text, :author_id, :content, presence: true
   validate :author_exists
 
@@ -49,6 +51,27 @@ class Entry < ApplicationRecord
   def author_exists
     if attribute_present?(:author_id) and !User.exists?(author_id)
       errors.add(:author_id, "Invalid Author: Does not exists")
+    end
+  end
+
+  def check_update
+    # If this model has updated a previous entry
+    if previous_entry.present?
+      # If there is an update of this entry then set it as the update of the previous_entry
+      if updated_entry.present?
+        previous_entry.updated_entry = updated_entry
+        if !(previous_entry.valid? and previous_entry.save)
+          puts "\n\nCould not link previous and updated entries\n#{previous_entry.errors.inspect}\n\n"
+          Rails.logger.info "\n\nCould not link previous and updated entries\n#{previous_entry.errors.inspect}\n\n"
+        end
+      else
+        # Nullify the previous_entry.updated_entry_id
+        previous_entry.updated_entry_id = nil
+        if !(previous_entry.valid? and previous_entry.save)
+          puts "\n\nCould not nullify previous_entry updated entry\n#{previous_entry.errors.inspect}\n\n"
+          Rails.logger.info "\n\nCould not nullify previous_entry updated entry\n#{previous_entry.errors.inspect}\n\n"
+        end
+      end
     end
   end
 

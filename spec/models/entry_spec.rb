@@ -70,4 +70,22 @@ RSpec.describe Entry, type: :model do
     end
   end
 
+  context 'destroy' do
+    let!(:entry) { create(:entry_with_creator) }
+
+    it 'removes updated_entry_id from previous' do
+      updated = create(:entry_with_creator, updated_entry: entry)
+      entry.destroy
+      updated.reload
+      expect(updated.updated_entry_id).to eq(nil)
+    end
+
+    it 'links previous and updated entries' do
+      updated = create(:entry_with_creator, updated_entry: entry)
+      previous = create(:entry_with_creator, updated_entry: updated)
+      updated.destroy
+      previous.reload
+      expect(previous.updated_entry_id).to eq(entry.id)
+    end
+  end
 end
