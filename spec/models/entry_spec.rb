@@ -68,6 +68,19 @@ RSpec.describe Entry, type: :model do
       entry.author_id = "52af11a3-0527-454e-bab2-ded1dcdb4ac7"
       expect(entry.valid?).to be_falsy
     end
+
+    it 'changes published_entry associations' do
+      entry = create(:entry_with_creator)
+      pe1 = create(:published_entry, entry: entry, created_at: (DateTime.now - 1.days).strftime)
+      pe2 = create(:published_entry, entry: entry, created_at: (DateTime.now - 2.days).strftime)
+      pe3 = create(:published_entry, entry: entry, created_at: (DateTime.now - 3.days).strftime)
+      pe4 = create(:published_entry, created_at: (DateTime.now - 4.days).strftime)
+      updated = create(:entry_with_creator)
+      entry.updated_entry = updated
+      entry.save
+      updated.reload
+      expect(updated.published_entries).to match([pe1,pe2,pe3])
+    end
   end
 
   context 'destroy' do

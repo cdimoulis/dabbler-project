@@ -30,6 +30,7 @@ class Entry < ApplicationRecord
   has_many :tutorial_entries
 
   before_destroy :check_update
+  after_update :replace_associations
 
   validates :text, :author_id, :content, presence: true
   validate :author_exists
@@ -54,6 +55,7 @@ class Entry < ApplicationRecord
     end
   end
 
+  # Link together updated entries on delete
   def check_update
     # If this model has updated a previous entry
     if previous_entry.present?
@@ -75,4 +77,17 @@ class Entry < ApplicationRecord
     end
   end
 
+  # Replace associations on update
+  def replace_associations
+    if updated_entry.present?
+      published_entries.each do |pe|
+        pe.entry = updated_entry
+        pe.author = updated_entry.author
+        if !(pe.valid? && pe.save)
+          puts "\n\nCould not update published entry for entry #{self.inspect}:\n#{pe.errors.inspect}\n\n"
+          Rails.logger.info "\n\nCould not update published entry for entry #{self.inspect}:\n#{pe.errors.inspect}\n\n"
+        end
+      end
+    end
+  end
 end
