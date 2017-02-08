@@ -18,16 +18,22 @@ class Blog::V1::EntriesController < Blog::V1::BlogController
     if !entry.locked
       super
     else
-      @record = entry.dup
-      @record.assign_attributes permitted_params
-      if @record.valid? && @record.save
-        entry.updated_entry = @record
-        entry.save
-        respond_with :blog, :v1, @record
+      if entry.updated_entry_id.present?
+        puts "\n\nCould not update Entry record: Record has been previously updated\n\n"
+        Rails.logger.debug "\n\nCould not update Entry record: Record has been previously updated\n\n"
+        render :json => {errors: {msg: "Entry could not be updated: Record has been previously updated"}}, :status => 422
       else
-        puts "\n\nCould not update Entry record.\n#{@record.errors.inspect}\n\n"
-        Rails.logger.debug "\n\nCould not update Entry record.\n#{@record.errors.inspect}\n\n"
-        render :json => {errors: {msg: "Entry could not be updated."}}, :status => 422
+        @record = entry.dup
+        @record.assign_attributes permitted_params
+        if @record.valid? && @record.save
+          entry.updated_entry = @record
+          entry.save
+          respond_with :blog, :v1, @record
+        else
+          puts "\n\nCould not update Entry record.\n#{@record.errors.inspect}\n\n"
+          Rails.logger.debug "\n\nCould not update Entry record.\n#{@record.errors.inspect}\n\n"
+          render :json => {errors: {msg: "Entry could not be updated."}}, :status => 422
+        end
       end
     end
   end

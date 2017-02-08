@@ -114,7 +114,6 @@ RSpec.describe Blog::V1::EntriesController do
       sign_in
     end
 
-
     let!(:entry) { create(:entry_with_creator) }
 
     it "succeeds" do
@@ -134,6 +133,16 @@ RSpec.describe Blog::V1::EntriesController do
       expect(assigns(:record).description).to eq(update_params[:description])
       expect(assigns(:record).text).to eq(entry.text)
       expect(entry.updated_entry_id).to eq(assigns(:record).id)
+    end
+
+    it "does not update an already updated entry" do
+      update_entry = create(:entry_with_creator)
+      entry.locked = true
+      entry.updated_entry = update_entry
+      entry.save
+      update_params = {description: "Some new information"}
+      put :update, id: entry.id, entry: update_params
+      expect(response).to have_http_status(422)
     end
   end
 
