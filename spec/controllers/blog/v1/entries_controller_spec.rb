@@ -144,6 +144,20 @@ RSpec.describe Blog::V1::EntriesController do
       put :update, id: entry.id, entry: update_params
       expect(response).to have_http_status(422)
     end
+
+    it 'changes published_entry associations' do
+      pe1 = create(:published_entry, entry: entry, created_at: (DateTime.now - 1.days).strftime)
+      pe2 = create(:published_entry, entry: entry, created_at: (DateTime.now - 2.days).strftime)
+      pe3 = create(:published_entry, entry: entry, created_at: (DateTime.now - 3.days).strftime)
+      pe4 = create(:published_entry, created_at: (DateTime.now - 4.days).strftime)
+      update_params = {description: "Some new information"}
+      put :update, id: entry.id, entry: update_params
+      entry.reload
+      expect(entry.locked).to be_truthy
+      expect(assigns(:record).id).not_to eq(entry.id)
+      expect(entry.published_entries.empty?).to be_truthy
+      expect(assigns(:record).published_entries).to match([pe1,pe2,pe3])
+    end
   end
 
   # Test for DESTROY route

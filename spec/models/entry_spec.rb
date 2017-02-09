@@ -78,7 +78,10 @@ RSpec.describe Entry, type: :model do
       updated = create(:entry_with_creator)
       entry.updated_entry = updated
       entry.save
+      entry.reload
       updated.reload
+      expect(entry.locked).to be_truthy
+      expect(entry.published_entries.empty?).to be_truthy
       expect(updated.published_entries).to match([pe1,pe2,pe3])
     end
   end
