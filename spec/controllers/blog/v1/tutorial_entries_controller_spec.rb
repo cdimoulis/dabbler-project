@@ -162,16 +162,13 @@ RSpec.describe Blog::V1::TutorialEntriesController, type: :controller do
 
     before do
       sign_in
-      tutorial_entry.groups << create(:tutorial_group, domain: tutorial_entry.domain)
     end
 
     it "succeeds" do
-      count = TutorialEntry.count
-      join_count = GroupTopicPublishedEntry.count
       delete :destroy, id: tutorial_entry.id, format: :json
       expect(response).to have_http_status(:success)
-      expect(TutorialEntry.count).to eq(count-1)
-      expect(GroupTopicPublishedEntry.count).to eq(join_count-1)
+      expect(assigns(:record).id).to eq(tutorial_entry.id)
+      expect(assigns(:record).removed).to be_truthy
     end
   end
 end
