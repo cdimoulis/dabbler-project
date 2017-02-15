@@ -45,7 +45,7 @@ class Blog::V1::EntriesController < Blog::V1::BlogController
     if !@record.locked
       super
     else
-      if !@record.nil? && @record.remove
+      if @record.present? && @record.remove
         # Remove all published_entries
         PublishedEntry.where(entry_id: @record.id).each do |pe|
           pe.destroy

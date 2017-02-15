@@ -176,20 +176,29 @@ RSpec.describe Blog::V1::EntriesController do
     end
 
     it "prevents without remove flag" do
-      entry.locked = true
-      entry.save
+      entry.update_attribute('locked', true)
       delete :destroy, id: entry.id, format: :json
       expect(response).to have_http_status(422)
     end
 
     it "succeeds" do
       current = Entry.count
-      entry.locked = true
-      entry.remove = true
-      entry.save
+      entry.update_attribute('locked', true)
+      entry.update_attribute('remove', true)
       delete :destroy, id: entry.id, format: :json
       expect(response).to have_http_status(:success)
       expect(Entry.count).to eq(current-1)
+    end
+
+    it 'removes published entries' do
+      published_entry = create(:published_entry, entry: entry)
+      entry.update_attribute('remove', true)
+      count = Entry.count
+      pe_count = PublishedEntry.count
+      delete :destroy, id: entry.id, format: :json
+      expect(response).to have_http_status(:success)
+      expect(Entry.count).to eq(count-1)
+      expect(PublishedEntry.count).to eq(pe_count-1)
     end
   end
 end
