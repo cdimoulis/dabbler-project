@@ -17,7 +17,10 @@ class Blog::V1::TutorialEntriesController < Blog::V1::BlogController
   def destroy
     @record = TutorialEntry.where('id = ?',params[:id]).take
     if @record.present?
-      update_attribute('removed', true)
+      @record.update_attribute('removed', true)
+      respond_with :blog, :v1, @record
+    else
+      render :json => {errors: @record.errors}, :status => 424
     end
   end
 

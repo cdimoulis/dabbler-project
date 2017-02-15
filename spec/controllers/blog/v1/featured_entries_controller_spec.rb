@@ -47,48 +47,64 @@ RSpec.describe Blog::V1::FeaturedEntriesController, type: :controller do
       expect(response).to have_http_status(:success)
       # look_like_json found in support/matchers/json_matchers.rb
       expect(response.body).to look_like_json
-      order = [one.id, two.id, three.id, four.id, five.id]
-      expect(assigns(:records).pluck('id')).to match(order)
+      order = [one, two, three, four, five]
+      expect(assigns(:records).to_a).to match(order)
     end
 
     it 'handles date range' do
       # From only
       get :index, from: 3.days.ago, format: :json
       expect(assigns(:records).length).to eq(3)
-      order = [one.id, two.id, three.id]
-      expect(assigns(:records).pluck('id')).to match(order)
+      order = [one, two, three]
+      expect(assigns(:records).to_a).to match(order)
 
       # To only
       get :index, to: 3.days.ago, format: :json
       expect(assigns(:records).length).to eq(2)
-      order = [four.id, five.id]
-      expect(assigns(:records).pluck('id')).to match(order)
+      order = [four, five]
+      expect(assigns(:records).to_a).to match(order)
 
       # From only
       get :index, from: 4.days.ago, to: 2.days.ago, format: :json
       expect(assigns(:records).length).to eq(2)
-      order = [three.id, four.id]
-      expect(assigns(:records).pluck('id')).to match(order)
+      order = [three, four]
+      expect(assigns(:records).to_a).to match(order)
     end
 
     it 'pages records' do
       # count only
       get :index, count: 2, format: :json
       expect(assigns(:records).length).to eq(2)
-      order = [one.id, two.id]
-      expect(assigns(:records).pluck('id')).to match(order)
+      order = [one, two]
+      expect(assigns(:records).to_a).to match(order)
 
       # start only
       get :index, start: 2, format: :json
       expect(assigns(:records).length).to eq(3)
-      order = [three.id, four.id, five.id]
-      expect(assigns(:records).pluck('id')).to match(order)
+      order = [three, four, five]
+      expect(assigns(:records).to_a).to match(order)
 
       # count andd start
       get :index, start: 1, count: 2, format: :json
       expect(assigns(:records).length).to eq(2)
-      order = [two.id, three.id]
-      expect(assigns(:records).pluck('id')).to match(order)
+      order = [two, three]
+      expect(assigns(:records).to_a).to match(order)
+    end
+
+    it 'ignores removed' do
+      two.update_attribute('removed', true)
+      four.update_attribute('removed', true)
+      get :index, format: :json
+      order = [one, three, five]
+      expect(assigns(:records).to_a).to match(order)
+    end
+
+    it 'shows removed' do
+      two.update_attribute('removed', true)
+      four.update_attribute('removed', true)
+      get :index, removed: true, format: :json
+      order = [two, four]
+      expect(assigns(:records).to_a).to match(order)
     end
 
   end
@@ -173,16 +189,13 @@ RSpec.describe Blog::V1::FeaturedEntriesController, type: :controller do
 
     before do
       sign_in
-      featured_entry.groups << create(:group, domain: featured_entry.domain)
     end
 
     it "succeeds" do
-      count = FeaturedEntry.count
-      join_count = GroupTopicPublishedEntry.count
       delete :destroy, id: featured_entry.id, format: :json
       expect(response).to have_http_status(:success)
-      expect(FeaturedEntry.count).to eq(count-1)
-      expect(GroupTopicPublishedEntry.count).to eq(join_count-1)
+      expect(assigns(:record).id).to eq(featured_entry.id)
+      expect(assigns(:record).removed).to be_truthy
     end
   end
 end

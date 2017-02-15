@@ -100,5 +100,14 @@ RSpec.describe TutorialEntry, type: :model do
       previous.reload
       expect(previous.revised_published_entry_id).to eq(tutorial_entry.id)
     end
+
+    it 'destroys group_topic_published_entry' do
+      tutorial_entry.groups << create(:tutorial_group, domain: tutorial_entry.domain)
+      count = TutorialEntry.count
+      join_count = GroupTopicPublishedEntry.count
+      tutorial_entry.destroy
+      expect(TutorialEntry.count).to eq(count-1)
+      expect(GroupTopicPublishedEntry.count).to eq(join_count-1)
+    end
   end
 end

@@ -83,6 +83,15 @@ RSpec.describe FeaturedEntry, type: :model do
       previous.reload
       expect(previous.revised_published_entry_id).to eq(featured_entry.id)
     end
+
+    it 'destroys group_topic_published_entry' do
+      featured_entry.groups << create(:featured_group, domain: featured_entry.domain)
+      count = FeaturedEntry.count
+      join_count = GroupTopicPublishedEntry.count
+      featured_entry.destroy
+      expect(FeaturedEntry.count).to eq(count-1)
+      expect(GroupTopicPublishedEntry.count).to eq(join_count-1)
+    end
   end
 
 end
