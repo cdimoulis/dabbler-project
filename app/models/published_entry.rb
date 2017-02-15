@@ -45,7 +45,8 @@ class PublishedEntry < ApplicationRecord
   # Scopes
   ###
   scope :current, -> { where(revised_published_entry_id: nil) }
-
+  scope :non_removed, -> { where(removed: false) }
+  scope :removed, -> { where(removed: true) }
   ###
   # End Scopes
   ###

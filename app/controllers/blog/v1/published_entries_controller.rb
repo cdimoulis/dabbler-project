@@ -31,7 +31,8 @@ class Blog::V1::PublishedEntriesController < Blog::V1::BlogController
   def permitted_params
     params.require(:published_entry).permit(:author_id, :domain_id, :entry_id,
                                             {group_topic_published_entries_attributes: [:id, :group_id, :topic_id, :published_entry_id]},
-                                            :image_url, :notes, :tags, :data, :type, :current).tap do |whitelist|
+                                            :image_url, :notes, :tags, :data, :type,
+                                            :current, :removed).tap do |whitelist|
       whitelist[:data] = params[:published_entry][:data]
     end
   end
@@ -49,6 +50,12 @@ class Blog::V1::PublishedEntriesController < Blog::V1::BlogController
     @scopes = @scopes || []
     if params[:current]
       @scopes.push :current
+    end
+
+    if params[:removed]
+      @scopes.push :removed
+    else
+      @scopes.push :non_removed
     end
   end
 
