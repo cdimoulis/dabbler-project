@@ -10,6 +10,7 @@ class CreatePublishedEntries < ActiveRecord::Migration
       t.string :type
       t.json :data
       t.uuid :revised_published_entry_id
+      t.boolean :removed, default: false
 
       t.uuid :creator_id, null: false   # The logged in user who actually published this
       t.timestamps null: false

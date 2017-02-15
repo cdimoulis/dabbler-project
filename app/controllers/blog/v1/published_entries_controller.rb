@@ -9,14 +9,21 @@ class Blog::V1::PublishedEntriesController < Blog::V1::BlogController
 
   respond_to :json
 
-  # Check json data on update
-  def check_data
-    # When updating
-    if params.include?(:published_entry) and (!params[:published_entry].include?(:data) or params[:published_entry][:data].nil?)
-      record = PublishedEntry.where('id = ?', params[:id]).take
-      params[:published_entry][:data] = record.data
+  ###
+  # Standard CRUD Ops overrides
+  ###
+  # Published entries are not destroyed. The 'removed' flag is set_set
+  # Published entries are deleted if their associated entry is destroyed
+  def destroy
+    @record = PublishedEntry.where('id = ?',params[:id]).take
+    if @record.present?
+      update_attribute('removed', true)
     end
   end
+
+  ###
+  # End standard CRUD Ops overrides
+  ###
 
 
   protected
@@ -26,6 +33,15 @@ class Blog::V1::PublishedEntriesController < Blog::V1::BlogController
                                             {group_topic_published_entries_attributes: [:id, :group_id, :topic_id, :published_entry_id]},
                                             :image_url, :notes, :tags, :data, :type, :current).tap do |whitelist|
       whitelist[:data] = params[:published_entry][:data]
+    end
+  end
+
+  # Check json data on update
+  def check_data
+    # When updating
+    if params.include?(:published_entry) and (!params[:published_entry].include?(:data) or params[:published_entry][:data].nil?)
+      record = PublishedEntry.where('id = ?', params[:id]).take
+      params[:published_entry][:data] = record.data
     end
   end
 

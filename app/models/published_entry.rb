@@ -12,6 +12,7 @@
 #  type                       :string
 #  data                       :json
 #  revised_published_entry_id :uuid
+#  removed                    :boolean          default(FALSE)
 #  creator_id                 :uuid             not null
 #  created_at                 :datetime         not null
 #  updated_at                 :datetime         not null
@@ -49,7 +50,7 @@ class PublishedEntry < ApplicationRecord
   # End Scopes
   ###
 
-  # Clear out old join models
+  # Clear out old join models when setting new ones
   def group_topic_published_entries_attributes=(*args)
     self.group_topic_published_entries.clear
     super(*args)

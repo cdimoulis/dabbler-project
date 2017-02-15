@@ -9,14 +9,21 @@ class Blog::V1::FeaturedEntriesController < Blog::V1::BlogController
 
   respond_to :json
 
-  # Check json data on update
-  def check_data
-    # When updating
-    if params.include?(:featured_entry) and (!params[:featured_entry].include?(:data) or params[:featured_entry][:data].nil?)
-      record = FeaturedEntry.where('id = ?', params[:id]).take
-      params[:featured_entry][:data] = record.data
+  ###
+  # Standard CRUD Ops overrides
+  ###
+  # Featured entries are not destroyed. The 'removed' flag is set_set
+  # Featured entries are deleted if their associated entry is destroyed
+  def destroy
+    @record = FeaturedEntry.where('id = ?',params[:id]).take
+    if @record.present?
+      update_attribute('removed', true)
     end
   end
+
+  ###
+  # End standard CRUD Ops overrides
+  ###
 
 
   protected
@@ -26,6 +33,15 @@ class Blog::V1::FeaturedEntriesController < Blog::V1::BlogController
                                           {group_topic_published_entries_attributes: [:id, :group_id, :topic_id, :published_entry_id]},
                                           :image_url, :notes, :tags, :data, :current).tap do |whitelist|
       whitelist[:data] = params[:featured_entry][:data]
+    end
+  end
+
+  # Check json data on update
+  def check_data
+    # When updating
+    if params.include?(:featured_entry) and (!params[:featured_entry].include?(:data) or params[:featured_entry][:data].nil?)
+      record = FeaturedEntry.where('id = ?', params[:id]).take
+      params[:featured_entry][:data] = record.data
     end
   end
 

@@ -46,6 +46,10 @@ class Blog::V1::EntriesController < Blog::V1::BlogController
       super
     else
       if !@record.nil? && @record.remove
+        # Remove all published_entries
+        PublishedEntry.where(entry_id: @record.id).each do |pe|
+          pe.destroy
+        end
         super
       else
         render :json => {errors: {msg: "Entry is not flagged for removal."}}, :status => 422

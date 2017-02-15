@@ -12,6 +12,7 @@
 #  type                       :string
 #  data                       :json
 #  revised_published_entry_id :uuid
+#  removed                    :boolean          default(FALSE)
 #  creator_id                 :uuid             not null
 #  created_at                 :datetime         not null
 #  updated_at                 :datetime         not null

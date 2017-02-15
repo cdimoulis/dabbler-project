@@ -111,18 +111,19 @@ ActiveRecord::Schema.define(version: 20170105181734) do
   add_index "people", ["creator_id"], name: "index_people_on_creator_id", using: :btree
 
   create_table "published_entries", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
-    t.uuid     "author_id",                  null: false
-    t.uuid     "domain_id",                  null: false
-    t.uuid     "entry_id",                   null: false
+    t.uuid     "author_id",                                  null: false
+    t.uuid     "domain_id",                                  null: false
+    t.uuid     "entry_id",                                   null: false
     t.string   "image_url"
     t.text     "notes"
-    t.text     "tags",                                    array: true
+    t.text     "tags",                                                    array: true
     t.string   "type"
     t.json     "data"
     t.uuid     "revised_published_entry_id"
-    t.uuid     "creator_id",                 null: false
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
+    t.boolean  "removed",                    default: false
+    t.uuid     "creator_id",                                 null: false
+    t.datetime "created_at",                                 null: false
+    t.datetime "updated_at",                                 null: false
   end
 
   add_index "published_entries", ["author_id"], name: "index_published_entries_on_author_id", using: :btree
