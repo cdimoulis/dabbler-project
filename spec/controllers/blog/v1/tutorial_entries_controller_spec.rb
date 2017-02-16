@@ -56,27 +56,34 @@ RSpec.describe Blog::V1::TutorialEntriesController, type: :controller do
       # count only
       get :index, count: 2, format: :json
       expect(assigns(:records).length).to eq(2)
-      order = [one.id, two.id]
-      expect(assigns(:records).pluck('id')).to match(order)
+      expect(assigns(:records).to_a).to match([one,two])
 
       # start only
       get :index, start: 2, format: :json
       expect(assigns(:records).length).to eq(3)
-      order = [three.id, four.id, five.id]
-      expect(assigns(:records).pluck('id')).to match(order)
+      expect(assigns(:records).to_a).to match([three,four,five])
 
       # count andd start
       get :index, start: 1, count: 2, format: :json
       expect(assigns(:records).length).to eq(2)
-      order = [two.id, three.id]
-      expect(assigns(:records).pluck('id')).to match(order)
+      expect(assigns(:records).to_a).to match([two,three])
+    end
+
+    it 'fetched current entries only' do
+      five.revised_published_entry_id = three.id
+      five.save
+      three.revised_published_entry_id = two.id
+      three.save
+
+      get :index, current: true, format: :json
+      expect(assigns(:records).to_a).to match([one,two,four])
     end
 
   end
 
   # Tests for SHOW route
   context "#show" do
-    # Allow travel to be shared across all tests
+
     let!(:tutorial_entry) { create(:tutorial_entry) }
 
     # Before running a test do this
@@ -105,7 +112,6 @@ RSpec.describe Blog::V1::TutorialEntriesController, type: :controller do
       sign_in
     end
 
-    # Allow travel to be shared across all tests
     let!(:tutorial_entry) { create(:tutorial_entry, data: {order: 1}) }
 
     it "succeeds" do
@@ -152,21 +158,17 @@ RSpec.describe Blog::V1::TutorialEntriesController, type: :controller do
 
   # Test for DESTROY route
   context "#destroy" do
-    # Allow travel to be shared across all tests
     let!(:tutorial_entry) { create(:tutorial_entry) }
 
     before do
       sign_in
-      tutorial_entry.groups << create(:tutorial_group, domain: tutorial_entry.domain)
     end
 
     it "succeeds" do
-      count = TutorialEntry.count
-      join_count = GroupTopicPublishedEntry.count
       delete :destroy, id: tutorial_entry.id, format: :json
       expect(response).to have_http_status(:success)
-      expect(TutorialEntry.count).to eq(count-1)
-      expect(GroupTopicPublishedEntry.count).to eq(join_count-1)
+      expect(assigns(:record).id).to eq(tutorial_entry.id)
+      expect(assigns(:record).removed).to be_truthy
     end
   end
 end

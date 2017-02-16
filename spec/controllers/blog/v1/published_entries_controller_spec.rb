@@ -7,24 +7,35 @@ RSpec.describe Blog::V1::PublishedEntriesController, type: :controller do
     let!(:one) {create(:published_entry)}
     let!(:two) {create(:published_entry)}
 
-    before do
+    it 'returns JSON' do
       get :index, format: :json
+      # look_like_json found in support/matchers/json_matchers.rb
+      expect(response).to have_http_status(:success)
+      expect(response.body).to look_like_json
+      order = [one, two]
+      expect(assigns(:records).to_a).to match(order)
     end
 
-    it { is_expected.to respond_with(:success) }
+    it 'ignores removed' do
+      three = create(:published_entry, removed: true)
+      get :index, format: :json
+      order = [one, two]
+      expect(assigns(:records).to_a).to match(order)
+    end
 
-    it 'returns JSON' do
-      # look_like_json found in support/matchers/json_matchers.rb
-      expect(response.body).to look_like_json
-      order = [one.id, two.id]
-      expect(assigns(:records).pluck('id')).to match(order)
+    it 'shows removed' do
+      two.update_attribute('removed', true)
+      three = create(:published_entry, removed: true)
+      get :index, removed: true, format: :json
+      order = [two, three]
+      expect(assigns(:records).to_a).to match(order)
     end
 
   end
 
   # Tests for SHOW route
   context "#show" do
-    # Allow travel to be shared across all tests
+
     let!(:published_entry) { create(:published_entry) }
 
     # Before running a test do this

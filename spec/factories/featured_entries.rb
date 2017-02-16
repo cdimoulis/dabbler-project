@@ -28,5 +28,7 @@ FactoryGirl.define do
     tags ['tag_a', 'tag_b']
     data { {published_at: DateTime.now} }
     creator { entry.author }
+    revised_featured_entry nil
+    revised_published_entry_id { revised_featured_entry ? revised_featured_entry.id : nil }
   end
 end

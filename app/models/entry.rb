@@ -29,8 +29,22 @@ class Entry < ApplicationRecord
   has_many :featured_entries
   has_many :tutorial_entries
 
+  before_destroy :check_update
+  after_update :replace_associations
+
   validates :text, :author_id, :content, presence: true
   validate :author_exists
+
+  ###
+  # Scopes
+  ###
+  def self.unpublished
+    entry_ids = PublishedEntry.pluck('entry_id').uniq
+    where.not(id: entry_ids)
+  end
+  ###
+  # End Scopes
+  ###
 
 
   protected
@@ -41,4 +55,39 @@ class Entry < ApplicationRecord
     end
   end
 
+  # Link together updated entries on delete
+  def check_update
+    # If this model has updated a previous entry
+    if previous_entry.present?
+      # If there is an update of this entry then set it as the update of the previous_entry
+      if updated_entry.present?
+        previous_entry.updated_entry = updated_entry
+        if !(previous_entry.valid? and previous_entry.save)
+          puts "\n\nCould not link previous and updated entries\n#{previous_entry.errors.inspect}\n\n"
+          Rails.logger.info "\n\nCould not link previous and updated entries\n#{previous_entry.errors.inspect}\n\n"
+        end
+      else
+        # Nullify the previous_entry.updated_entry_id
+        previous_entry.updated_entry_id = nil
+        if !(previous_entry.valid? and previous_entry.save)
+          puts "\n\nCould not nullify previous_entry updated entry\n#{previous_entry.errors.inspect}\n\n"
+          Rails.logger.info "\n\nCould not nullify previous_entry updated entry\n#{previous_entry.errors.inspect}\n\n"
+        end
+      end
+    end
+  end
+
+  # Replace associations on update
+  def replace_associations
+    if updated_entry.present?
+      published_entries.each do |pe|
+        pe.entry = updated_entry
+        pe.author = updated_entry.author
+        if !(pe.valid? && pe.save)
+          puts "\n\nCould not update published entry for entry #{self.inspect}:\n#{pe.errors.inspect}\n\n"
+          Rails.logger.info "\n\nCould not update published entry for entry #{self.inspect}:\n#{pe.errors.inspect}\n\n"
+        end
+      end
+    end
+  end
 end

@@ -43,7 +43,7 @@ RSpec.describe Blog::V1::TopicsController, type: :controller do
 
   # Tests for SHOW route
   context "#show" do
-    # Allow travel to be shared across all tests
+
     let!(:topic) { create(:topic) }
 
     # Before running a test do this
@@ -63,7 +63,7 @@ RSpec.describe Blog::V1::TopicsController, type: :controller do
 
   # Test for UPDATE route
   context "#update" do
-    # Allow travel to be shared across all tests
+
     let!(:group) { create(:group) }
     let!(:topic_a) { create(:topic_without_domain, text: 'Topic A', group: group) }
 
@@ -88,7 +88,6 @@ RSpec.describe Blog::V1::TopicsController, type: :controller do
 
   # Test for DESTROY route
   context "#destroy" do
-    # Allow travel to be shared across all tests
     let!(:topic) { create(:topic) }
     let!(:current) { Topic.count }
 

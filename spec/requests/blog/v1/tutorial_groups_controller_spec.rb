@@ -7,7 +7,7 @@ RSpec.describe Blog::V1::TutorialGroupsController do
   context '#create' do
     let!(:travel) { create(:domain, text: 'Travel') }
     let(:tutorial_group_via_domain_path) { blog_v1_domain_tutorial_groups_path(domain_id: travel.id) }
-    let(:create_params) { {text: "Fly Group", description: "Fly domain group"} }
+    let(:create_params) { attributes_for(:tutorial_group) }
     let!(:user) { create(:user) }
 
     before do

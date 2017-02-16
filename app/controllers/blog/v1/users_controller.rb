@@ -6,39 +6,33 @@ class Blog::V1::UsersController < Clearance::UsersController
 
   respond_to :json
 
-  
+
   ###
   # Association methods
   ###
 
-  # Get the entries this user is author of
-  def entries
-    user_id = params[:user_id]
-    user = User.where('id = ?', user_id).take
+  # Get the author of the entry
+  def author
+    entry_id = params[:entry_id]
+    entry = Entry.where('id = ?', entry_id).take
 
-    if user.nil?
+    if entry.nil?
       render :json => {}, :status => 404
     else
-      @records = user.entries
-
-      # Page the records if desired
-      if params.has_key?(:count) || params.has_key?(:start)
-        pageRecords()
-      end
-
-      respond_with :blog, :v1, @records
+      @record = entry.author
+      respond_with :blog, :v1, @record
     end
   end
 
-  # Get the entries this user is a contributor of
-  def contributions
-    user_id = params[:user_id]
-    user = User.where('id = ?', user_id).take
+  # Get the contributors of the entry
+  def contributors
+    entry_id = params[:entry_id]
+    entry = Entry.where('id = ?', entry_id).take
 
-    if user.nil?
+    if entry.nil?
       render :json => {}, :status => 404
     else
-      @records = user.contributions
+      @records = entry.contributors
 
       # Page the records if desired
       if params.has_key?(:count) || params.has_key?(:start)

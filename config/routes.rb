@@ -23,8 +23,8 @@ Rails.application.routes.draw do
       end
 
       resources :entries, except: exc_new_edit, constraints: uuid_constraints do
-        resource :author, to: 'entries#author', only: :show, parent: :entries
-        resources :contributors, to: 'entries#contributors', only: :index, parent: :entries
+        resource :author, to: 'users#author', only: :show, parent: :entries
+        resources :contributors, to: 'users#contributors', only: :index, parent: :entries
         resources :published_entries, only: [:create, :index], parent: :entries
         resources :featured_entries, only: [:create, :index], parent: :entries
         resources :tutorial_entries, only: [:create, :index], parent: :entries
@@ -87,8 +87,8 @@ Rails.application.routes.draw do
       end
 
       resources :users, except: exc_new_edit, constraints: uuid_constraints do
-        resources :entries, to: 'users#entries', only: :index, parent: :users
-        resources :contributions, to: 'users#contributions', only: :index, parent: :users
+        resources :entries, to: 'entries#entries', only: :index, parent: :users
+        resources :contributions, to: 'entries#contributions', only: :index, parent: :users
       end
 
     end

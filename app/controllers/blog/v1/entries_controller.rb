@@ -4,6 +4,7 @@ class Blog::V1::EntriesController < Blog::V1::BlogController
   include HasCreator
 
   before_action :require_login, only: [:create, :update, :destroy]
+  before_action :set_scopes, only: [:index]
 
   respond_to :json
 
@@ -17,16 +18,22 @@ class Blog::V1::EntriesController < Blog::V1::BlogController
     if !entry.locked
       super
     else
-      @record = entry.dup
-      @record.assign_attributes permitted_params
-      if @record.valid? && @record.save
-        entry.updated_entry = @record
-        entry.save
-        respond_with :blog, :v1, @record
+      if entry.updated_entry_id.present?
+        puts "\n\nCould not update Entry record: Record has been previously updated\n\n"
+        Rails.logger.debug "\n\nCould not update Entry record: Record has been previously updated\n\n"
+        render :json => {errors: {msg: "Entry could not be updated: Record has been previously updated"}}, :status => 422
       else
-        puts "\n\nCould not update Entry record.\n#{@record.errors.inspect}\n\n"
-        Rails.logger.debug "\n\nCould not update Entry record.\n#{@record.errors.inspect}\n\n"
-        render :json => {errors: {msg: "Entry could not be updated."}}, :status => 422
+        @record = entry.dup
+        @record.assign_attributes permitted_params
+        if @record.valid? && @record.save
+          entry.updated_entry = @record
+          entry.save
+          respond_with :blog, :v1, @record
+        else
+          puts "\n\nCould not update Entry record.\n#{@record.errors.inspect}\n\n"
+          Rails.logger.debug "\n\nCould not update Entry record.\n#{@record.errors.inspect}\n\n"
+          render :json => {errors: {msg: "Entry could not be updated."}}, :status => 422
+        end
       end
     end
   end
@@ -38,7 +45,11 @@ class Blog::V1::EntriesController < Blog::V1::BlogController
     if !@record.locked
       super
     else
-      if !@record.nil? && @record.remove
+      if @record.present? && @record.remove
+        # Remove all published_entries
+        PublishedEntry.where(entry_id: @record.id).each do |pe|
+          pe.destroy
+        end
         super
       else
         render :json => {errors: {msg: "Entry is not flagged for removal."}}, :status => 422
@@ -54,28 +65,34 @@ class Blog::V1::EntriesController < Blog::V1::BlogController
   # Association methods
   ###
 
-  # Get the author of the entry
-  def author
-    entry_id = params[:entry_id]
-    entry = Entry.where('id = ?', entry_id).take
+  # Get the entries this user is author of
+  def entries
+    user_id = params[:user_id]
+    user = User.where('id = ?', user_id).take
 
-    if entry.nil?
+    if user.nil?
       render :json => {}, :status => 404
     else
-      @record = entry.author
-      respond_with :blog, :v1, @record
+      @records = user.entries
+
+      # Page the records if desired
+      if params.has_key?(:count) || params.has_key?(:start)
+        pageRecords()
+      end
+
+      respond_with :blog, :v1, @records
     end
   end
 
-  # Get the contributors of the entry
-  def contributors
-    entry_id = params[:entry_id]
-    entry = Entry.where('id = ?', entry_id).take
+  # Get the entries this user is a contributor of
+  def contributions
+    user_id = params[:user_id]
+    user = User.where('id = ?', user_id).take
 
-    if entry.nil?
+    if user.nil?
       render :json => {}, :status => 404
     else
-      @records = entry.contributors
+      @records = user.contributions
 
       # Page the records if desired
       if params.has_key?(:count) || params.has_key?(:start)
@@ -94,7 +111,14 @@ class Blog::V1::EntriesController < Blog::V1::BlogController
 
   def permitted_params
     params.require(:entry).permit(:text, :description, :author_id, :default_image_url,
-                                  :content, :remove)
+                                  :content, :remove, :unpublished)
+  end
+
+  def set_scopes
+    @scopes = @scopes || []
+    if params[:unpublished]
+      @scopes.push :unpublished
+    end
   end
 
 end

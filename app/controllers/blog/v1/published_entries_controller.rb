@@ -5,8 +5,40 @@ class Blog::V1::PublishedEntriesController < Blog::V1::BlogController
 
   before_action :require_login, only: [:create, :update, :destroy]
   before_action :check_data, only: :update
+  before_action :set_scopes, only: [:index]
 
   respond_to :json
+
+  ###
+  # Standard CRUD Ops overrides
+  ###
+  # Published entries are not destroyed. The 'removed' flag is set_set
+  # Published entries are deleted if their associated entry is destroyed
+  def destroy
+    @record = PublishedEntry.where('id = ?',params[:id]).take
+    if @record.present?
+      @record.update_attribute('removed', true)
+      respond_with :blog, :v1, @record
+    else
+      render :json => {errors: @record.errors}, :status => 424
+    end
+  end
+
+  ###
+  # End standard CRUD Ops overrides
+  ###
+
+
+  protected
+
+  def permitted_params
+    params.require(:published_entry).permit(:author_id, :domain_id, :entry_id,
+                                            {group_topic_published_entries_attributes: [:id, :group_id, :topic_id, :published_entry_id]},
+                                            :image_url, :notes, :tags, :data, :type,
+                                            :current, :removed).tap do |whitelist|
+      whitelist[:data] = params[:published_entry][:data]
+    end
+  end
 
   # Check json data on update
   def check_data
@@ -17,14 +49,16 @@ class Blog::V1::PublishedEntriesController < Blog::V1::BlogController
     end
   end
 
+  def set_scopes
+    @scopes = @scopes || []
+    if params[:current]
+      @scopes.push :current
+    end
 
-  protected
-
-  def permitted_params
-    params.require(:published_entry).permit(:author_id, :domain_id, :entry_id,
-                                            {group_topic_published_entries_attributes: [:id, :group_id, :topic_id, :published_entry_id]},
-                                            :image_url, :notes, :tags, :data, :type).tap do |whitelist|
-      whitelist[:data] = params[:published_entry][:data]
+    if params[:removed]
+      @scopes.push :removed
+    else
+      @scopes.push :non_removed
     end
   end
 

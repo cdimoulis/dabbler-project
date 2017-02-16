@@ -24,7 +24,7 @@ RSpec.describe Blog::V1::GroupsController do
 
   # Tests for SHOW route
   context "#show" do
-    # Allow travel to be shared across all tests
+
     let!(:fly) { create(:group, text: "Fly Group") }
 
     # Before running a test do this
@@ -43,7 +43,6 @@ RSpec.describe Blog::V1::GroupsController do
 
   # Test for UPDATE route
   context "#update" do
-    # Allow travel to be shared across all tests
     let!(:travel) { create(:domain, text: "Travel") }
     let!(:hotel) { create(:group, text: 'Hotel Group', domain: travel) }
 
@@ -68,7 +67,6 @@ RSpec.describe Blog::V1::GroupsController do
 
   # Test for DESTROY route
   context "#destroy" do
-    # Allow travel to be shared across all tests
     let!(:travel) { create(:domain, text: "Travel") }
     let!(:hotel) { create(:group, text: 'Hotel Group', domain: travel) }
     let!(:current) { Group.count }

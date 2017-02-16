@@ -2,18 +2,20 @@
 #
 # Table name: published_entries
 #
-#  id         :uuid             not null, primary key
-#  author_id  :uuid             not null
-#  domain_id  :uuid             not null
-#  entry_id   :uuid             not null
-#  image_url  :string
-#  notes      :text
-#  tags       :text             is an Array
-#  type       :string
-#  data       :json
-#  creator_id :uuid             not null
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
+#  id                         :uuid             not null, primary key
+#  author_id                  :uuid             not null
+#  domain_id                  :uuid             not null
+#  entry_id                   :uuid             not null
+#  image_url                  :string
+#  notes                      :text
+#  tags                       :text             is an Array
+#  type                       :string
+#  data                       :json
+#  revised_published_entry_id :uuid
+#  removed                    :boolean          default(FALSE)
+#  creator_id                 :uuid             not null
+#  created_at                 :datetime         not null
+#  updated_at                 :datetime         not null
 #
 
 require 'rails_helper'
@@ -61,6 +63,21 @@ RSpec.describe PublishedEntry, type: :model do
       join = GroupTopicPublishedEntry.where(published_entry_id: published_entry.id)
       expect(join.length).to eq(2)
     end
+
+    it 'associates updated entries' do
+      pe_a = create(:published_entry)
+      pe_b = create(:published_entry)
+      pe_c = create(:published_entry)
+      pe_c.revised_published_entry = pe_b
+      pe_c.save
+      pe_b.revised_published_entry = pe_a
+      pe_b.save
+      expect(pe_a.revised_published_entry).to eq(nil)
+      expect(pe_a.previous_published_entry).to eq(pe_b)
+      expect(pe_b.revised_published_entry_id).to eq(pe_a.id)
+      expect(pe_b.previous_published_entry).to eq(pe_c)
+      expect(pe_c.revised_published_entry_id).to eq(pe_b.id)
+    end
   end
 
   context 'validations' do
@@ -80,6 +97,39 @@ RSpec.describe PublishedEntry, type: :model do
       published_entry.domain_id = "52af11a3-0527-454e-bab2-ded1dcdb4ac7"
       expect(published_entry.valid?).to be_falsy
     end
+
+    it 'requires revision type match' do
+      tutorial_entry = build(:tutorial_entry, revised_published_entry: published_entry)
+      expect(tutorial_entry.valid?).to be_falsy
+    end
   end
 
+  context 'save' do
+    it 'locks entry on creation' do
+      entry = create(:entry_with_creator)
+      expect(entry.locked).to be_falsy
+      published_entry = create(:published_entry, entry: entry)
+      entry.reload
+      expect(entry.locked).to be_truthy
+    end
+  end
+
+  context 'destroy' do
+    let!(:published_entry) { create(:published_entry) }
+
+    it 'removes revised_published_entry_id from previous' do
+      revised = create(:published_entry, revised_published_entry: published_entry)
+      published_entry.destroy
+      revised.reload
+      expect(revised.revised_published_entry_id).to eq(nil)
+    end
+
+    it 'links previous and revised published entries' do
+      revised = create(:published_entry, revised_published_entry: published_entry)
+      previous = create(:published_entry, revised_published_entry: revised)
+      revised.destroy
+      previous.reload
+      expect(previous.revised_published_entry_id).to eq(published_entry.id)
+    end
+  end
 end

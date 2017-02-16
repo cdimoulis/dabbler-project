@@ -67,7 +67,7 @@ RSpec.describe Blog::V1::UsersController, type: :controller do
 
   # Tests for SHOW route
   context "#show" do
-    # Allow travel to be shared across all tests
+
     let!(:chris) { create(:user, email: 'chris@test.com') }
 
     # Before running a test do this
@@ -88,7 +88,7 @@ RSpec.describe Blog::V1::UsersController, type: :controller do
 
   # Test for UPDATE route
   context "#update" do
-    # Allow travel to be shared across all tests
+
     let!(:chris) { create(:user, email: 'chris@test.com') }
 
     before do
@@ -112,7 +112,6 @@ RSpec.describe Blog::V1::UsersController, type: :controller do
 
   # Test for DESTROY route
   context "#destroy" do
-    # Allow travel to be shared across all tests
     let!(:admin) { create(:user) }
     let!(:chris) { create(:user, email: 'chris@test.com') }
     let!(:current_user) { User.count }

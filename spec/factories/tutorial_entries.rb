@@ -28,5 +28,7 @@ FactoryGirl.define do
     tags ['tag_a', 'tag_b']
     data { {order: TutorialEntry.count} }
     creator { entry.author }
+    revised_tutorial_entry nil
+    revised_published_entry_id { revised_tutorial_entry ? revised_tutorial_entry.id : nil }
   end
 end

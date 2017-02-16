@@ -35,8 +35,7 @@ RSpec.describe Blog::V1::EntriesController do
       # look_like_json found in support/matchers/json_matchers.rb
       expect(response).to have_http_status(:success)
       expect(response.body).to look_like_json
-      order = [first.id, second.id, third.id, fourth.id]
-      expect(assigns(:records).pluck('id')).to match(order)
+      expect(assigns(:records).to_a).to match([first,second,third,fourth])
     end
 
     it 'handles date range' do
@@ -50,47 +49,48 @@ RSpec.describe Blog::V1::EntriesController do
       # From only
       get :index, from: 6.days.ago, format: :json
       expect(assigns(:records).length).to eq(2)
-      order = [first.id, second.id]
-      expect(assigns(:records).pluck('id')).to match(order)
+      expect(assigns(:records).to_a).to match([first,second])
 
       # To only
       get :index, to: 6.days.ago, format: :json
       expect(assigns(:records).length).to eq(2)
-      order = [third.id, fourth.id]
-      expect(assigns(:records).pluck('id')).to match(order)
+      expect(assigns(:records).to_a).to match([third,fourth])
 
       # To and from
       get :index, from: 12.days.ago, to: 3.days.ago, format: :json
       expect(assigns(:records).length).to eq(2)
-      order = [second.id, third.id]
-      expect(assigns(:records).pluck('id')).to match(order)
+      expect(assigns(:records).to_a).to match([second,third])
     end
 
     it 'pages records' do
       # count only
       get :index, count: 2, format: :json
       expect(assigns(:records).length).to eq(2)
-      order = [first.id, second.id]
-      expect(assigns(:records).pluck('id')).to match(order)
+      expect(assigns(:records).to_a).to match([first,second])
 
       # start only
       get :index, start: 2, format: :json
       expect(assigns(:records).length).to eq(2)
-      order = [third.id, fourth.id]
-      expect(assigns(:records).pluck('id')).to match(order)
+      expect(assigns(:records).to_a).to match([third,fourth])
 
       # count andd start
       get :index, start: 1, count: 2, format: :json
       expect(assigns(:records).length).to eq(2)
-      order = [second.id, third.id]
-      expect(assigns(:records).pluck('id')).to match(order)
+      expect(assigns(:records).to_a).to match([second,third])
+    end
+
+    it 'shows unpublished' do
+      create(:published_entry, entry: first)
+      create(:published_entry, entry: third)
+      get :index, unpublished: true, format: :json
+      expect(assigns(:records).to_a).to match([second,fourth])
     end
 
   end
 
   # Tests for SHOW route
   context "#show" do
-    # Allow travel to be shared across all tests
+
     let!(:entry) { create(:entry_with_creator) }
 
     # Before running a test do this
@@ -114,7 +114,6 @@ RSpec.describe Blog::V1::EntriesController do
       sign_in
     end
 
-    # Allow travel to be shared across all tests
     let!(:entry) { create(:entry_with_creator) }
 
     it "succeeds" do
@@ -135,11 +134,35 @@ RSpec.describe Blog::V1::EntriesController do
       expect(assigns(:record).text).to eq(entry.text)
       expect(entry.updated_entry_id).to eq(assigns(:record).id)
     end
+
+    it "does not update an already updated entry" do
+      update_entry = create(:entry_with_creator)
+      entry.locked = true
+      entry.updated_entry = update_entry
+      entry.save
+      update_params = {description: "Some new information"}
+      put :update, id: entry.id, entry: update_params
+      expect(response).to have_http_status(422)
+    end
+
+    it 'changes published_entry associations' do
+      pe1 = create(:published_entry, entry: entry, created_at: (DateTime.now - 1.days).strftime)
+      pe2 = create(:published_entry, entry: entry, created_at: (DateTime.now - 2.days).strftime)
+      pe3 = create(:published_entry, entry: entry, created_at: (DateTime.now - 3.days).strftime)
+      pe4 = create(:published_entry, created_at: (DateTime.now - 4.days).strftime)
+      update_params = {description: "Some new information"}
+      put :update, id: entry.id, entry: update_params
+      entry.reload
+      expect(entry.locked).to be_truthy
+      expect(assigns(:record).id).not_to eq(entry.id)
+      expect(entry.published_entries.empty?).to be_truthy
+      expect(assigns(:record).published_entries).to match([pe1,pe2,pe3])
+    end
   end
 
   # Test for DESTROY route
   context "#destroy" do
-    # Allow travel to be shared across all tests
+
     let!(:admin) { create(:user) }
     let!(:entry) { create(:entry_with_creator) }
 
@@ -153,20 +176,29 @@ RSpec.describe Blog::V1::EntriesController do
     end
 
     it "prevents without remove flag" do
-      entry.locked = true
-      entry.save
+      entry.update_attribute('locked', true)
       delete :destroy, id: entry.id, format: :json
       expect(response).to have_http_status(422)
     end
 
     it "succeeds" do
       current = Entry.count
-      entry.locked = true
-      entry.remove = true
-      entry.save
+      entry.update_attribute('locked', true)
+      entry.update_attribute('remove', true)
       delete :destroy, id: entry.id, format: :json
       expect(response).to have_http_status(:success)
       expect(Entry.count).to eq(current-1)
+    end
+
+    it 'removes published entries' do
+      published_entry = create(:published_entry, entry: entry)
+      entry.update_attribute('remove', true)
+      count = Entry.count
+      pe_count = PublishedEntry.count
+      delete :destroy, id: entry.id, format: :json
+      expect(response).to have_http_status(:success)
+      expect(Entry.count).to eq(count-1)
+      expect(PublishedEntry.count).to eq(pe_count-1)
     end
   end
 end

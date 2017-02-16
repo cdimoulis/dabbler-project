@@ -6,6 +6,7 @@
 #  text        :string           not null
 #  description :text
 #  domain_id   :uuid             not null
+#  order       :integer          not null
 #  type        :string           not null
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
@@ -18,6 +19,7 @@ FactoryGirl.define do
     description { "#{text} test group" }
     domain { create(:domain) }
     domain_id { domain.id }
+    order { Group.count }
     type "FeaturedGroup"
   end
 

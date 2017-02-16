@@ -28,19 +28,23 @@ RSpec.describe Blog::V1::FeaturedGroupsController do
     let!(:fly) {create(:featured_group, text: 'Fly Group')}
     let!(:hotel) {create(:tutorial_group, text: 'Hotel Group')}
 
-    before do
+    it 'returns only records of proper type' do
       get :index, format: :json
+      expect(assigns(:records).length).to eq(1)
     end
 
-    it 'returns only records of proper type' do
-      expect(assigns(:records).length).to eq(1)
+    it 'orders correctly' do
+      fg_a = create(:featured_group, domain: fly.domain, order: 3)
+      fg_b = create(:featured_group, domain: fly.domain, order: 1)
+      fg_c = create(:featured_group, domain: fly.domain, order: 2)
+      get :index, format: :json
+      expect(assigns(:records).to_a).to match([fly,fg_b,fg_c,fg_a])
     end
 
   end
 
   # Tests for SHOW route
   context "#show" do
-    # Allow travel to be shared across all tests
     let!(:fly) { create(:featured_group, text: "Fly Group") }
 
     # Before running a test do this

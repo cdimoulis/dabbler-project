@@ -43,6 +43,19 @@ RSpec.describe Entry, type: :model do
     end
   end
 
+  context 'scopes' do
+    it 'shows unpublished' do
+      one = create(:entry_with_creator)
+      two = create(:entry_with_creator)
+      three = create(:entry_with_creator)
+      four = create(:entry_with_creator)
+
+      create(:published_entry, entry: two)
+      create(:published_entry, entry: four)
+      expect(Entry.unpublished.to_a).to match([one,three])
+    end
+  end
+
   context '.save' do
     it 'succeeds' do
       entry = build(:entry_with_creator)
@@ -55,6 +68,40 @@ RSpec.describe Entry, type: :model do
       entry.author_id = "52af11a3-0527-454e-bab2-ded1dcdb4ac7"
       expect(entry.valid?).to be_falsy
     end
+
+    it 'changes published_entry associations' do
+      entry = create(:entry_with_creator)
+      pe1 = create(:published_entry, entry: entry, created_at: (DateTime.now - 1.days).strftime)
+      pe2 = create(:published_entry, entry: entry, created_at: (DateTime.now - 2.days).strftime)
+      pe3 = create(:published_entry, entry: entry, created_at: (DateTime.now - 3.days).strftime)
+      pe4 = create(:published_entry, created_at: (DateTime.now - 4.days).strftime)
+      updated = create(:entry_with_creator)
+      entry.updated_entry = updated
+      entry.save
+      entry.reload
+      updated.reload
+      expect(entry.locked).to be_truthy
+      expect(entry.published_entries.empty?).to be_truthy
+      expect(updated.published_entries).to match([pe1,pe2,pe3])
+    end
   end
 
+  context 'destroy' do
+    let!(:entry) { create(:entry_with_creator) }
+
+    it 'removes updated_entry_id from previous' do
+      updated = create(:entry_with_creator, updated_entry: entry)
+      entry.destroy
+      updated.reload
+      expect(updated.updated_entry_id).to eq(nil)
+    end
+
+    it 'links previous and updated entries' do
+      updated = create(:entry_with_creator, updated_entry: entry)
+      previous = create(:entry_with_creator, updated_entry: updated)
+      updated.destroy
+      previous.reload
+      expect(previous.updated_entry_id).to eq(entry.id)
+    end
+  end
 end
