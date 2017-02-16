@@ -73,6 +73,7 @@ ActiveRecord::Schema.define(version: 20170105181734) do
     t.string   "text",        null: false
     t.text     "description"
     t.uuid     "domain_id",   null: false
+    t.integer  "order",       null: false
     t.string   "type",        null: false
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false

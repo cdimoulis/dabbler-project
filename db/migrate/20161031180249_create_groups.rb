@@ -4,6 +4,7 @@ class CreateGroups < ActiveRecord::Migration
       t.string :text, null: false
       t.text :description
       t.uuid :domain_id, null: false
+      t.integer :order, null: false
       t.string :type, null: false
 
       t.timestamps null: false
