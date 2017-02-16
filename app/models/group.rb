@@ -14,7 +14,7 @@
 
 class Group < ApplicationRecord
 
-  default_scope { order(text: :asc) }
+  # default_scope { order(text: :asc) }
 
   belongs_to :domain
   has_many :topics

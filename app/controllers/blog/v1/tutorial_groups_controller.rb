@@ -7,7 +7,7 @@ class Blog::V1::TutorialGroupsController < Blog::V1::BlogController
   protected
 
   def permitted_params
-    params.require(:tutorial_group).permit(:text, :description, :domain_id)
+    params.require(:tutorial_group).permit(:text, :description, :domain_id, :order)
   end
 
 end

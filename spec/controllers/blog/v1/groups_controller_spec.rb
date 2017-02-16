@@ -24,7 +24,7 @@ RSpec.describe Blog::V1::GroupsController do
 
   # Tests for SHOW route
   context "#show" do
-    
+
     let!(:fly) { create(:group, text: "Fly Group") }
 
     # Before running a test do this

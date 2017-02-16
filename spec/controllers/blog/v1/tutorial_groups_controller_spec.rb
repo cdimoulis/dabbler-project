@@ -36,6 +36,14 @@ RSpec.describe Blog::V1::TutorialGroupsController do
       expect(assigns(:records).length).to eq(1)
     end
 
+    it 'orders correctly' do
+      tg_a = create(:tutorial_group, domain: hotel.domain, order: 3)
+      tg_b = create(:tutorial_group, domain: hotel.domain, order: 1)
+      tg_c = create(:tutorial_group, domain: hotel.domain, order: 2)
+      get :index, format: :json
+      expect(assigns(:records).to_a).to match([hotel,tg_b,tg_c,tg_a])
+    end
+
   end
 
   # Tests for SHOW route
