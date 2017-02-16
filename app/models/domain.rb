@@ -22,6 +22,7 @@ class Domain < ApplicationRecord
   has_many :published_entries
   has_many :featured_entries
   has_many :tutorial_entries
+  has_many :menus
 
   validates :text, :subdomain, presence: true, uniqueness: true
 

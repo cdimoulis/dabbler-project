@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170105181734) do
+ActiveRecord::Schema.define(version: 20170216172925) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -82,6 +82,18 @@ ActiveRecord::Schema.define(version: 20170105181734) do
   add_index "groups", ["domain_id", "type", "text"], name: "index_groups_on_domain_id_and_type_and_text", unique: true, using: :btree
   add_index "groups", ["domain_id"], name: "index_groups_on_domain_id", using: :btree
   add_index "groups", ["text"], name: "index_groups_on_text", using: :btree
+
+  create_table "menus", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
+    t.string   "text",        null: false
+    t.text     "description"
+    t.uuid     "domain_id",   null: false
+    t.integer  "order",       null: false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  add_index "menus", ["domain_id"], name: "index_menus_on_domain_id", using: :btree
+  add_index "menus", ["text"], name: "index_menus_on_text", using: :btree
 
   create_table "people", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
     t.string   "prefix"
