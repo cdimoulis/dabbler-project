@@ -16,7 +16,7 @@ class MenuGroup < Group
 
   default_scope { order(order: :asc) }
 
-  # has_one :menu, through: menus_menu_groups
+  has_one :menu, through: :groups_menus
   # has_many :menu_entries, through: :group_topic_published_entries, foreign_key: 'published_entry_id'
 
   # validates :order, uniqueness: {scope: :menu, message: "MenuGroup order must be unique within a Menu"}

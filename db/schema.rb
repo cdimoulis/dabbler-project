@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170216172925) do
+ActiveRecord::Schema.define(version: 20170216215622) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -49,8 +49,8 @@ ActiveRecord::Schema.define(version: 20170216172925) do
   add_index "entries", ["updated_entry_id"], name: "index_entries_on_updated_entry_id", using: :btree
 
   create_table "entries_users", id: false, force: :cascade do |t|
-    t.uuid "entry_id"
-    t.uuid "user_id"
+    t.uuid "entry_id", null: false
+    t.uuid "user_id",  null: false
   end
 
   add_index "entries_users", ["entry_id", "user_id"], name: "index_entries_users_on_entry_id_and_user_id", using: :btree
@@ -82,6 +82,15 @@ ActiveRecord::Schema.define(version: 20170216172925) do
   add_index "groups", ["domain_id", "type", "text"], name: "index_groups_on_domain_id_and_type_and_text", unique: true, using: :btree
   add_index "groups", ["domain_id"], name: "index_groups_on_domain_id", using: :btree
   add_index "groups", ["text"], name: "index_groups_on_text", using: :btree
+
+  create_table "groups_menus", id: false, force: :cascade do |t|
+    t.uuid "group_id", null: false
+    t.uuid "menu_id",  null: false
+  end
+
+  add_index "groups_menus", ["group_id"], name: "index_groups_menus_on_group_id", using: :btree
+  add_index "groups_menus", ["menu_id", "group_id"], name: "index_groups_menus_on_menu_id_and_group_id", using: :btree
+  add_index "groups_menus", ["menu_id"], name: "index_groups_menus_on_menu_id", using: :btree
 
   create_table "menus", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
     t.string   "text",        null: false

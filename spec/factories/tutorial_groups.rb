@@ -1,11 +1,13 @@
 # == Schema Information
 #
-# Table name: domain_groups
+# Table name: groups
 #
 #  id          :uuid             not null, primary key
 #  text        :string           not null
 #  description :text
 #  domain_id   :uuid             not null
+#  order       :integer          not null
+#  type        :string           not null
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #

@@ -16,7 +16,8 @@ require 'rails_helper'
 RSpec.describe Menu, type: :model do
 
   context 'associations' do
-
+    it { is_expected.to belong_to(:domain) }
+    it { is_expected.to have_many(:menu_groups) }
   end
 
   context '.save' do
