@@ -23,6 +23,21 @@ RSpec.describe TutorialGroup do
     end
   end
 
+  context 'validations' do
+    it 'requires unique order' do
+      tg_a = create(:tutorial_group)
+      tg_b = build(:tutorial_group, domain: tg_a.domain, order: tg_a.order)
+      expect(tg_b.valid?).to be_falsy
+    end
+
+    it 'unique order only applies to type' do
+      tg_a = create(:tutorial_group)
+      tg_b = create(:tutorial_group, domain: tg_a.domain)
+      fg = build(:featured_group, domain: tg_a.domain, order: tg_a.order)
+      expect(fg.valid?).to be_truthy
+    end
+  end
+
   context 'associations' do
     it 'accesses tutorial_entries' do
       group = create(:tutorial_group)

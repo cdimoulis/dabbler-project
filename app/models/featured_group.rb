@@ -16,4 +16,6 @@ class FeaturedGroup < Group
 
   has_many :featured_entries, through: :group_topic_published_entries, foreign_key: 'published_entry_id'
 
+  validates :order, uniqueness: {scope: :domain_id, message: "FeaturedGroup order must be unique within a Domain"}
+
 end

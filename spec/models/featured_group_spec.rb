@@ -23,6 +23,21 @@ RSpec.describe FeaturedGroup do
     end
   end
 
+  context 'validations' do
+    it 'requires unique order' do
+      fg_a = create(:featured_group)
+      fg_b = build(:featured_group, domain: fg_a.domain, order: fg_a.order)
+      expect(fg_b.valid?).to be_falsy
+    end
+
+    it 'unique order only applies to type' do
+      fg_a = create(:featured_group)
+      fg_b = create(:featured_group, domain: fg_a.domain)
+      tg = build(:tutorial_group, domain: fg_a.domain, order: fg_a.order)
+      expect(tg.valid?).to be_truthy
+    end
+  end
+
   context 'associations' do
     it 'accesses featured_entries' do
       group = create(:featured_group)

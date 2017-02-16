@@ -19,6 +19,7 @@ FactoryGirl.define do
     description { "#{text} test group" }
     domain { create(:domain) }
     domain_id { domain.id }
+    order { Group.count }
     type "FeaturedGroup"
   end
 

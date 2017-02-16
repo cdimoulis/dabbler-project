@@ -16,4 +16,6 @@ class TutorialGroup < Group
 
   has_many :tutorial_entries, through: :group_topic_published_entries, foreign_key: 'published_entry_id'
 
+  validates :order, uniqueness: {scope: :domain_id, message: "TutorialGroup order must be unique within a Domain"}
+
 end
