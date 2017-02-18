@@ -59,12 +59,15 @@ RSpec.describe MenuGroup, type: :model do
       mg_b.menu = menu
       expect(mg_b.valid?).to be_falsy
     end
-    #
-    # it 'unique order only applies to type' do
-    #   fg_a = create(:featured_group)
-    #   fg_b = create(:featured_group, domain: fg_a.domain)
-    #   tg = build(:tutorial_group, domain: fg_a.domain, order: fg_a.order)
-    #   expect(tg.valid?).to be_truthy
-    # end
+
+    it 'unique order only applies to type' do
+      menu_a = create(:menu)
+      menu_b = create(:menu, domain: menu_a.domain)
+      mg_a = create(:menu_group, domain: menu_a.domain)
+      mg_a.menu = menu_a
+      mg_b = create(:menu_group, domain: menu_b.domain, order: mg_a.order)
+      mg_b.menu = menu_b
+      expect(mg_b.valid?).to be_truthy
+    end
   end
 end
