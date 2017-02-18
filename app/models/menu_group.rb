@@ -20,5 +20,14 @@ class MenuGroup < Group
   has_one :menu, through: :menus_menu_group
   # has_many :menu_entries, through: :group_topic_published_entries, foreign_key: 'published_entry_id'
 
-  # validates :order, uniqueness: {scope: :menu, message: "MenuGroup order must be unique within a Menu"}
+  validate :valid_order
+
+  protected
+
+  def valid_order
+    if menus_menu_group.present? && !menus_menu_group.valid?
+      errors.add(:order, 'Order must be unique within a Menu')
+    end
+  end
+
 end

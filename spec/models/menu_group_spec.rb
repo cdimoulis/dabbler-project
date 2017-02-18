@@ -51,11 +51,14 @@ RSpec.describe MenuGroup, type: :model do
   end
 
   context 'validations' do
-    # it 'requires unique order' do
-    #   fg_a = create(:featured_group)
-    #   fg_b = build(:featured_group, domain: fg_a.domain, order: fg_a.order)
-    #   expect(fg_b.valid?).to be_falsy
-    # end
+    it 'requires unique order' do
+      menu = create(:menu)
+      mg_a = create(:menu_group, domain: menu.domain)
+      mg_a.menu = menu
+      mg_b = create(:menu_group, domain: mg_a.domain, order: mg_a.order)
+      mg_b.menu = menu
+      expect(mg_b.valid?).to be_falsy
+    end
     #
     # it 'unique order only applies to type' do
     #   fg_a = create(:featured_group)
