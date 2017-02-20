@@ -22,19 +22,21 @@ FactoryGirl.define do
     text { "Entry #{Entry.count + 1}" }
     description 'Some great information about stuff'
     author { create(:user) }
-    author_id { author.id }
+    author_id { author.present? ? author.id : nil }
     content "Here is some info to know about..."
     updated_entry nil
-    updated_entry_id { updated_entry ? updated_entry.id : nil }
+    updated_entry_id { updated_entry.present? ? updated_entry.id : nil }
 
     factory :entry_with_creator do
       creator { author }
+      creator_id { creator.present? ? creator.id : nil }
     end
 
     factory :entry_without_author do
       author nil
       author_id nil
       creator { create(:user) }
+      creator_id { creator.present? ? creator.id : nil }
     end
 
   end

@@ -18,7 +18,7 @@ FactoryGirl.define do
     text { "Tutorial Group #{TutorialGroup.count} " }
     description { "#{text.sub(' Group','')} test tutorial group" }
     domain { create(:domain) }
-    domain_id { domain.id }
+    domain_id { domain.present? ? domain.id : nil }
     order { TutorialGroup.count }
   end
 end

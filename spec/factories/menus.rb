@@ -17,7 +17,7 @@ FactoryGirl.define do
     text { "Menu #{Menu.count}" }
     description { "A description for #{text}" }
     domain { create(:domain) }
-    domain_id { domain.id }
+    domain_id { domain.present? ? domain.id : nil }
     order { Menu.count }
   end
 
