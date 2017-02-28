@@ -13,20 +13,21 @@ Rails.application.routes.draw do
   namespace :blog do
     namespace :v1 do
       resources :domains, except: exc_new_edit + [:destroy], constraints: uuid_constraints do
-        resources :groups, except: exc_new_edit, parent: :domains
-        resources :featured_groups, except: exc_new_edit, parent: :domains
-        resources :tutorial_groups, except: exc_new_edit, parent: :domains
-        resources :topics, except: exc_new_edit + exc_create_update, parent: :domains
-        resources :published_entries, only: :index, parent: :domains
         resources :featured_entries, except: exc_new_edit, parent: :domains
+        resources :featured_groups, except: exc_new_edit, parent: :domains
+        resources :groups, except: exc_new_edit, parent: :domains
+        resources :menus, only: [:create, :index], parent: :domain
+        resources :published_entries, only: :index, parent: :domains
+        resources :topics, except: exc_new_edit + exc_create_update, parent: :domains
         resources :tutorial_entries, except: exc_new_edit, parent: :domains
+        resources :tutorial_groups, except: exc_new_edit, parent: :domains
       end
 
       resources :entries, except: exc_new_edit, constraints: uuid_constraints do
         resource :author, to: 'users#author', only: :show, parent: :entries
         resources :contributors, to: 'users#contributors', only: :index, parent: :entries
-        resources :published_entries, only: [:create, :index], parent: :entries
         resources :featured_entries, only: [:create, :index], parent: :entries
+        resources :published_entries, only: [:create, :index], parent: :entries
         resources :tutorial_entries, only: [:create, :index], parent: :entries
       end
 
@@ -39,18 +40,20 @@ Rails.application.routes.draw do
 
       resources :featured_groups, except: exc_new_edit, constraints: uuid_constraints do
         resource :domain, only: :show, action: 'single_index', parent: :featured_groups
-        resources :topics, except: exc_new_edit + [:update], parent: :featured_groups
         resources :featured_entries, only: :index, parent: :featured_groups
+        resources :topics, except: exc_new_edit + [:update], parent: :featured_groups
       end
 
       # We will not create a group without it being DomainGroup or TutorialGroup
       resources :groups, except: exc_new_edit + [:create], constraints: uuid_constraints do
         resource :domain, only: :show, action: 'single_index', parent: :groups
-        resources :topics, except: exc_new_edit + [:update], parent: :groups
-        resources :published_entries, only: :index, parent: :groups
         resources :featured_entries, only: :index, parent: :groups
+        resources :published_entries, only: :index, parent: :groups
+        resources :topics, except: exc_new_edit + [:update], parent: :groups
         resources :tutorial_entries, only: :index, parent: :groups
       end
+
+      resources :menus, only: [:create, :update, :destroy], constraints: uuid_constraints
 
       resources :people, except: exc_new_edit, constraints: uuid_constraints
 
@@ -65,19 +68,19 @@ Rails.application.routes.draw do
 
       resources :topics, except: exc_new_edit, constraints: uuid_constraints do
         resource :domain, only: :show, action: 'single_index', parent: :topics
-        resource :group, only: :show, action: 'single_index', parent: :topics
-        resource :featured_group, only: :show, action: 'single_index', parent: :topics
-        resource :tutorial_group, only: :show, action: 'single_index', parent: :topics
-        resources :published_entries, only: :index, parent: :topics
         resources :featured_entries, only: :index, parent: :topics
+        resource :featured_group, only: :show, action: 'single_index', parent: :topics
+        resource :group, only: :show, action: 'single_index', parent: :topics
+        resources :published_entries, only: :index, parent: :topics
         resources :tutorial_entries, only: :index, parent: :topics
+        resource :tutorial_group, only: :show, action: 'single_index', parent: :topics
       end
 
       resources :tutorial_entries, except: exc_new_edit, constraints: uuid_constraints do
         resource :domain, only: :show, action: 'single_index', parent: :tutorial_entries
         resource :entry, only: :show, action: 'single_index', parent: :tutorial_entries
-        resources :tutorial_groups, only: :index, parent: :tutorial_entries
         resources :topics, only: :index, parent: :tutorial_entries
+        resources :tutorial_groups, only: :index, parent: :tutorial_entries
       end
 
       resources :tutorial_groups, except: exc_new_edit, constraints: uuid_constraints do
@@ -87,8 +90,8 @@ Rails.application.routes.draw do
       end
 
       resources :users, except: exc_new_edit, constraints: uuid_constraints do
-        resources :entries, to: 'entries#entries', only: :index, parent: :users
         resources :contributions, to: 'entries#contributions', only: :index, parent: :users
+        resources :entries, to: 'entries#entries', only: :index, parent: :users
       end
 
     end
