@@ -38,7 +38,7 @@ class MenusMenuGroup < ActiveRecord::Base
   end
 
   def group_type
-    if menu_group_id.present?
+    if attribute_present?(:menu_group_id)
       menu_group = Group.where('id = ?',menu_group_id).take
       if menu_group.present? and menu_group.type != "MenuGroup"
         errors.add(:menu_group_id, 'Group type must be MenuGroup')
@@ -47,7 +47,7 @@ class MenusMenuGroup < ActiveRecord::Base
   end
 
   def domain_match
-    if menu_group_id.present? and menu_id.present?
+    if attribute_present?(:menu_group_id) and attribute_present?(:menu_id)
       menu_group = Group.where('id = ?',menu_group_id).take
       menu = Menu.where('id = ?', menu_id).take
       if menu.present? and menu_group.present? and (menu_group.domain_id != menu.domain_id)

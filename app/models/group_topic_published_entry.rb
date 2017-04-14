@@ -36,26 +36,39 @@ class GroupTopicPublishedEntry < ApplicationRecord
   end
 
   def valid_group
-    if !topic.nil?
-      if topic.group != group
-        errors.add(:topic_id, "GroupTopicPublishedEntry Model: topic group does not match group_id")
+    if attribute_present?(:topic_id)
+      topic = Topic.where('id = ?', topic_id).take
+      if topic.present?
+        if topic.group != group
+          errors.add(:topic_id, "GroupTopicPublishedEntry Model: topic group does not match group_id")
+        end
       end
     end
   end
 
   def valid_domain
-    if !group.nil? and !published_entry.nil?
-      if group.domain != published_entry.domain
-        errors.add(:group_id, "GroupTopicPublishedEntry Model: group domain does not match published_entry domain")
+    if attribute_present?(:group_id) and attribute_present?(:published_entry_id)
+      group = Group.where('id = ?', group_id).take
+      published_entry = PublishedEntry.where('id = ?', published_entry_id).take
+      if group.present? and published_entry.present?
+        if group.domain != published_entry.domain
+          errors.add(:group_id, "GroupTopicPublishedEntry Model: group domain does not match published_entry domain")
+        end
       end
     end
   end
 
   def valid_types
-    if (published_entry.type == "FeaturedEntry") && (group.type != "FeaturedGroup")
-      errors.add(:types, "Type Missmatch error: Published entry is #{published_entry.type} but group is #{group.type}")
-    elsif (published_entry.type == "TutorialEntry") && (group.type != "TutorialGroup")
-      errors.add(:types, "Type Missmatch error: Published entry is #{published_entry.type} but group is #{group.type}")
+    if attribute_present?(:group_id) and attribute_present?(:published_entry_id)
+      group = Group.where('id = ?', group_id).take
+      published_entry = PublishedEntry.where('id = ?', published_entry_id).take
+      if group.present? and published_entry.present?
+        if (published_entry.type == "FeaturedEntry") && (group.type != "FeaturedGroup")
+          errors.add(:types, "Type Missmatch error: Published entry is #{published_entry.type} but group is #{group.type}")
+        elsif (published_entry.type == "TutorialEntry") && (group.type != "TutorialGroup")
+          errors.add(:types, "Type Missmatch error: Published entry is #{published_entry.type} but group is #{group.type}")
+        end
+      end
     end
   end
 

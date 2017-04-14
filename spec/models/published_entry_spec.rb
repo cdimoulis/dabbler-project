@@ -99,7 +99,8 @@ RSpec.describe PublishedEntry, type: :model do
     end
 
     it 'requires revision type match' do
-      tutorial_entry = build(:tutorial_entry, revised_published_entry: published_entry)
+      featured_entry = create(:featured_entry)
+      tutorial_entry = build(:tutorial_entry, revised_published_entry_id: featured_entry.id)
       expect(tutorial_entry.valid?).to be_falsy
     end
   end

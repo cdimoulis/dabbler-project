@@ -111,8 +111,9 @@ class PublishedEntry < ApplicationRecord
   end
 
   def entry_author
-    if attribute_present?(:author_id) and entry.present?
-      if author_id != entry.author_id
+    if attribute_present?(:author_id) and attribute_present?(:entry_id)
+      entry = Entry.where('id = ?', entry_id).take
+      if entry.present? and (author_id != entry.author_id)
         errors.add(:author_id, "Is not the same as Entry author")
         puts "\n\nPublishedEntry error: Invalid author_id #{author_id}\nEntry:#{entry.inspect}\n\n"
         Rails.logger.info "\n\nPublishedEntry error: Invalid author_id #{author_id}\nEntry:#{entry.inspect}\n\n"
@@ -129,11 +130,14 @@ class PublishedEntry < ApplicationRecord
   end
 
   def revision_type
-    if revised_published_entry.present?
-      if revised_published_entry.type != type
-        errors.add(:revised_published_entry_id, "New revised published entry type #{revised_published_entry.type} does not match #{type}")
-        puts "\n\nPublishedEntry error: Invalid revised_published_entry type #{revised_published_entry.type} compared to #{type}\n\n"
-        Rails.logger.info "\n\nPublishedEntry error: Invalid revised_published_entry type #{revised_published_entry.type} compared to #{type}\n\n"
+    if attribute_present?(:revised_published_entry_id)
+      rpe = PublishedEntry.where('id = ?', revised_published_entry_id).take
+      if rpe.present?
+        if rpe.type != type
+          errors.add(:revised_published_entry_id, "New revised published entry type #{revised_published_entry.type} does not match #{type}")
+          puts "\n\nPublishedEntry error: Invalid revised_published_entry type #{revised_published_entry.type} compared to #{type}\n\n"
+          Rails.logger.info "\n\nPublishedEntry error: Invalid revised_published_entry type #{revised_published_entry.type} compared to #{type}\n\n"
+        end
       end
     end
   end

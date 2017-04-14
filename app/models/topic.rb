@@ -48,9 +48,12 @@ class Topic < ApplicationRecord
 
   # Given domain is same as group domain
   def domain_is_correct
-    if !group.nil? and attribute_present?(:domain_id)
-      if !(group.domain_id == domain_id)
-        errors.add(:domain_id, "Topic Model: Topic domain does not match group domain")
+    if attribute_present?(:group_id) and attribute_present?(:domain_id)
+      group = Group.where('id = ?', group_id).take
+      if group.present?
+        if group.domain_id != domain_id
+          errors.add(:domain_id, "Topic Model: Topic domain does not match group domain")
+        end
       end
     end
   end
