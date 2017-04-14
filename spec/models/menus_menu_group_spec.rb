@@ -33,5 +33,12 @@ RSpec.describe MenusMenuGroup, type: :model do
       mmg = build(:menus_menu_group, menu: menu, menu_group: group)
       expect(mmg.valid?).to be_falsy
     end
+
+    it 'requires MenuGroup type only' do
+      group = create(:featured_group)
+      menu = create(:menu, domain: group.domain)
+      mmg = build(:menus_menu_group, menu_group_id: group.id, menu_id: menu.id)
+      expect(mmg.valid?).to be_falsy
+    end
   end
 end

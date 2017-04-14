@@ -27,22 +27,32 @@ class MenusMenuGroup < ActiveRecord::Base
     # Array of orders existing for this menu
     orders = groups.pluck('order')
     # The order of this menu_group
-    order = MenuGroup.where(id: menu_group_id).take.order
-    # If this order is included in the array of orders the order is invalid
-    if orders.include?(order)
-      errors.add(:menu_group_id, "Group order must be unique within a Menu")
+    menu_group = MenuGroup.where(id: menu_group_id).take
+    if menu_group.present?
+      order = menu_group.order
+      # If this order is included in the array of orders the order is invalid
+      if orders.include?(order)
+        errors.add(:menu_group_id, "Group order must be unique within a Menu")
+      end
     end
   end
 
   def group_type
-    if menu_group.type != "MenuGroup"
-      errors.add(:menu_group_id, 'Group type must be MenuGroup')
+    if menu_group_id.present?
+      menu_group = Group.where('id = ?',menu_group_id).take
+      if menu_group.present? and menu_group.type != "MenuGroup"
+        errors.add(:menu_group_id, 'Group type must be MenuGroup')
+      end
     end
   end
 
   def domain_match
-    if menu_group.domain_id != menu.domain_id
-      errors.add(:menu_id, 'Group and Menu Domain must be same')
+    if menu_group_id.present? and menu_id.present?
+      menu_group = Group.where('id = ?',menu_group_id).take
+      menu = Menu.where('id = ?', menu_id).take
+      if menu.present? and menu_group.present? and (menu_group.domain_id != menu.domain_id)
+        errors.add(:menu_id, 'Group and Menu Domain must be same')
+      end
     end
   end
 
