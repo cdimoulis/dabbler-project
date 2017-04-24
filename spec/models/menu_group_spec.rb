@@ -17,7 +17,8 @@ require 'rails_helper'
 RSpec.describe MenuGroup, type: :model do
 
   context 'associations' do
-    it { is_expected.to have_one(:menu) }
+    it { is_expected.to have_one(:menus_menu_group) }
+    it { is_expected.to have_one(:menu).through(:menus_menu_group) }
 
     # it 'accesses featured_entries' do
     #   group = create(:featured_group)
