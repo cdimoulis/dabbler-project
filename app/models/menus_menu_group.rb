@@ -20,7 +20,7 @@ class MenusMenuGroup < ActiveRecord::Base
   def unique_order
     # All records for this menu_id
     menu_records = MenusMenuGroup.where(menu_id: menu_id)
-    # All ids for menu_groups ExCEPT self.menu_group_id
+    # All ids for menu_groups EXCEPT self.menu_group_id
     group_ids = menu_records.pluck('menu_group_id') - [menu_group_id]
     # All group records corresponding to ids
     groups = MenuGroup.where(id: group_ids)

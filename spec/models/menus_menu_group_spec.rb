@@ -11,6 +11,11 @@ require 'rails_helper'
 
 RSpec.describe MenusMenuGroup, type: :model do
 
+  context 'associations' do
+    it { is_expected.to belong_to(:menu_group) }
+    it { is_expected.to belong_to(:menu) }
+  end
+
   context 'validations' do
     it 'requires unique order' do
       mmg = create(:menus_menu_group)
