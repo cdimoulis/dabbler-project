@@ -57,4 +57,21 @@ RSpec.describe Blog::V1::MenusController, type: :controller do
       expect(assigns(:record).description).to eq(update_params[:description])
     end
   end
+
+  # Test for DESTROY route
+  context "#destroy" do
+    let!(:menu_1) { create(:menu) }
+    let!(:menu_2) { create(:menu) }
+    let!(:current) { Menu.count }
+
+    before do
+      sign_in
+      delete :destroy, id: menu_2.id, format: :json
+    end
+
+    it "succeeds" do
+      expect(response).to have_http_status(:success)
+      expect(Menu.count).to eq(current-1)
+    end
+  end
 end
