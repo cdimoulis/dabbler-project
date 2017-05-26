@@ -27,9 +27,12 @@ RSpec.describe Blog::V1::GroupsController do
   context '#index' do
     it "fetches via domain" do
       domain = create(:domain_with_groups)
+      # Group to add more than 5 from :domain_with_groups
+      group = create(:group)
       get blog_v1_domain_groups_path(domain_id: domain.id), format: :json
       expect(response).to have_http_status(:success)
-      expect(domain.groups.count).to eq(5)
+      # :domain_with_groups factory creates 5 groups
+      expect(assigns(:records).count).to eq(5)
     end
 
     it "fetches via published_entry" do

@@ -53,7 +53,9 @@ Rails.application.routes.draw do
         resources :tutorial_entries, only: :index, parent: :groups
       end
 
-      resources :menus, except: exc_new_edit, constraints: uuid_constraints
+      resources :menus, except: exc_new_edit, constraints: uuid_constraints do
+        resources :menu_groups, only: :index, parent: :menus
+      end
 
       resources :menu_groups, except: exc_new_edit, constraints: uuid_constraints
 

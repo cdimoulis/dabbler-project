@@ -28,13 +28,14 @@ RSpec.describe Blog::V1::TutorialGroupsController do
 
   # test nested index
   context '#index' do
-    let!(:travel) { create(:domain_with_tutorial_groups, text: 'Travel') }
-    let(:tutorial_groups_via_domain_path) { blog_v1_domain_tutorial_groups_path(domain_id: travel.id) }
-
     it "fetches via domain" do
-      get tutorial_groups_via_domain_path, format: :json
+      domain = create(:domain_with_tutorial_groups)
+      # Group to add more than 5 from :domain_with_groups
+      group = create(:tutorial_group)
+      get blog_v1_domain_tutorial_groups_path(domain_id: domain.id), format: :json
       expect(response).to have_http_status(:success)
-      expect(travel.groups.count).to eq(5)
+      # :domain_with_tutorial_groups factory creates 5 groups
+      expect(assigns(:records).count).to eq(5)
     end
 
     it "fetches via tutorial_entry" do
