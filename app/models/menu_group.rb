@@ -16,7 +16,7 @@ class MenuGroup < Group
 
   default_scope { order(order: :asc) }
 
-  has_one :menus_menu_group
+  has_one :menus_menu_group, dependent: :destroy
   has_one :menu, through: :menus_menu_group
   # has_many :menu_entries, through: :group_topic_published_entries, foreign_key: 'published_entry_id'
 

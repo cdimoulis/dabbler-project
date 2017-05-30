@@ -31,6 +31,7 @@ RSpec.describe Blog::V1::FeaturedEntriesController, type: :controller do
       expect(response).to have_http_status(:success)
       expect(GroupTopicPublishedEntry.count).to eq(count+2)
       expect(GroupTopicPublishedEntry.first.published_entry_id).to eq(FeaturedEntry.first.id)
+      expect(FeaturedEntry.first.groups.pluck('id')).to include(GroupTopicPublishedEntry.first.group_id)
     end
   end
 
@@ -175,7 +176,7 @@ RSpec.describe Blog::V1::FeaturedEntriesController, type: :controller do
       expect(GroupTopicPublishedEntry.count).to eq(2)
 
       # Second set
-      update_params = {group_topic_published_entries_attributes: [gtpe_a, gtpe_b]}
+      update_params = {group_topic_published_entries_attributes: [gtpe_c, gtpe_d]}
       current = GroupTopicPublishedEntry.count
       put :update, id: featured_entry.id, featured_entry: update_params, format: :json
       expect(featured_entry.group_topic_published_entries.pluck('id')).to match(GroupTopicPublishedEntry.pluck('id'))

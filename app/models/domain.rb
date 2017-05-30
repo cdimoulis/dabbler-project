@@ -24,6 +24,7 @@ class Domain < ApplicationRecord
   has_many :tutorial_entries
   has_many :menus
 
+  # TODO: Check if uniquness should be scoped to active: true (however that is accomplished)
   validates :text, :subdomain, presence: true, uniqueness: true
 
 end
