@@ -7,6 +7,10 @@
 #  menu_group_id :uuid             not null
 #
 
+####
+# The purpose of this join is because menu_group is a child of group which
+# does not have a belong to with menus. 
+###
 class MenusMenuGroup < ActiveRecord::Base
 
   belongs_to :menu_group
@@ -16,7 +20,7 @@ class MenusMenuGroup < ActiveRecord::Base
   validate :group_type, :domain_match, :unique_order
 
   protected
-
+  # All MenuGroups part of a menu should have a unique ordering
   def unique_order
     # All records for this menu_id
     menu_records = MenusMenuGroup.where(menu_id: menu_id)

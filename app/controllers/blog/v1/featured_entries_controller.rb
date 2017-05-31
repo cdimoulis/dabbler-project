@@ -42,7 +42,8 @@ class Blog::V1::FeaturedEntriesController < Blog::V1::BlogController
 
   # Check json data on update
   def check_data
-    # When updating
+    # When updating add existing data attribute to params if params data attribute is nil
+    # This is to preserve data
     if params.include?(:featured_entry) and (!params[:featured_entry].include?(:data) or params[:featured_entry][:data].nil?)
       record = FeaturedEntry.where('id = ?', params[:id]).take
       params[:featured_entry][:data] = record.data
