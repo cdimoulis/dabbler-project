@@ -9,7 +9,7 @@ class Blog::V1::TopicsController < Blog::V1::BlogController
   protected
 
   def permitted_params
-    params.require(:topic).permit(:text, :description, :domain_id, :group_id)
+    params.require(:topic).permit(:text, :description, :domain_id, :menu_group_id)
   end
 
 end
