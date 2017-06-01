@@ -14,8 +14,6 @@
 
 class MenuGroup < ApplicationRecord
 
-  # default_scope { order(text: :asc) }
-
   belongs_to :domain
   belongs_to :menu
   has_many :topics
@@ -52,11 +50,14 @@ class MenuGroup < ApplicationRecord
 
   # All MenuGroups part of a menu should have a unique ordering
   def unique_order
+    m = Menu.where("id = ?", menu_id).take
     # Array of orders existing for this menu
-    orders = menu.menu_groups.pluck('order')
-    # The order of this menu_group
-    if orders.include?(order)
-      errors.add(:menu_group_id, "MenuGroup order must be unique within a Menu")
+    if m.present?
+      orders = m.menu_groups.pluck('order')
+      # The order of this menu_group
+      if orders.include?(order)
+        errors.add(:menu_group_id, "MenuGroup order must be unique within a Menu")
+      end
     end
   end
 

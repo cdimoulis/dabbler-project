@@ -19,6 +19,8 @@ FactoryGirl.define do
     description { "#{text.sub(' Group','')} test menu group" }
     domain { create(:domain, text: "#{text.sub(' Group','')}") }
     domain_id { domain.present? ? domain.id : nil }
+    menu { create(:menu, text: "Menu for #{text}", domain: domain) }
+    menu_id { menu.present? ? menu.id : nil }
     order { MenuGroup.count }
   end
 
