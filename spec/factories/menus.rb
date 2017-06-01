@@ -20,6 +20,7 @@ FactoryGirl.define do
     domain { create(:domain) }
     domain_id { domain.present? ? domain.id : nil }
     order { Menu.count }
+    menu_group_order 'text'
   end
 
 end
