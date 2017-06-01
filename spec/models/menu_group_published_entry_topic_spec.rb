@@ -1,9 +1,9 @@
 # == Schema Information
 #
-# Table name: group_topic_published_entries
+# Table name: menu_group_published_entry_topics
 #
 #  id                 :uuid             not null, primary key
-#  group_id           :uuid             not null
+#  menu_group_id      :uuid             not null
 #  topic_id           :uuid
 #  published_entry_id :uuid             not null
 #  created_at         :datetime         not null

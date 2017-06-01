@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170217201019) do
+ActiveRecord::Schema.define(version: 20170105181734) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -57,52 +57,46 @@ ActiveRecord::Schema.define(version: 20170217201019) do
   add_index "entries_users", ["entry_id"], name: "index_entries_users_on_entry_id", using: :btree
   add_index "entries_users", ["user_id"], name: "index_entries_users_on_user_id", using: :btree
 
-  create_table "group_topic_published_entries", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
-    t.uuid     "group_id",           null: false
+  create_table "menu_group_published_entry_topics", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
+    t.uuid     "menu_group_id",      null: false
     t.uuid     "topic_id"
     t.uuid     "published_entry_id", null: false
     t.datetime "created_at",         null: false
     t.datetime "updated_at",         null: false
   end
 
-  add_index "group_topic_published_entries", ["group_id"], name: "index_group_topic_published_entries_on_group_id", using: :btree
-  add_index "group_topic_published_entries", ["published_entry_id"], name: "index_group_topic_published_entries_on_published_entry_id", using: :btree
-  add_index "group_topic_published_entries", ["topic_id"], name: "index_group_topic_published_entries_on_topic_id", using: :btree
+  add_index "menu_group_published_entry_topics", ["menu_group_id"], name: "index_menu_group_published_entry_topics_on_menu_group_id", using: :btree
+  add_index "menu_group_published_entry_topics", ["published_entry_id"], name: "index_menu_group_published_entry_topics_on_published_entry_id", using: :btree
+  add_index "menu_group_published_entry_topics", ["topic_id"], name: "index_menu_group_published_entry_topics_on_topic_id", using: :btree
 
-  create_table "groups", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
+  create_table "menu_groups", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
     t.string   "text",        null: false
     t.text     "description"
     t.uuid     "domain_id",   null: false
-    t.integer  "order",       null: false
-    t.string   "type",        null: false
+    t.uuid     "menu_id",     null: false
+    t.integer  "order"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
   end
 
-  add_index "groups", ["domain_id", "type", "text"], name: "index_groups_on_domain_id_and_type_and_text", unique: true, using: :btree
-  add_index "groups", ["domain_id"], name: "index_groups_on_domain_id", using: :btree
-  add_index "groups", ["text"], name: "index_groups_on_text", using: :btree
+  add_index "menu_groups", ["domain_id", "menu_id"], name: "index_menu_groups_on_domain_id_and_menu_id", using: :btree
+  add_index "menu_groups", ["domain_id"], name: "index_menu_groups_on_domain_id", using: :btree
+  add_index "menu_groups", ["menu_id", "text"], name: "index_menu_groups_on_menu_id_and_text", unique: true, using: :btree
+  add_index "menu_groups", ["menu_id"], name: "index_menu_groups_on_menu_id", using: :btree
+  add_index "menu_groups", ["text"], name: "index_menu_groups_on_text", using: :btree
 
   create_table "menus", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
-    t.string   "text",        null: false
+    t.string   "text",                              null: false
     t.text     "description"
-    t.uuid     "domain_id",   null: false
-    t.integer  "order",       null: false
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.uuid     "domain_id",                         null: false
+    t.integer  "order",                             null: false
+    t.string   "menu_group_order", default: "text"
+    t.datetime "created_at",                        null: false
+    t.datetime "updated_at",                        null: false
   end
 
   add_index "menus", ["domain_id"], name: "index_menus_on_domain_id", using: :btree
   add_index "menus", ["text"], name: "index_menus_on_text", using: :btree
-
-  create_table "menus_menu_groups", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
-    t.uuid "menu_id",       null: false
-    t.uuid "menu_group_id", null: false
-  end
-
-  add_index "menus_menu_groups", ["menu_group_id"], name: "index_menus_menu_groups_on_menu_group_id", using: :btree
-  add_index "menus_menu_groups", ["menu_id", "menu_group_id"], name: "index_menus_menu_groups_on_menu_id_and_menu_group_id", using: :btree
-  add_index "menus_menu_groups", ["menu_id"], name: "index_menus_menu_groups_on_menu_id", using: :btree
 
   create_table "people", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
     t.string   "prefix"
@@ -155,19 +149,19 @@ ActiveRecord::Schema.define(version: 20170217201019) do
   add_index "published_entries", ["revised_published_entry_id"], name: "index_published_entries_on_revised_published_entry_id", using: :btree
 
   create_table "topics", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
-    t.string   "text",        null: false
+    t.string   "text",          null: false
     t.text     "description"
-    t.uuid     "domain_id",   null: false
-    t.uuid     "group_id",    null: false
-    t.uuid     "creator_id",  null: false
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.uuid     "domain_id",     null: false
+    t.uuid     "menu_group_id", null: false
+    t.uuid     "creator_id",    null: false
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
   end
 
   add_index "topics", ["creator_id"], name: "index_topics_on_creator_id", using: :btree
   add_index "topics", ["domain_id"], name: "index_topics_on_domain_id", using: :btree
-  add_index "topics", ["group_id"], name: "index_topics_on_group_id", using: :btree
-  add_index "topics", ["text", "group_id"], name: "index_topics_on_text_and_group_id", unique: true, using: :btree
+  add_index "topics", ["menu_group_id"], name: "index_topics_on_menu_group_id", using: :btree
+  add_index "topics", ["text", "menu_group_id"], name: "index_topics_on_text_and_menu_group_id", unique: true, using: :btree
   add_index "topics", ["text"], name: "index_topics_on_text", using: :btree
 
   create_table "users", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|

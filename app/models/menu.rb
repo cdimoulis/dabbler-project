@@ -2,13 +2,14 @@
 #
 # Table name: menus
 #
-#  id          :uuid             not null, primary key
-#  text        :string           not null
-#  description :text
-#  domain_id   :uuid             not null
-#  order       :integer          not null
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
+#  id               :uuid             not null, primary key
+#  text             :string           not null
+#  description      :text
+#  domain_id        :uuid             not null
+#  order            :integer          not null
+#  menu_group_order :string           default("text")
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
 #
 
 class Menu < ActiveRecord::Base
