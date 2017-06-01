@@ -17,8 +17,12 @@ require 'rails_helper'
 RSpec.describe MenuGroup, type: :model do
 
   context 'associations' do
-    it { is_expected.to have_one(:menus_menu_group) }
-    it { is_expected.to have_one(:menu).through(:menus_menu_group) }
+    it { is_expected.to belong_to(:domain) }
+    it { is_expected.to belong_to(:menu) }
+    it { is_expected.to have_many(:topics) }
+    it { is_expected.to have_many(:menu_group_published_entry_topics) }
+    it { expect(MenuGroup.reflect_on_association(:published_entries).macro).to eq(:has_many)}
+    it { expect(MenuGroup.reflect_on_association(:published_entries).options[:through]).to eq(:menu_group_published_entry_topics)}
 
     # it 'accesses featured_entries' do
     #   group = create(:featured_group)
@@ -69,6 +73,33 @@ RSpec.describe MenuGroup, type: :model do
       mg_b = create(:menu_group, domain: menu_b.domain, order: mg_a.order)
       mg_b.menu = menu_b
       expect(mg_b.valid?).to be_truthy
+    end
+  end
+
+  context '.save' do
+    it 'succeeds' do
+      valid_group = build(:menu_group, text: "Valid Group")
+      expect(valid_group.save).to be_truthy
+    end
+
+    it 'fails - no domain' do
+      invalid_group = build(:menu_group, domain: Domain.new)
+      expect(invalid_group.save).to be_falsy
+    end
+
+    it 'fails duplicate text {scoped => :menu}' do
+      travel = create(:menu, text: 'Travel')
+      fly = create(:menu_group, text: 'Fly Group', menu: travel)
+      duplicate_text = build(:menu_group, text: 'Fly Group', menu: travel)
+      expect(duplicate_text.save).to be_falsy
+    end
+
+    it 'allows duplicate text (separate menus)' do
+      menu_a = create(:menu, text: "Code")
+      menu_b = create(:menu, text: "Travel", domain: menu_a.domain)
+      group = create(:menu_group, text: 'Test Group', menu: menu_a)
+      duplicate_text = build(:menu_group, text: 'Test Group', menu: menu_b)
+      expect(duplicate_text.save).to be_truthy
     end
   end
 end

@@ -32,8 +32,8 @@ RSpec.describe Blog::V1::TopicsController do
     let!(:topic) { create(:topic) }
 
     it "fetches via domain" do
-      group = create(:group, domain: topic.domain)
-      topic_b = create(:topic, domain: topic.domain, group: group)
+      menu_group = create(:menu_group, domain: topic.domain)
+      topic_b = create(:topic, domain: topic.domain, menu_group: menu_group)
       topic_c = create(:topic)
       route = blog_v1_domain_topics_path(domain_id: topic.domain_id)
       get route, format: :json

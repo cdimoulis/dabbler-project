@@ -26,13 +26,13 @@ class PublishedEntry < ApplicationRecord
   belongs_to :domain
   belongs_to :entry
 
-  has_many :group_topic_published_entries, dependent: :destroy, inverse_of: :published_entry
-  has_many :groups, through: :group_topic_published_entries
-  has_many :topics, through: :group_topic_published_entries
+  has_many :menu_group_published_entry_topics, dependent: :destroy, inverse_of: :published_entry
+  has_many :menu_groups, through: :menu_group_published_entry_topics
+  has_many :topics, through: :menu_group_published_entry_topics
   belongs_to :revised_published_entry, class_name: 'PublishedEntry', foreign_key: 'revised_published_entry_id'
   has_one :previous_published_entry, class_name: 'PublishedEntry', foreign_key: 'revised_published_entry_id'
 
-  accepts_nested_attributes_for :group_topic_published_entries
+  accepts_nested_attributes_for :menu_group_published_entry_topics
 
   before_validation :set_author
   before_destroy :check_revision

@@ -19,18 +19,6 @@ RSpec.describe Menu, type: :model do
     it { is_expected.to belong_to(:domain) }
     it { is_expected.to have_many(:menus_menu_groups) }
     it { is_expected.to have_many(:menu_groups).through(:menus_menu_groups) }
-
-    it 'removes menu_groups join on destroy' do
-      menu = create(:menu)
-      g1 = create(:menu_group, domain: menu.domain)
-      g2 = create(:menu_group, domain: menu.domain)
-      menu.menu_groups << g1
-      menu.menu_groups << g2
-      expect(MenusMenuGroup.count).to eq(2)
-      menu.destroy
-      expect(MenusMenuGroup.count).to eq(0)
-      expect(MenuGroup.count).to eq(2)
-    end
   end
 
   context '.save' do

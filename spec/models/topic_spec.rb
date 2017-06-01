@@ -18,11 +18,9 @@ RSpec.describe Topic, type: :model do
 
   context 'associations' do
     it { is_expected.to belong_to(:domain) }
-    it { is_expected.to belong_to(:group) }
-    it { is_expected.to belong_to(:tutorial_group) }
-    it { is_expected.to belong_to(:featured_group) }
+    it { is_expected.to belong_to(:menu_group) }
     it { expect(Topic.reflect_on_association(:published_entries).macro).to eq(:has_many)}
-    it { expect(Topic.reflect_on_association(:published_entries).options[:through]).to eq(:group_topic_published_entries)}
+    it { expect(Topic.reflect_on_association(:published_entries).options[:through]).to eq(:menu_group_published_entr_topics)}
     # Appears to be an error in the shoulda matchers for have_many.through
     # it { is_expected.to have_many(:published_entries).through(:group_topic_published_entries) }
 
@@ -35,7 +33,7 @@ RSpec.describe Topic, type: :model do
       topic.published_entries << published_entry_b
       topic.published_entries << published_entry_c
       expect(topic.published_entries).to match([published_entry_b, published_entry_c])
-      join = GroupTopicPublishedEntry.where(topic_id: topic.id)
+      join = MenuGroupPublishedEntryTopic.where(topic_id: topic.id)
       expect(join.length).to eq(2)
     end
   end
@@ -63,21 +61,21 @@ RSpec.describe Topic, type: :model do
       d = build(:domain)
       topic = build(:topic_without_domain)
       expect(topic.valid?).to be_truthy
-      expect(topic.domain_id).to eq(topic.group.domain_id)
+      expect(topic.domain_id).to eq(topic.menu_group.domain_id)
     end
 
     it 'does not allow duplicate text {scoped => :group}' do
-      group = create(:group)
-      topic_a = create(:topic, text: "My Topic", group: group, domain_id: group.domain_id)
-      topic_b = build(:topic, text: "My Topic", group: group, domain_id: group.domain_id)
+      menu_group = create(:menu_group)
+      topic_a = create(:topic, text: "My Topic", menu_group: menu_group, domain_id: menu_group.domain_id)
+      topic_b = build(:topic, text: "My Topic", menu_group: menu_group, domain_id: menu_group.domain_id)
       expect(topic_b.valid?).to be_falsy
     end
 
     it 'allows duplicate text with different group' do
-      group_a = create(:group)
-      group_b = create(:group)
-      topic_a = create(:topic, text: "My Topic", group: group_a, domain_id: group_a.domain_id)
-      topic_b = build(:topic, text: "My Topic", group: group_b, domain_id: group_b.domain_id)
+      menu_group_a = create(:menu_group)
+      menu_group_b = create(:menu_group)
+      topic_a = create(:topic, text: "My Topic", menu_group: menu_group_a, domain_id: menu_group_a.domain_id)
+      topic_b = build(:topic, text: "My Topic", menu_group: menu_group_b, domain_id: menu_group_b.domain_id)
       expect(topic_b.valid?).to be_truthy
     end
   end
