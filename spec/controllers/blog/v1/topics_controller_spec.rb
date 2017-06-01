@@ -64,8 +64,8 @@ RSpec.describe Blog::V1::TopicsController, type: :controller do
   # Test for UPDATE route
   context "#update" do
 
-    let!(:group) { create(:group) }
-    let!(:topic_a) { create(:topic_without_domain, text: 'Topic A', group: group) }
+    let!(:menu_group) { create(:menu_group) }
+    let!(:topic_a) { create(:topic_without_domain, text: 'Topic A', menu_group: menu_group) }
 
     before do
       sign_in
@@ -80,7 +80,7 @@ RSpec.describe Blog::V1::TopicsController, type: :controller do
 
     it "prevents invalid updates" do
       topic_b = create(:topic, text: 'Topic A')
-      update_params = {group_id: group.id, domain_id: group.domain_id}
+      update_params = {menu_group_id: menu_group.id, domain_id: menu_group.domain_id}
       put :update, id: topic_b.id, topic: update_params, format: :json
       expect(response).to have_http_status(424)
     end

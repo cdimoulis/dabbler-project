@@ -19,21 +19,21 @@ FactoryGirl.define do
     description { "#{text} test topic" }
     domain { create(:domain) }
     domain_id { domain.present? ? domain.id : nil }
-    group { create(:featured_group, domain: domain) }
-    group_id { group.present? ? group.id : nil }
+    menu_group { create(:menu_group, domain: domain) }
+    menu_group_id { group.present? ? group.id : nil }
     creator { create(:user) }
     creator_id { creator.present? ? creator.id : nil }
 
     factory :topic_without_domain do
       domain nil
       domain_id nil
-      group { create(:featured_group) }
-      group_id { group.present? ? group.id : nil }
+      menu_group { create(:menu_group) }
+      menu_group_id { menu_group.present? ? group.id : nil }
     end
 
-    factory :topic_without_group do
-      group nil
-      group_id nil
+    factory :topic_without_menu_group do
+      menu_group nil
+      menu_group_id nil
     end
   end
 

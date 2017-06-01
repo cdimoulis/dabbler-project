@@ -20,7 +20,6 @@ RSpec.describe Blog::V1::EntriesController do
       expect(response).to have_http_status(:success)
       expect(Entry.count).to eq(current+1)
     end
-
   end
 
   # Tests for INDEX route

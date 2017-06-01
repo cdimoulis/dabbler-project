@@ -22,8 +22,8 @@ FactoryGirl.define do
     active true
 
     # Domain with :featured_groups populated
-    factory :domain_with_groups do
-      # Set the number of groups
+    factory :domain_with_menu_groups do
+      # Set the number of menu groups
       transient do
         groups_count 5
       end
@@ -31,37 +31,7 @@ FactoryGirl.define do
       after(:create) do |domain, evaluator|
         # Domain Group names must be different within same domain
         (1..evaluator.groups_count).step(1) do |i|
-          create(:featured_group, text: "#{domain.text} #{i} Group", domain: domain)
-        end
-      end
-    end
-
-    # Domain with :tutorial_groups populated
-    factory :domain_with_tutorial_groups do
-      # Set the number of groups
-      transient do
-        groups_count 5
-      end
-
-      after(:create) do |domain, evaluator|
-        # Domain Group names must be different within same domain
-        (1..evaluator.groups_count).step(1) do |i|
-          create(:tutorial_group, text: "#{domain.text} #{i} Group", domain: domain)
-        end
-      end
-    end
-
-    # Domain with :featured_groups populated
-    factory :domain_with_featured_groups do
-      # Set the number of groups
-      transient do
-        groups_count 5
-      end
-
-      after(:create) do |domain, evaluator|
-        # Domain Group names must be different within same domain
-        (1..evaluator.groups_count).step(1) do |i|
-          create(:featured_group, text: "#{domain.text} #{i} Group", domain: domain)
+          create(:menu_group, text: "#{domain.text} #{i} Menu Group", domain: domain)
         end
       end
     end

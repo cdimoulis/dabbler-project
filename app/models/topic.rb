@@ -17,20 +17,17 @@ class Topic < ApplicationRecord
   default_scope { order(text: :asc) }
 
   belongs_to :domain
-  belongs_to :group
-  belongs_to :tutorial_group, foreign_key: 'group_id'
-  belongs_to :featured_group, foreign_key: 'group_id'
+  belongs_to :menu_group
   belongs_to :creator, class_name: "User"
-  has_many :group_topic_published_entries
-  has_many :published_entries, through: :group_topic_published_entries
-  has_many :featured_entries, through: :group_topic_published_entries
-  has_many :tutorial_entries, through: :group_topic_published_entries
+  has_many :menu_group_published_entry_topics
+  has_many :published_entries, through: :menu_group_published_entry_topics
+  has_many :featured_entries, through: :menu_group_published_entry_topics
 
   before_validation :set_domain_id, if: "domain_id.nil?"
 
   validates :text, :domain_id, :group_id, :creator_id, presence: true
   validates :text, uniqueness: {scope: :group_id, message: "Topic text must be unique within Group"}
-  validate :domain_exists, :group_exists, :domain_is_correct
+  validate :domain_exists, :menu_group_exists, :domain_is_correct
 
   protected
 
@@ -40,27 +37,27 @@ class Topic < ApplicationRecord
     end
   end
 
-  def group_exists
-    if attribute_present?(:group_id) and !Group.exists?(group_id)
-      errors.add(:group_id, "Topic Model: Invalid Group: Does not exist")
+  def menu_group_exists
+    if attribute_present?(:menu_group_id) and !MenuGroup.exists?(menu_group_id)
+      errors.add(:menu_group_id, "Topic Model: Invalid MenuGroup: Does not exist")
     end
   end
 
   # Given domain is same as group domain
   def domain_is_correct
-    if attribute_present?(:group_id) and attribute_present?(:domain_id)
-      group = Group.where('id = ?', group_id).take
-      if group.present?
-        if group.domain_id != domain_id
-          errors.add(:domain_id, "Topic Model: Topic domain does not match group domain")
+    if attribute_present?(:menu_group_id) and attribute_present?(:domain_id)
+      menu_group = MenuGroup.where('id = ?', menu_group_id).take
+      if menu_group.present?
+        if menu_group.domain_id != domain_id
+          errors.add(:domain_id, "Topic Model: Topic domain does not match menu_group domain")
         end
       end
     end
   end
 
   def set_domain_id
-    if !group.nil?
-      self.domain_id = group.domain_id
+    if !menu_group.nil?
+      self.domain_id = menu_group.domain_id
     end
   end
 

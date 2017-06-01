@@ -7,7 +7,8 @@ class Blog::V1::MenuGroupsController < Blog::V1::BlogController
   protected
 
   def permitted_params
-    params.require(:menu_group).permit(:text, :description, :domain_id, :order)
+    params.require(:menu_group).permit(:text, :description, :domain_id, :menu_id,
+                                      :order)
   end
 
 end

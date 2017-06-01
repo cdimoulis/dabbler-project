@@ -24,7 +24,6 @@ RSpec.describe Blog::V1::MenusController, type: :controller do
 
   # Tests for SHOW route
   context "#show" do
-
     let!(:menu) { create(:menu) }
 
     # Before running a test do this
