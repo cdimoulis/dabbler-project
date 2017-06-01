@@ -8,7 +8,7 @@ class CreateDomains < ActiveRecord::Migration
 
       t.timestamps null: false
     end
-    add_index :domains, :text, unique: true
-    add_index :domains, :subdomain, unique: true
+    add_index :domains, :text
+    add_index :domains, :subdomain
   end
 end

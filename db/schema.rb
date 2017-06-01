@@ -26,8 +26,8 @@ ActiveRecord::Schema.define(version: 20170105181734) do
     t.datetime "updated_at",                 null: false
   end
 
-  add_index "domains", ["subdomain"], name: "index_domains_on_subdomain", unique: true, using: :btree
-  add_index "domains", ["text"], name: "index_domains_on_text", unique: true, using: :btree
+  add_index "domains", ["subdomain"], name: "index_domains_on_subdomain", using: :btree
+  add_index "domains", ["text"], name: "index_domains_on_text", using: :btree
 
   create_table "entries", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
     t.string   "text",                              null: false
