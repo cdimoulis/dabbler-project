@@ -5,6 +5,7 @@ class CreateMenus < ActiveRecord::Migration
       t.text :description
       t.uuid :domain_id, null: false
       t.integer :order, null: false
+      t.string :menu_group_order, default: 'text'
 
       t.timestamps null: false
     end
