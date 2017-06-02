@@ -24,12 +24,16 @@ RSpec.describe PublishedEntry, type: :model do
 
   context 'associations' do
     it { is_expected.to belong_to(:author) }
+    it { is_expected.to belong_to(:creator) }
     it { is_expected.to belong_to(:domain) }
     it { is_expected.to belong_to(:entry) }
-    it { expect(PublishedEntry.reflect_on_association(:groups).macro).to eq(:has_many)}
-    it { expect(PublishedEntry.reflect_on_association(:groups).options[:through]).to eq(:group_topic_published_entries)}
+    it { is_expected.to belong_to(:revised_published_entry) }
+    it { is_expected.to have_one(:previous_published_entry) }
+    it { is_expected.to have_many(:menu_group_published_entry_topics) }
+    it { expect(PublishedEntry.reflect_on_association(:menu_groups).macro).to eq(:has_many)}
+    it { expect(PublishedEntry.reflect_on_association(:menu_groups).options[:through]).to eq(:menu_group_published_entry_topics)}
     it { expect(PublishedEntry.reflect_on_association(:topics).macro).to eq(:has_many)}
-    it { expect(PublishedEntry.reflect_on_association(:topics).options[:through]).to eq(:group_topic_published_entries)}
+    it { expect(PublishedEntry.reflect_on_association(:topics).options[:through]).to eq(:menu_group_published_entry_topics)}
 
     it "accesses entry text" do
       published_entry = create(:published_entry)
@@ -47,20 +51,20 @@ RSpec.describe PublishedEntry, type: :model do
       published_entry.topics << topic_c
 
       expect(published_entry.topics).to match([topic_b, topic_c])
-      join = GroupTopicPublishedEntry.where(published_entry_id: published_entry.id)
+      join = MenuGroupPublishedEntryTopic.where(published_entry_id: published_entry.id)
       expect(join.length).to eq(2)
     end
 
-    it "access groups" do
+    it "access menu_groups" do
       published_entry = create(:published_entry)
-      group_a = create(:featured_group, domain: published_entry.domain)
-      group_b = create(:featured_group, domain: published_entry.domain)
-      group_c = create(:tutorial_group, domain: published_entry.domain)
-      published_entry.groups << group_b
-      published_entry.groups << group_c
+      group_a = create(:menu_group, domain: published_entry.domain)
+      group_b = create(:menu_group, domain: published_entry.domain)
+      group_c = create(:menu_group, domain: published_entry.domain)
+      published_entry.menu_groups << group_b
+      published_entry.menu_groups << group_c
 
-      expect(published_entry.groups).to match([group_b, group_c])
-      join = GroupTopicPublishedEntry.where(published_entry_id: published_entry.id)
+      expect(published_entry.menu_groups).to match([group_b, group_c])
+      join = MenuGroupPublishedEntryTopic.where(published_entry_id: published_entry.id)
       expect(join.length).to eq(2)
     end
 
@@ -100,7 +104,7 @@ RSpec.describe PublishedEntry, type: :model do
 
     it 'requires revision type match' do
       featured_entry = create(:featured_entry)
-      tutorial_entry = build(:tutorial_entry, revised_published_entry_id: featured_entry.id)
+      tutorial_entry = build(:published_entry, revised_published_entry_id: featured_entry.id)
       expect(tutorial_entry.valid?).to be_falsy
     end
   end
