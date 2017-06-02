@@ -21,10 +21,11 @@ require 'rails_helper'
 RSpec.describe Entry, type: :model do
 
   context 'associations' do
-    it { is_expected.to belong_to(:author) }
+    it { is_expected.to belong_to(:author).class_name('User') }
+    it { is_expected.to belong_to(:creator).class_name('User') }
     it { is_expected.to have_and_belong_to_many(:contributors).class_name('User') }
-    it { is_expected.to belong_to(:updated_entry) }
-    it { is_expected.to have_one(:previous_entry) }
+    it { is_expected.to belong_to(:updated_entry).class_name('Entry') }
+    it { is_expected.to have_one(:previous_entry).class_name('Entry') }
     it { is_expected.to have_many(:published_entries) }
 
     it 'associates updated entries' do
@@ -61,47 +62,53 @@ RSpec.describe Entry, type: :model do
       entry = build(:entry_with_creator)
       expect(entry.save).to be_truthy
     end
+  end
 
+  context 'validations' do
     it 'requires a valid author' do
       entry = build(:entry_without_author)
       expect(entry.valid?).to be_falsy
       entry.author_id = "52af11a3-0527-454e-bab2-ded1dcdb4ac7"
       expect(entry.valid?).to be_falsy
     end
-
-    it 'changes published_entry associations' do
-      entry = create(:entry_with_creator)
-      pe1 = create(:published_entry, entry: entry, created_at: (DateTime.now - 1.days).strftime)
-      pe2 = create(:published_entry, entry: entry, created_at: (DateTime.now - 2.days).strftime)
-      pe3 = create(:published_entry, entry: entry, created_at: (DateTime.now - 3.days).strftime)
-      pe4 = create(:published_entry, created_at: (DateTime.now - 4.days).strftime)
-      updated = create(:entry_with_creator)
-      entry.updated_entry = updated
-      entry.save
-      entry.reload
-      updated.reload
-      expect(entry.locked).to be_truthy
-      expect(entry.published_entries.empty?).to be_truthy
-      expect(updated.published_entries).to match([pe1,pe2,pe3])
-    end
   end
 
-  context 'destroy' do
-    let!(:entry) { create(:entry_with_creator) }
-
-    it 'removes updated_entry_id from previous' do
-      updated = create(:entry_with_creator, updated_entry: entry)
-      entry.destroy
-      updated.reload
-      expect(updated.updated_entry_id).to eq(nil)
+  context 'callbacks' do
+    context 'after update' do
+      it 'replaces published_entry associations' do
+        entry = create(:entry_with_creator)
+        pe1 = create(:published_entry, entry: entry, created_at: (DateTime.now - 1.days).strftime)
+        pe2 = create(:published_entry, entry: entry, created_at: (DateTime.now - 2.days).strftime)
+        pe3 = create(:published_entry, entry: entry, created_at: (DateTime.now - 3.days).strftime)
+        pe4 = create(:published_entry, created_at: (DateTime.now - 4.days).strftime)
+        updated = create(:entry_with_creator)
+        entry.updated_entry = updated
+        entry.save
+        entry.reload
+        updated.reload
+        expect(entry.locked).to be_truthy
+        expect(entry.published_entries.empty?).to be_truthy
+        expect(updated.published_entries).to match([pe1,pe2,pe3])
+      end
     end
 
-    it 'links previous and updated entries' do
-      updated = create(:entry_with_creator, updated_entry: entry)
-      previous = create(:entry_with_creator, updated_entry: updated)
-      updated.destroy
-      previous.reload
-      expect(previous.updated_entry_id).to eq(entry.id)
+    context 'before destroy' do
+      let!(:entry) { create(:entry_with_creator) }
+
+      it 'removes updated_entry_id from previous' do
+        updated = create(:entry_with_creator, updated_entry: entry)
+        entry.destroy
+        updated.reload
+        expect(updated.updated_entry_id).to eq(nil)
+      end
+
+      it 'links previous and updated entries' do
+        updated = create(:entry_with_creator, updated_entry: entry)
+        previous = create(:entry_with_creator, updated_entry: updated)
+        updated.destroy
+        previous.reload
+        expect(previous.updated_entry_id).to eq(entry.id)
+      end
     end
   end
 end

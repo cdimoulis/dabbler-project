@@ -27,7 +27,6 @@ class Entry < ApplicationRecord
   has_one :previous_entry, class_name: 'Entry', foreign_key: 'updated_entry_id'
   has_many :published_entries
   has_many :featured_entries
-  has_many :tutorial_entries
 
   before_destroy :check_update
   after_update :replace_associations
