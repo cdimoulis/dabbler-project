@@ -21,7 +21,7 @@ RSpec.describe Topic, type: :model do
     it { is_expected.to belong_to(:menu_group) }
     it { is_expected.to belong_to(:creator) }
     it { expect(Topic.reflect_on_association(:published_entries).macro).to eq(:has_many)}
-    it { expect(Topic.reflect_on_association(:published_entries).options[:through]).to eq(:menu_group_published_entr_topics)}
+    it { expect(Topic.reflect_on_association(:published_entries).options[:through]).to eq(:menu_group_published_entry_topics)}
     # Appears to be an error in the shoulda matchers for have_many.through
     # it { is_expected.to have_many(:published_entries).through(:group_topic_published_entries) }
 
@@ -48,7 +48,7 @@ RSpec.describe Topic, type: :model do
     end
 
     it 'requires valid group' do
-      topic.group_id = "52af11a3-0527-454e-bab2-ded1dcdb4ac7"
+      topic.menu_group_id = "52af11a3-0527-454e-bab2-ded1dcdb4ac7"
       expect(topic.valid?).to be_falsy
     end
 
