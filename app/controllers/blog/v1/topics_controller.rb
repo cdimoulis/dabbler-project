@@ -1,5 +1,4 @@
 class Blog::V1::TopicsController < Blog::V1::BlogController
-  include HasCreator
 
   before_action :require_login, only: [:create, :update, :destroy]
 

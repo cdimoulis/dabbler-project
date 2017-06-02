@@ -14,10 +14,12 @@
 #
 
 class Menu < ActiveRecord::Base
+  include SetCreator
 
   default_scope { order(order: :asc) }
 
   belongs_to :domain
+  belongs_to :creator, class_name: "User"
   has_many :menu_groups
 
   validates :text, uniqueness: {scope: :domain_id, message: "Menu text must be unique within a Domain"}

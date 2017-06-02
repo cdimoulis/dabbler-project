@@ -29,8 +29,10 @@ module DefaultApiActions
       end
 
       if @errors.empty?
-        # If HasCreator is included then add creator
-        if self.class.included_modules.include?(HasCreator)
+        # If responds_to creator_id then add creator
+        # This may be redundant to the model concern SetCreator
+        # but I'm considering this as a backup to that before_create callback
+        if @record.respond_to?(:creator_id) && @record.creator_id.nil? && !current_user.nil? && !current_user.id.nil? && self.class.included_modules.include?(HasCreator)
           add_creator()
         end
 

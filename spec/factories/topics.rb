@@ -20,7 +20,7 @@ FactoryGirl.define do
     domain { create(:domain) }
     domain_id { domain.present? ? domain.id : nil }
     menu_group { create(:menu_group, domain: domain) }
-    menu_group_id { group.present? ? group.id : nil }
+    menu_group_id { menu_group.present? ? menu_group.id : nil }
     creator { create(:user) }
     creator_id { creator.present? ? creator.id : nil }
 
@@ -28,7 +28,7 @@ FactoryGirl.define do
       domain nil
       domain_id nil
       menu_group { create(:menu_group) }
-      menu_group_id { menu_group.present? ? group.id : nil }
+      menu_group_id { menu_group.present? ? menu_group.id : nil }
     end
 
     factory :topic_without_menu_group do

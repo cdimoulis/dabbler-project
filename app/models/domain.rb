@@ -13,6 +13,7 @@
 #
 
 class Domain < ApplicationRecord
+  include SetCreator
 
   default_scope { order(text: :asc) }
 
@@ -21,6 +22,7 @@ class Domain < ApplicationRecord
   has_many :published_entries
   has_many :featured_entries
   has_many :menus
+  belongs_to :creator, class_name: "User"
 
   # TODO: Check if uniquness should be scoped to active: true (however that is accomplished)
   validates :text, :subdomain, presence: true

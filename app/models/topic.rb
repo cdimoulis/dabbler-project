@@ -13,6 +13,7 @@
 #
 
 class Topic < ApplicationRecord
+  include SetCreator
 
   default_scope { order(text: :asc) }
 
@@ -25,8 +26,8 @@ class Topic < ApplicationRecord
 
   before_validation :set_domain_id, if: "domain_id.nil?"
 
-  validates :text, :domain_id, :group_id, :creator_id, presence: true
-  validates :text, uniqueness: {scope: :group_id, message: "Topic text must be unique within Group"}
+  validates :text, :domain_id, :menu_group_id, :creator_id, presence: true
+  validates :text, uniqueness: {scope: :menu_group_id, message: "Topic text must be unique within MenuGroup"}
   validate :domain_exists, :menu_group_exists, :domain_is_correct
 
   protected

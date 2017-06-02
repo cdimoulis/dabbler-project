@@ -22,6 +22,8 @@ FactoryGirl.define do
     domain_id { domain.present? ? domain.id : nil }
     order { Menu.count }
     menu_group_order 'text'
+    creator { create(:user) }
+    creator_id { creator.present? ? creator.id : nil}
   end
 
 end

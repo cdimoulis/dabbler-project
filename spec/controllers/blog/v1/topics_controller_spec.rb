@@ -4,8 +4,11 @@ RSpec.describe Blog::V1::TopicsController, type: :controller do
 
   # tests for CREATE route
   context "#create" do
+    let!(:current_user) { sign_in }
+    # Need to act like the application controller set the current_user
+    # Clearance sign_in does not call controller hooks
     before do
-      sign_in
+      Thread.current[:user] = current_user
     end
 
     it 'errors - no data' do
@@ -15,9 +18,10 @@ RSpec.describe Blog::V1::TopicsController, type: :controller do
 
     it 'succeeds' do
       current = Topic.count
-      topic = attributes_for(:topic)
+      topic = attributes_for(:topic, creator: nil)
       post :create, topic: topic, format: :json
       expect(response).to have_http_status(:success)
+      expect(assigns(:record).creator_id).to eq(current_user.id)
       expect(Topic.count).to eq(current+1)
     end
   end

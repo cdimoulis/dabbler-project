@@ -1,5 +1,4 @@
 class Blog::V1::PublishedEntriesController < Blog::V1::BlogController
-  include HasCreator
   include PageRecords
   include DateRange
 

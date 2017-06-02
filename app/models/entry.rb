@@ -17,6 +17,7 @@
 #
 
 class Entry < ApplicationRecord
+  include SetCreator
 
   default_scope { order(text: :asc) }
 

@@ -20,6 +20,7 @@
 
 class PublishedEntry < ApplicationRecord
   include AssociationAccessors
+  include SetCreator
 
   belongs_to :author, class_name: 'User'
   belongs_to :creator, class_name: 'User'

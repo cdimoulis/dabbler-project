@@ -23,6 +23,8 @@ FactoryGirl.define do
     menu { create(:menu, text: "Menu for #{text}", domain: domain) }
     menu_id { menu.present? ? menu.id : nil }
     order { MenuGroup.count }
+    creator { create(:user) }
+    creator_id { creator.present? ? creator.id : nil}
   end
 
 end

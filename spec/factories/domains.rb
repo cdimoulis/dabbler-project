@@ -21,6 +21,8 @@ FactoryGirl.define do
     description { "#{text} test domain" }
     subdomain { text.downcase }
     active true
+    creator { create(:user) }
+    creator_id { creator.present? ? creator.id : nil}
 
     # Domain with :featured_groups populated
     factory :domain_with_menu_groups do

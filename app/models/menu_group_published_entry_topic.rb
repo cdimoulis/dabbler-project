@@ -26,7 +26,7 @@ class MenuGroupPublishedEntryTopic < ApplicationRecord
   protected
 
   def set_menu_group
-    # If no group_id and topic is not nil, then set group from topic
+    # If no menu_group_id and topic is not nil, then set group from topic
     if !attribute_present?(:menu_group_id) and !topic.nil?
       self.menu_group_id = topic.menu_group_id
     end

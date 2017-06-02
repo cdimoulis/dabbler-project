@@ -14,9 +14,11 @@
 #
 
 class MenuGroup < ApplicationRecord
+  include SetCreator
 
   belongs_to :domain
   belongs_to :menu
+  belongs_to :creator, class_name: "User"
   has_many :topics
   has_many :menu_group_published_entry_topics
   has_many :published_entries, through: :menu_group_published_entry_topics
