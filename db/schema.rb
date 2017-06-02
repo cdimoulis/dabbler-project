@@ -22,6 +22,7 @@ ActiveRecord::Schema.define(version: 20170105181734) do
     t.text     "description"
     t.string   "subdomain",                  null: false
     t.boolean  "active",      default: true
+    t.uuid     "creator_id",                 null: false
     t.datetime "created_at",                 null: false
     t.datetime "updated_at",                 null: false
   end
@@ -75,6 +76,7 @@ ActiveRecord::Schema.define(version: 20170105181734) do
     t.uuid     "domain_id",   null: false
     t.uuid     "menu_id",     null: false
     t.integer  "order"
+    t.uuid     "creator_id",  null: false
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
   end
@@ -91,6 +93,7 @@ ActiveRecord::Schema.define(version: 20170105181734) do
     t.uuid     "domain_id",                         null: false
     t.integer  "order",                             null: false
     t.string   "menu_group_order", default: "text"
+    t.uuid     "creator_id",                        null: false
     t.datetime "created_at",                        null: false
     t.datetime "updated_at",                        null: false
   end

@@ -5,6 +5,7 @@ class CreateDomains < ActiveRecord::Migration
       t.text :description
       t.string :subdomain, null: false
       t.boolean :active, default: true
+      t.uuid :creator_id, null: false   # The logged in user
 
       t.timestamps null: false
     end

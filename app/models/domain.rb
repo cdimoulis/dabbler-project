@@ -7,6 +7,7 @@
 #  description :text
 #  subdomain   :string           not null
 #  active      :boolean          default(TRUE)
+#  creator_id  :uuid             not null
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #

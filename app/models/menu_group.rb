@@ -8,6 +8,7 @@
 #  domain_id   :uuid             not null
 #  menu_id     :uuid             not null
 #  order       :integer
+#  creator_id  :uuid             not null
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #

@@ -8,6 +8,7 @@
 #  domain_id        :uuid             not null
 #  order            :integer          not null
 #  menu_group_order :string           default("text")
+#  creator_id       :uuid             not null
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
 #

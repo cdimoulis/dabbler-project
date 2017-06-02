@@ -19,6 +19,7 @@ RSpec.describe Topic, type: :model do
   context 'associations' do
     it { is_expected.to belong_to(:domain) }
     it { is_expected.to belong_to(:menu_group) }
+    it { is_expected.to belong_to(:creator) }
     it { expect(Topic.reflect_on_association(:published_entries).macro).to eq(:has_many)}
     it { expect(Topic.reflect_on_association(:published_entries).options[:through]).to eq(:menu_group_published_entr_topics)}
     # Appears to be an error in the shoulda matchers for have_many.through
