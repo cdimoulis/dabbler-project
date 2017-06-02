@@ -24,10 +24,10 @@ RSpec.describe Blog::V1::EntriesController do
 
   # Tests for INDEX route
   context "#index" do
-    let!(:fourth) { create(:entry_with_creator, text: '4th Entry') }
-    let!(:third) { create(:entry_with_creator, text: '3rd Entry') }
-    let!(:second) { create(:entry_with_creator, text: '2nd Entry') }
-    let!(:first) { create(:entry_with_creator, text: '1st Entry') }
+    let!(:fourth) { create(:entry, text: '4th Entry') }
+    let!(:third) { create(:entry, text: '3rd Entry') }
+    let!(:second) { create(:entry, text: '2nd Entry') }
+    let!(:first) { create(:entry, text: '1st Entry') }
 
     it 'returns JSON and sorted by text' do
       get :index, format: :json
@@ -90,7 +90,7 @@ RSpec.describe Blog::V1::EntriesController do
   # Tests for SHOW route
   context "#show" do
 
-    let!(:entry) { create(:entry_with_creator) }
+    let!(:entry) { create(:entry) }
 
     # Before running a test do this
     before do
@@ -113,7 +113,7 @@ RSpec.describe Blog::V1::EntriesController do
       sign_in
     end
 
-    let!(:entry) { create(:entry_with_creator) }
+    let!(:entry) { create(:entry) }
 
     it "succeeds" do
       update_params = {description: "Some new information"}
@@ -135,7 +135,7 @@ RSpec.describe Blog::V1::EntriesController do
     end
 
     it "does not update an already updated entry" do
-      update_entry = create(:entry_with_creator)
+      update_entry = create(:entry)
       entry.locked = true
       entry.updated_entry = update_entry
       entry.save
@@ -163,7 +163,7 @@ RSpec.describe Blog::V1::EntriesController do
   context "#destroy" do
 
     let!(:admin) { create(:user) }
-    let!(:entry) { create(:entry_with_creator) }
+    let!(:entry) { create(:entry) }
 
     before do
       sign_in_as admin

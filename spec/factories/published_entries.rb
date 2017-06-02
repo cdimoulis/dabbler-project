@@ -20,7 +20,7 @@
 
 FactoryGirl.define do
   factory :published_entry do
-    entry { create(:entry_with_creator) }
+    entry { create(:entry) }
     entry_id { entry.present? ? entry.id : nil }
     author { entry.present? ? entry.author : nil }
     author_id { author.present? ? author.id : nil }

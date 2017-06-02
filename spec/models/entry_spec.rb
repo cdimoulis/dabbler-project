@@ -29,9 +29,9 @@ RSpec.describe Entry, type: :model do
     it { is_expected.to have_many(:published_entries) }
 
     it 'associates updated entries' do
-      entry_a = create(:entry_with_creator)
-      entry_b = create(:entry_with_creator)
-      entry_c = create(:entry_with_creator)
+      entry_a = create(:entry)
+      entry_b = create(:entry)
+      entry_c = create(:entry)
       entry_c.updated_entry = entry_b
       entry_c.save
       entry_b.updated_entry = entry_a
@@ -46,10 +46,10 @@ RSpec.describe Entry, type: :model do
 
   context 'scopes' do
     it 'shows unpublished' do
-      one = create(:entry_with_creator)
-      two = create(:entry_with_creator)
-      three = create(:entry_with_creator)
-      four = create(:entry_with_creator)
+      one = create(:entry)
+      two = create(:entry)
+      three = create(:entry)
+      four = create(:entry)
 
       create(:published_entry, entry: two)
       create(:published_entry, entry: four)
@@ -59,7 +59,7 @@ RSpec.describe Entry, type: :model do
 
   context '.save' do
     it 'succeeds' do
-      entry = build(:entry_with_creator)
+      entry = build(:entry)
       expect(entry.save).to be_truthy
     end
   end
@@ -76,12 +76,12 @@ RSpec.describe Entry, type: :model do
   context 'callbacks' do
     context 'after update' do
       it 'replaces published_entry associations' do
-        entry = create(:entry_with_creator)
+        entry = create(:entry)
         pe1 = create(:published_entry, entry: entry, created_at: (DateTime.now - 1.days).strftime)
         pe2 = create(:published_entry, entry: entry, created_at: (DateTime.now - 2.days).strftime)
         pe3 = create(:published_entry, entry: entry, created_at: (DateTime.now - 3.days).strftime)
         pe4 = create(:published_entry, created_at: (DateTime.now - 4.days).strftime)
-        updated = create(:entry_with_creator)
+        updated = create(:entry)
         entry.updated_entry = updated
         entry.save
         entry.reload
@@ -93,18 +93,18 @@ RSpec.describe Entry, type: :model do
     end
 
     context 'before destroy' do
-      let!(:entry) { create(:entry_with_creator) }
+      let!(:entry) { create(:entry) }
 
       it 'removes updated_entry_id from previous' do
-        updated = create(:entry_with_creator, updated_entry: entry)
+        updated = create(:entry, updated_entry: entry)
         entry.destroy
         updated.reload
         expect(updated.updated_entry_id).to eq(nil)
       end
 
       it 'links previous and updated entries' do
-        updated = create(:entry_with_creator, updated_entry: entry)
-        previous = create(:entry_with_creator, updated_entry: updated)
+        updated = create(:entry, updated_entry: entry)
+        previous = create(:entry, updated_entry: updated)
         updated.destroy
         previous.reload
         expect(previous.updated_entry_id).to eq(entry.id)

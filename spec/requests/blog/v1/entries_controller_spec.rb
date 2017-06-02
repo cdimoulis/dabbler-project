@@ -4,7 +4,7 @@ RSpec.describe Blog::V1::EntriesController do
   include RequestSpecHelper
 
   context '#single_index' do
-    let!(:entry) { create(:entry_with_creator) }
+    let!(:entry) { create(:entry) }
 
     it 'returns correct entry for published_entry' do
       published_entry = create(:published_entry, entry: entry)
@@ -28,7 +28,7 @@ RSpec.describe Blog::V1::EntriesController do
   context '#author' do
     let!(:author_a) { create(:user, email: 'a@dabbler.fyi') }
     let!(:author_b) { create(:user, email: 'b@dabbler.fyi') }
-    let!(:entry) { create(:entry_with_creator, author: author_a) }
+    let!(:entry) { create(:entry, author: author_a) }
     let(:author_via_entry_path) { blog_v1_entry_author_path(entry_id: entry.id) }
 
     it 'returns correct author for entry' do
@@ -39,7 +39,7 @@ RSpec.describe Blog::V1::EntriesController do
   end
 
   context '#contributors' do
-    let!(:entry) { create(:entry_with_creator) }
+    let!(:entry) { create(:entry) }
     let!(:contributor_a) { create(:user, email: 'a@dabbler.fyi') }
     let!(:contributor_b) { create(:user, email: 'b@dabbler.fyi') }
     let!(:contributor_c) { create(:user, email: 'c@dabbler.fyi') }
