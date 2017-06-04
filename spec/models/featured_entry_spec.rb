@@ -47,14 +47,14 @@ RSpec.describe FeaturedEntry, type: :model do
 
     it "access groups" do
       featured_entry = create(:featured_entry)
-      group_a = create(:featured_group, domain: featured_entry.domain)
-      group_b = create(:featured_group, domain: featured_entry.domain)
-      group_c = create(:featured_group, domain: featured_entry.domain)
-      featured_entry.featured_groups << group_b
-      featured_entry.groups << group_c
+      group_a = create(:menu_group, domain: featured_entry.domain)
+      group_b = create(:menu_group, domain: featured_entry.domain)
+      group_c = create(:menu_group, domain: featured_entry.domain)
+      featured_entry.menu_groups << group_b
+      featured_entry.menu_groups << group_c
 
-      expect(featured_entry.groups).to match([group_b, group_c])
-      join = GroupTopicPublishedEntry.where(published_entry_id: featured_entry.id)
+      expect(featured_entry.menu_groups).to match([group_b, group_c])
+      join = MenuGroupPublishedEntryTopic.where(published_entry_id: featured_entry.id)
       expect(join.length).to eq(2)
     end
   end
@@ -84,13 +84,13 @@ RSpec.describe FeaturedEntry, type: :model do
       expect(previous.revised_published_entry_id).to eq(featured_entry.id)
     end
 
-    it 'destroys group_topic_published_entry' do
-      featured_entry.groups << create(:featured_group, domain: featured_entry.domain)
+    it 'destroys menu_group_published_entry_topic' do
+      featured_entry.menu_groups << create(:menu_group, domain: featured_entry.domain)
       count = FeaturedEntry.count
-      join_count = GroupTopicPublishedEntry.count
+      join_count = MenuGroupPublishedEntryTopic.count
       featured_entry.destroy
       expect(FeaturedEntry.count).to eq(count-1)
-      expect(GroupTopicPublishedEntry.count).to eq(join_count-1)
+      expect(MenuGroupPublishedEntryTopic.count).to eq(join_count-1)
     end
   end
 

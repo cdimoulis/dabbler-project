@@ -22,7 +22,7 @@ class FeaturedEntry < PublishedEntry
 
   default_scope { order("data ->> 'published_at' DESC") }
 
-  has_many :featured_groups, through: :group_topic_published_entries, foreign_key: 'group_id'
+  has_many :menu_groups, through: :menu_group_published_entry_topics, foreign_key: 'group_id'
   belongs_to :revised_featured_entry, class_name: 'FeaturedEntry', foreign_key: 'revised_published_entry_id'
   has_one :previous_featured_entry, class_name: 'FeaturedEntry', foreign_key: 'revised_published_entry_id'
   belongs_to :creator, class_name: "User"
@@ -30,8 +30,8 @@ class FeaturedEntry < PublishedEntry
   validate :valid_data
 
   # Clear out old join models
-  def group_topic_published_entries_attributes=(*args)
-    self.group_topic_published_entries.clear
+  def menu_group_published_entry_topics_attributes=(*args)
+    self.menu_group_published_entry_topics.clear
     super(*args)
   end
 
