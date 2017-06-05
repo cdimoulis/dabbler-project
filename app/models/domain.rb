@@ -24,13 +24,13 @@ class Domain < ApplicationRecord
   has_many :menus
   belongs_to :creator, class_name: "User"
 
-  # TODO: Check if uniquness should be scoped to active: true (however that is accomplished)
   validates :text, :subdomain, presence: true
   validate :only_active_text, :only_active_subdomain
 
 
   protected
 
+  # Only one active Domain can have the same text
   def only_active_text
     texts = Domain.where(active: true).pluck('text')
     if texts.include?(text)
@@ -38,6 +38,7 @@ class Domain < ApplicationRecord
     end
   end
 
+  # Only one active Domain can have the same subdomain
   def only_active_subdomain
     subdomains = Domain.where(active: true).pluck('subdomain')
     if subdomains.include?(subdomain)
