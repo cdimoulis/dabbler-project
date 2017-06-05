@@ -27,6 +27,7 @@ RSpec.describe Entry, type: :model do
     it { is_expected.to belong_to(:updated_entry).class_name('Entry') }
     it { is_expected.to have_one(:previous_entry).class_name('Entry') }
     it { is_expected.to have_many(:published_entries) }
+    it { is_expected.to have_many(:featured_entries) }
 
     it 'associates updated entries' do
       entry_a = create(:entry)

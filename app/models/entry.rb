@@ -29,8 +29,8 @@ class Entry < ApplicationRecord
   has_many :published_entries
   has_many :featured_entries
 
-  before_destroy :check_update
   after_update :replace_associations
+  before_destroy :check_update
 
   validates :text, :author_id, :content, presence: true
   validate :author_exists
@@ -38,6 +38,7 @@ class Entry < ApplicationRecord
   ###
   # Scopes
   ###
+  # Entries that are not part of a PublishedEntry
   def self.unpublished
     entry_ids = PublishedEntry.pluck('entry_id').uniq
     where.not(id: entry_ids)
@@ -55,7 +56,7 @@ class Entry < ApplicationRecord
     end
   end
 
-  # Link together updated entries on delete
+  # Link together updated entries on destroy
   def check_update
     # If this model has updated a previous entry
     if previous_entry.present?
