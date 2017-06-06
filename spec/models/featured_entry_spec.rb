@@ -30,6 +30,9 @@ RSpec.describe FeaturedEntry, type: :model do
   end
 
   context 'associations' do
+    it { is_expected.to belong_to(:revised_featured_entry) }
+    it { is_expected.to have_one(:previous_featured_entry) }
+
     it 'associates updated entries' do
       fe_a = create(:featured_entry)
       fe_b = create(:featured_entry)

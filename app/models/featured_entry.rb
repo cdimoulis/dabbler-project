@@ -22,10 +22,8 @@ class FeaturedEntry < PublishedEntry
 
   default_scope { order("data ->> 'published_at' DESC") }
 
-  has_many :menu_groups, through: :menu_group_published_entry_topics, foreign_key: 'group_id'
   belongs_to :revised_featured_entry, class_name: 'FeaturedEntry', foreign_key: 'revised_published_entry_id'
   has_one :previous_featured_entry, class_name: 'FeaturedEntry', foreign_key: 'revised_published_entry_id'
-  belongs_to :creator, class_name: "User"
 
   validate :valid_data
 

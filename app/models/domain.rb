@@ -17,11 +17,11 @@ class Domain < ApplicationRecord
 
   default_scope { order(text: :asc) }
 
+  has_many :menus
   has_many :menu_groups
   has_many :topics
   has_many :published_entries
   has_many :featured_entries
-  has_many :menus
   belongs_to :creator, class_name: "User"
 
   validates :text, :subdomain, presence: true
