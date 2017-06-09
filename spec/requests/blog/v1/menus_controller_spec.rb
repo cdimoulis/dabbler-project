@@ -8,7 +8,7 @@ RSpec.describe Blog::V1::MenusController do
     context 'fetches via domain' do
       let!(:domain) { create(:domain) }
 
-      context 'ordering' do
+      context 'has ordering concern' do
         let!(:a) { create(:menu, domain: domain, text: 'A', order: nil) }
         let!(:b) { create(:menu, domain: domain, text: 'B', order: nil) }
         let!(:c) { create(:menu, domain: domain, text: 'C', order: 3) }
@@ -28,26 +28,6 @@ RSpec.describe Blog::V1::MenusController do
           f.update_attribute(:order, 4)
           b.update_attribute(:order, 5)
           a.update_attribute(:order, 6)
-          url = blog_v1_domain_menus_path(domain_id: domain.id)
-          get url, format: :json
-          ordered = [a,b,c,d,e,f]
-          expect(assigns(:records).to_a).to match(ordered)
-        end
-
-        it 'orders correctly with all order' do
-          f.update_attribute(:order, 4)
-          b.update_attribute(:order, 5)
-          a.update_attribute(:order, 6)
-          url = blog_v1_domain_menus_path(domain_id: domain.id)
-          get url, format: :json
-          ordered = [e,d,c,f,b,a]
-          expect(assigns(:records).to_a).to match(ordered)
-        end
-
-        it 'orders correctly with no order' do
-          c.update_attribute(:order, nil)
-          d.update_attribute(:order, nil)
-          e.update_attribute(:order, nil)
           url = blog_v1_domain_menus_path(domain_id: domain.id)
           get url, format: :json
           ordered = [a,b,c,d,e,f]

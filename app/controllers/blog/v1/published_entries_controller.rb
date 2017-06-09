@@ -51,13 +51,13 @@ class Blog::V1::PublishedEntriesController < Blog::V1::BlogController
   def set_scopes
     @scopes = @scopes || []
     if params[:current]
-      @scopes.push {scope: :current}
+      @scopes.push({scope: :current})
     end
 
     if params[:removed]
-      @scopes.push {scope: :removed}
+      @scopes.push({scope: :removed})
     else
-      @scopes.push {scope: :non_removed}
+      @scopes.push({scope: :non_removed})
     end
   end
 

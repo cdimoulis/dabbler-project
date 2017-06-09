@@ -79,10 +79,51 @@ RSpec.describe Menu, type: :model do
   end
 
   context 'scope' do
-    it 'ordered correctly' do
-      menu_a = create(:menu, order: 0)
-      menu_b = create(:menu, order: 1, domain: menu_a.domain)
-      expect(Menu.all.to_a).to match([menu_a, menu_b])
+    context 'ordering concern' do
+      let!(:a) { create(:menu, domain: domain, text: 'A', order: nil) }
+      let!(:b) { create(:menu, domain: domain, text: 'B', order: nil) }
+      let!(:c) { create(:menu, domain: domain, text: 'C', order: 3) }
+      let!(:d) { create(:menu, domain: domain, text: 'D', order: 2) }
+      let!(:e) { create(:menu, domain: domain, text: 'E', order: 1) }
+      let!(:f) { create(:menu, domain: domain, text: 'F', order: nil) }
+      let!(:domain) { create(:domain) }
+
+      it 'orders with domain default ordering' do
+        ordered = [e,d,c,a,b,f]
+        expect(Menu.ordering_scope(domain).to_a).to match(ordered)
+      end
+
+      it 'orders with domain reverse ordering' do
+        domain.update_attribute(:menu_ordering, ['order:desc','text:desc'])
+        ordered = [c,d,e,f,b,a]
+        expect(Menu.ordering_scope(domain).to_a).to match(ordered)
+      end
+
+      it 'orders correctly with text first' do
+        domain.update_attribute(:menu_ordering, ['text:asc','order:asc'])
+        f.update_attribute(:order, 4)
+        b.update_attribute(:order, 5)
+        a.update_attribute(:order, 6)
+        ordered = [a,b,c,d,e,f]
+        expect(Menu.ordering_scope(domain).to_a).to match(ordered)
+        domain.update_attribute(:menu_ordering, ['text:asc','order:asc'])
+      end
+
+      it 'orders correctly with all order' do
+        f.update_attribute(:order, 4)
+        b.update_attribute(:order, 5)
+        a.update_attribute(:order, 6)
+        ordered = [e,d,c,f,b,a]
+        expect(Menu.ordering_scope(domain).to_a).to match(ordered)
+      end
+
+      it 'orders correctly with no order' do
+        c.update_attribute(:order, nil)
+        d.update_attribute(:order, nil)
+        e.update_attribute(:order, nil)
+        ordered = [a,b,c,d,e,f]
+        expect(Menu.ordering_scope(domain).to_a).to match(ordered)
+      end
     end
   end
 end

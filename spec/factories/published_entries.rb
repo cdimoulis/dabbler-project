@@ -29,8 +29,8 @@ FactoryGirl.define do
     domain_id { domain.present? ? domain.id : nil }
     notes "This entry has some notes"
     tags ['tag_a', 'tag_b']
+    published_at DateTime.now
     type 'PublishedEntry'
-    data { {published_at: DateTime.now} }
     creator { entry.present? ? entry.author : nil }
     creator_id { creator.present? ? creator.id : nil }
     revised_published_entry nil
