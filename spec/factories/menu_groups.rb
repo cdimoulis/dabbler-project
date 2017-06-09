@@ -19,7 +19,7 @@ FactoryGirl.define do
   factory :menu_group do
     text { "Menu Group #{MenuGroup.count}" }
     description { "#{text.sub(' Group','')} test menu group" }
-    menu { create(:menu, text: "Menu for #{text}", domain: domain) }
+    menu { create(:menu, text: "Menu for #{text}") }
     menu_id { menu.present? ? menu.id : nil }
     order { MenuGroup.count }
     creator { create(:user) }

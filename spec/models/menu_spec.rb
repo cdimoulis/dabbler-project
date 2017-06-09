@@ -20,6 +20,7 @@ RSpec.describe Menu, type: :model do
 
   context 'associations' do
     it { is_expected.to belong_to(:domain) }
+    it { is_expected.to belong_to(:creator).class_name('User') }
     it { is_expected.to have_many(:menu_groups) }
   end
 
@@ -106,7 +107,6 @@ RSpec.describe Menu, type: :model do
         a.update_attribute(:order, 6)
         ordered = [a,b,c,d,e,f]
         expect(Menu.ordering_scope(domain).to_a).to match(ordered)
-        domain.update_attribute(:menu_ordering, ['text:asc','order:asc'])
       end
 
       it 'orders correctly with all order' do

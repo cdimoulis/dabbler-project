@@ -16,38 +16,26 @@
 
 class MenuGroup < ApplicationRecord
   include SetCreator
+  include Ordering
 
   belongs_to :menu
   belongs_to :creator, class_name: "User"
   has_many :topics
   has_many :menu_group_published_entry_topics
   has_many :published_entries, through: :menu_group_published_entry_topics
-  # has_many :menu_entries, through: :group_topic_published_entries, foreign_key: 'published_entry_id'
 
-  validates :text, :domain_id, :menu_id, presence: true
+  validates :text, :menu_id, presence: true
   validates :text, uniqueness: {scope: [:menu_id], message: "MenuGroup text must be unique within a Menu"}
-  validate :domain_exists, :menu_exists, :unique_order, :domain_match
+  validate :menu_exists, :unique_order
 
+  ORDERING_CHILD = "Topic"
+  PUBLISHED_ENTRY_PARENTS = ['Topic']
 
   protected
-
-  def domain_exists
-    if attribute_present?(:domain_id) and !Domain.exists?(domain_id)
-      errors.add(:domain_id, "Invalid Domain: Does not exist")
-    end
-  end
 
   def menu_exists
     if attribute_present?(:menu_id) and !Menu.exists?(menu_id)
       errors.add(:menu_id, "Invalid Menu: Does not exist")
-    end
-  end
-
-  def domain_match
-    if attribute_present?(:menu_id) and attribute_present?(:domain_id)
-      if menu.present? and (menu.domain_id != domain_id)
-        errors.add(:menu_id, 'MenuGroup and Menu Domain must be same')
-      end
     end
   end
 

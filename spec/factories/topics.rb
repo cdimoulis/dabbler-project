@@ -18,17 +18,10 @@ FactoryGirl.define do
   factory :topic do
     text { "Topic #{Topic.count + 1}" }
     description { "#{text} test topic" }
-    menu_group { create(:menu_group, domain: domain) }
+    menu_group { create(:menu_group) }
     menu_group_id { menu_group.present? ? menu_group.id : nil }
     creator { create(:user) }
     creator_id { creator.present? ? creator.id : nil }
-
-    factory :topic_without_domain do
-      domain nil
-      domain_id nil
-      menu_group { create(:menu_group) }
-      menu_group_id { menu_group.present? ? menu_group.id : nil }
-    end
 
     factory :topic_without_menu_group do
       menu_group nil
