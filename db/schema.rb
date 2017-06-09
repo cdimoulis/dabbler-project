@@ -18,15 +18,18 @@ ActiveRecord::Schema.define(version: 20170105181734) do
   enable_extension "uuid-ossp"
 
   create_table "domains", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
-    t.string   "text",                       null: false
+    t.string   "text",                                                         null: false
     t.text     "description"
-    t.string   "subdomain",                  null: false
-    t.boolean  "active",      default: true
-    t.uuid     "creator_id",                 null: false
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
+    t.string   "subdomain",                                                    null: false
+    t.boolean  "active",                   default: true
+    t.text     "menu_ordering",            default: ["order:asc", "text:asc"],              array: true
+    t.text     "published_entry_ordering", default: ["published_at:desc"],                  array: true
+    t.uuid     "creator_id",                                                   null: false
+    t.datetime "created_at",                                                   null: false
+    t.datetime "updated_at",                                                   null: false
   end
 
+  add_index "domains", ["creator_id"], name: "index_domains_on_creator_id", using: :btree
   add_index "domains", ["subdomain"], name: "index_domains_on_subdomain", using: :btree
   add_index "domains", ["text"], name: "index_domains_on_text", using: :btree
 
@@ -71,34 +74,37 @@ ActiveRecord::Schema.define(version: 20170105181734) do
   add_index "menu_group_published_entry_topics", ["topic_id"], name: "index_menu_group_published_entry_topics_on_topic_id", using: :btree
 
   create_table "menu_groups", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
-    t.string   "text",        null: false
+    t.string   "text",                                                         null: false
     t.text     "description"
-    t.uuid     "domain_id",   null: false
-    t.uuid     "menu_id",     null: false
+    t.uuid     "menu_id",                                                      null: false
     t.integer  "order"
-    t.uuid     "creator_id",  null: false
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.text     "topic_ordering",           default: ["order:asc", "text:asc"],              array: true
+    t.text     "published_entry_ordering", default: ["published_at:desc"],                  array: true
+    t.uuid     "creator_id",                                                   null: false
+    t.datetime "created_at",                                                   null: false
+    t.datetime "updated_at",                                                   null: false
   end
 
-  add_index "menu_groups", ["domain_id", "menu_id"], name: "index_menu_groups_on_domain_id_and_menu_id", using: :btree
-  add_index "menu_groups", ["domain_id"], name: "index_menu_groups_on_domain_id", using: :btree
+  add_index "menu_groups", ["creator_id"], name: "index_menu_groups_on_creator_id", using: :btree
   add_index "menu_groups", ["menu_id", "text"], name: "index_menu_groups_on_menu_id_and_text", unique: true, using: :btree
   add_index "menu_groups", ["menu_id"], name: "index_menu_groups_on_menu_id", using: :btree
   add_index "menu_groups", ["text"], name: "index_menu_groups_on_text", using: :btree
 
   create_table "menus", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
-    t.string   "text",                              null: false
+    t.string   "text",                                                         null: false
     t.text     "description"
-    t.uuid     "domain_id",                         null: false
-    t.integer  "order",                             null: false
-    t.string   "menu_group_order", default: "text"
-    t.uuid     "creator_id",                        null: false
-    t.datetime "created_at",                        null: false
-    t.datetime "updated_at",                        null: false
+    t.uuid     "domain_id",                                                    null: false
+    t.integer  "order"
+    t.text     "menu_group_ordering",      default: ["order:asc", "text:asc"],              array: true
+    t.text     "published_entry_ordering", default: ["published_at:desc"],                  array: true
+    t.uuid     "creator_id",                                                   null: false
+    t.datetime "created_at",                                                   null: false
+    t.datetime "updated_at",                                                   null: false
   end
 
+  add_index "menus", ["creator_id"], name: "index_menus_on_creator_id", using: :btree
   add_index "menus", ["domain_id"], name: "index_menus_on_domain_id", using: :btree
+  add_index "menus", ["text", "domain_id"], name: "index_menus_on_text_and_domain_id", unique: true, using: :btree
   add_index "menus", ["text"], name: "index_menus_on_text", using: :btree
 
   create_table "people", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
@@ -136,8 +142,9 @@ ActiveRecord::Schema.define(version: 20170105181734) do
     t.string   "image_url"
     t.text     "notes"
     t.text     "tags",                                                    array: true
+    t.integer  "order"
+    t.datetime "published_at"
     t.string   "type"
-    t.json     "data"
     t.uuid     "revised_published_entry_id"
     t.boolean  "removed",                    default: false
     t.uuid     "creator_id",                                 null: false
@@ -152,17 +159,17 @@ ActiveRecord::Schema.define(version: 20170105181734) do
   add_index "published_entries", ["revised_published_entry_id"], name: "index_published_entries_on_revised_published_entry_id", using: :btree
 
   create_table "topics", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
-    t.string   "text",          null: false
+    t.string   "text",                                                     null: false
     t.text     "description"
-    t.uuid     "domain_id",     null: false
-    t.uuid     "menu_group_id", null: false
-    t.uuid     "creator_id",    null: false
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
+    t.uuid     "menu_group_id",                                            null: false
+    t.integer  "order",                                                    null: false
+    t.text     "published_entry_ordering", default: ["published_at:desc"],              array: true
+    t.uuid     "creator_id",                                               null: false
+    t.datetime "created_at",                                               null: false
+    t.datetime "updated_at",                                               null: false
   end
 
   add_index "topics", ["creator_id"], name: "index_topics_on_creator_id", using: :btree
-  add_index "topics", ["domain_id"], name: "index_topics_on_domain_id", using: :btree
   add_index "topics", ["menu_group_id"], name: "index_topics_on_menu_group_id", using: :btree
   add_index "topics", ["text", "menu_group_id"], name: "index_topics_on_text_and_menu_group_id", unique: true, using: :btree
   add_index "topics", ["text"], name: "index_topics_on_text", using: :btree

@@ -2,14 +2,16 @@
 #
 # Table name: domains
 #
-#  id          :uuid             not null, primary key
-#  text        :string           not null
-#  description :text
-#  subdomain   :string           not null
-#  active      :boolean          default(TRUE)
-#  creator_id  :uuid             not null
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
+#  id                       :uuid             not null, primary key
+#  text                     :string           not null
+#  description              :text
+#  subdomain                :string           not null
+#  active                   :boolean          default(TRUE)
+#  menu_ordering            :text             default(["\"order:asc\"", "\"text:asc\""]), is an Array
+#  published_entry_ordering :text             default(["\"published_at:desc\""]), is an Array
+#  creator_id               :uuid             not null
+#  created_at               :datetime         not null
+#  updated_at               :datetime         not null
 #
 
 require "rails_helper"
@@ -18,8 +20,6 @@ RSpec.describe Domain do
 
   context 'associations' do
     it { is_expected.to have_many(:menus) }
-    it { is_expected.to have_many(:menu_groups) }
-    it { is_expected.to have_many(:topics) }
     it { is_expected.to have_many(:published_entries) }
     it { is_expected.to have_many(:featured_entries) }
     it { is_expected.to belong_to(:creator).class_name('User') }
@@ -60,6 +60,23 @@ RSpec.describe Domain do
       code = create(:domain, text: 'Code', active: false)
       duplicate_subdomain = Domain.new(text: "My Domain", description: "My own domain", subdomain: "code")
       expect(duplicate_subdomain.valid?).to be_truthy
+    end
+
+    context 'ordering' do
+      it 'fails invalid menu_ordering' do
+        domain = build(:domain, menu_ordering: ['text', 'order', 'oreo'])
+        expect(domain.valid?).to be_falsy
+      end
+
+      it 'fails invalid published_entry_ordering' do
+        domain = build(:domain, published_entry_ordering: ['text', 'order', 'oreo'])
+        expect(domain.valid?).to be_falsy
+      end
+
+      it 'allows published_entry_ordering parents' do
+        domain = build(:domain, published_entry_ordering: ['Menu', 'MenuGroup', 'Topic'])
+        expect(domain.valid?).to be_truthy
+      end
     end
   end
 

@@ -2,15 +2,16 @@
 #
 # Table name: menus
 #
-#  id               :uuid             not null, primary key
-#  text             :string           not null
-#  description      :text
-#  domain_id        :uuid             not null
-#  order            :integer          not null
-#  menu_group_order :string           default("text")
-#  creator_id       :uuid             not null
-#  created_at       :datetime         not null
-#  updated_at       :datetime         not null
+#  id                       :uuid             not null, primary key
+#  text                     :string           not null
+#  description              :text
+#  domain_id                :uuid             not null
+#  order                    :integer
+#  menu_group_ordering      :text             default(["\"order:asc\"", "\"text:asc\""]), is an Array
+#  published_entry_ordering :text             default(["\"published_at:desc\""]), is an Array
+#  creator_id               :uuid             not null
+#  created_at               :datetime         not null
+#  updated_at               :datetime         not null
 #
 
 require 'rails_helper'
@@ -57,6 +58,23 @@ RSpec.describe Menu, type: :model do
       menu_a = create(:menu)
       menu_b = build(:menu, order: menu_a.order)
       expect(menu_b.valid?).to be_truthy
+    end
+
+    context 'ordering' do
+      it 'fails invalid menu_group_ordering' do
+        menu = build(:menu, menu_group_ordering: ['text', 'order', 'oreo'])
+        expect(menu.valid?).to be_falsy
+      end
+
+      it 'fails invalid published_entry_ordering' do
+        menu = build(:menu, published_entry_ordering: ['text', 'order', 'oreo'])
+        expect(menu.valid?).to be_falsy
+      end
+
+      it 'allows published_entry_ordering parents' do
+        menu = build(:menu, published_entry_ordering: ['MenuGroup', 'Topic'])
+        expect(menu.valid?).to be_truthy
+      end
     end
   end
 

@@ -2,24 +2,25 @@
 #
 # Table name: domains
 #
-#  id          :uuid             not null, primary key
-#  text        :string           not null
-#  description :text
-#  subdomain   :string           not null
-#  active      :boolean          default(TRUE)
-#  creator_id  :uuid             not null
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
+#  id                       :uuid             not null, primary key
+#  text                     :string           not null
+#  description              :text
+#  subdomain                :string           not null
+#  active                   :boolean          default(TRUE)
+#  menu_ordering            :text             default(["\"order:asc\"", "\"text:asc\""]), is an Array
+#  published_entry_ordering :text             default(["\"published_at:desc\""]), is an Array
+#  creator_id               :uuid             not null
+#  created_at               :datetime         not null
+#  updated_at               :datetime         not null
 #
 
 class Domain < ApplicationRecord
   include SetCreator
+  include Ordering
 
   default_scope { order(text: :asc) }
 
   has_many :menus
-  has_many :menu_groups
-  has_many :topics
   has_many :published_entries
   has_many :featured_entries
   belongs_to :creator, class_name: "User"
@@ -27,6 +28,8 @@ class Domain < ApplicationRecord
   validates :text, :subdomain, presence: true
   validate :only_active_text, :only_active_subdomain
 
+  ORDERING_CHILD = "Menu"
+  PUBLISHED_ENTRY_PARENTS = ['Menu', 'MenuGroup', 'Topic']
 
   protected
 

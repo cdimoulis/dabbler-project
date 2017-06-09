@@ -2,14 +2,15 @@
 #
 # Table name: topics
 #
-#  id            :uuid             not null, primary key
-#  text          :string           not null
-#  description   :text
-#  domain_id     :uuid             not null
-#  menu_group_id :uuid             not null
-#  creator_id    :uuid             not null
-#  created_at    :datetime         not null
-#  updated_at    :datetime         not null
+#  id                       :uuid             not null, primary key
+#  text                     :string           not null
+#  description              :text
+#  menu_group_id            :uuid             not null
+#  order                    :integer          not null
+#  published_entry_ordering :text             default(["\"published_at:desc\""]), is an Array
+#  creator_id               :uuid             not null
+#  created_at               :datetime         not null
+#  updated_at               :datetime         not null
 #
 
 class Topic < ApplicationRecord
@@ -17,7 +18,6 @@ class Topic < ApplicationRecord
 
   default_scope { order(text: :asc) }
 
-  belongs_to :domain
   belongs_to :menu_group
   belongs_to :creator, class_name: "User"
   has_many :menu_group_published_entry_topics

@@ -2,14 +2,15 @@
 #
 # Table name: topics
 #
-#  id            :uuid             not null, primary key
-#  text          :string           not null
-#  description   :text
-#  domain_id     :uuid             not null
-#  menu_group_id :uuid             not null
-#  creator_id    :uuid             not null
-#  created_at    :datetime         not null
-#  updated_at    :datetime         not null
+#  id                       :uuid             not null, primary key
+#  text                     :string           not null
+#  description              :text
+#  menu_group_id            :uuid             not null
+#  order                    :integer          not null
+#  published_entry_ordering :text             default(["\"published_at:desc\""]), is an Array
+#  creator_id               :uuid             not null
+#  created_at               :datetime         not null
+#  updated_at               :datetime         not null
 #
 
 FactoryGirl.define do
@@ -17,8 +18,6 @@ FactoryGirl.define do
   factory :topic do
     text { "Topic #{Topic.count + 1}" }
     description { "#{text} test topic" }
-    domain { create(:domain) }
-    domain_id { domain.present? ? domain.id : nil }
     menu_group { create(:menu_group, domain: domain) }
     menu_group_id { menu_group.present? ? menu_group.id : nil }
     creator { create(:user) }

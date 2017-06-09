@@ -64,7 +64,7 @@ module DefaultApiActions
     @errors = {}
     # fetch from parent
     if !parent_name.nil? and !parent_id.nil?
-      # Try block in case parent_name is not a model class
+      # Rescue block in case parent_name is not a model class
       begin
         parent_model = parent_name.classify.constantize
         # Check that the parent model with parent_id exists
@@ -99,8 +99,12 @@ module DefaultApiActions
     # Add any specified scopes
     if @scopes.present?
       @scopes.each do |s|
-        if @records.respond_to?(s)
-          @records = @records.send(s)
+        if @records.respond_to?(s[:scope])
+          if s[:params].present?
+            @records = @records.send(s[:scope], *s[:params])
+          else
+            @records = @records.send(s[:scope])
+          end
         end
       end
     end
