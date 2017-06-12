@@ -41,7 +41,7 @@ module AssociationAccessors
             end
             instance_variable_get "@#{attribute}"
           end
-
+          
           # Define setter
           self.send :define_singleton_method, "#{attribute}=" do |arg|
             # Get the association record

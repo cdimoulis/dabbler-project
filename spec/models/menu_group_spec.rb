@@ -110,7 +110,7 @@ RSpec.describe MenuGroup, type: :model do
       let!(:f) { create(:menu_group, text: 'F', order: nil) }
       let!(:menu) { create(:menu) }
 
-      it 'orders with domain default ordering' do
+      it 'orders with menu default ordering' do
         ordered = [e,d,c,a,b,f]
         expect(MenuGroup.ordering_scope(menu).to_a).to match(ordered)
       end

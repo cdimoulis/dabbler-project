@@ -6,7 +6,7 @@
 #  text                     :string           not null
 #  description              :text
 #  menu_group_id            :uuid             not null
-#  order                    :integer          not null
+#  order                    :integer
 #  published_entry_ordering :text             default(["\"published_at:desc\""]), is an Array
 #  creator_id               :uuid             not null
 #  created_at               :datetime         not null
@@ -18,7 +18,6 @@ require 'rails_helper'
 RSpec.describe Topic, type: :model do
 
   context 'associations' do
-    it { is_expected.to belong_to(:domain) }
     it { is_expected.to belong_to(:menu_group) }
     it { is_expected.to belong_to(:creator) }
     it { expect(Topic.reflect_on_association(:published_entries).macro).to eq(:has_many)}
@@ -28,9 +27,10 @@ RSpec.describe Topic, type: :model do
 
     it 'accesses published_entries' do
       topic = create(:topic)
-      published_entry_a = create(:published_entry, domain: topic.domain)
-      published_entry_b = create(:published_entry, domain: topic.domain)
-      published_entry_c = create(:published_entry, domain: topic.domain)
+      menu = topic.menu_group.menu
+      published_entry_a = create(:published_entry, domain: menu.domain)
+      published_entry_b = create(:published_entry, domain: menu.domain)
+      published_entry_c = create(:published_entry, domain: menu.domain)
 
       topic.published_entries << published_entry_b
       topic.published_entries << published_entry_c
@@ -43,41 +43,23 @@ RSpec.describe Topic, type: :model do
   context 'validations' do
     let!(:topic) { build(:topic) }
 
-    it 'requires valid domain' do
-      topic.domain_id = "52af11a3-0527-454e-bab2-ded1dcdb4ac7"
-      expect(topic.valid?).to be_falsy
-    end
-
-    it 'requires valid group' do
+    it 'requires valid menu_group' do
       topic.menu_group_id = "52af11a3-0527-454e-bab2-ded1dcdb4ac7"
       expect(topic.valid?).to be_falsy
     end
 
-    it 'requires domain and group domain to be same' do
-      domain = create(:domain)
-      topic.domain_id = domain.id
-      expect(topic.valid?).to be_falsy
-    end
-
-    it 'sets domain_id from group if nil' do
-      d = build(:domain)
-      topic = build(:topic_without_domain)
-      expect(topic.valid?).to be_truthy
-      expect(topic.domain_id).to eq(topic.menu_group.domain_id)
-    end
-
-    it 'does not allow duplicate text {scoped => :group}' do
+    it 'does not allow duplicate text within same menu_group' do
       menu_group = create(:menu_group)
-      topic_a = create(:topic, text: "My Topic", menu_group: menu_group, domain_id: menu_group.domain_id)
-      topic_b = build(:topic, text: "My Topic", menu_group: menu_group, domain_id: menu_group.domain_id)
+      topic_a = create(:topic, text: "My Topic", menu_group: menu_group)
+      topic_b = build(:topic, text: "My Topic", menu_group: menu_group)
       expect(topic_b.valid?).to be_falsy
     end
 
     it 'allows duplicate text with different group' do
       menu_group_a = create(:menu_group)
       menu_group_b = create(:menu_group)
-      topic_a = create(:topic, text: "My Topic", menu_group: menu_group_a, domain_id: menu_group_a.domain_id)
-      topic_b = build(:topic, text: "My Topic", menu_group: menu_group_b, domain_id: menu_group_b.domain_id)
+      topic_a = create(:topic, text: "My Topic", menu_group: menu_group_a)
+      topic_b = build(:topic, text: "My Topic", menu_group: menu_group_b)
       expect(topic_b.valid?).to be_truthy
     end
   end

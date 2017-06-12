@@ -6,7 +6,7 @@
 #  text                     :string           not null
 #  description              :text
 #  menu_group_id            :uuid             not null
-#  order                    :integer          not null
+#  order                    :integer
 #  published_entry_ordering :text             default(["\"published_at:desc\""]), is an Array
 #  creator_id               :uuid             not null
 #  created_at               :datetime         not null

@@ -4,7 +4,7 @@ class CreateTopics < ActiveRecord::Migration
       t.string :text, null: false
       t.text :description
       t.uuid :menu_group_id, null: false
-      t.integer :order, null: false
+      t.integer :order
       t.text :published_entry_ordering, default: ['published_at:desc'], array: true
       t.uuid :creator_id, null: false   # The logged in user
 
