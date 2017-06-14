@@ -49,11 +49,11 @@ RSpec.describe FeaturedEntry, type: :model do
       expect(fe_c.revised_published_entry_id).to eq(fe_b.id)
     end
 
-    it "access groups" do
+    it "access menu_groups" do
       featured_entry = create(:featured_entry)
-      group_a = create(:menu_group, domain: featured_entry.domain)
-      group_b = create(:menu_group, domain: featured_entry.domain)
-      group_c = create(:menu_group, domain: featured_entry.domain)
+      group_a = create(:menu_group)
+      group_b = create(:menu_group)
+      group_c = create(:menu_group)
       featured_entry.menu_groups << group_b
       featured_entry.menu_groups << group_c
 
@@ -65,7 +65,7 @@ RSpec.describe FeaturedEntry, type: :model do
 
   context 'validations' do
     it 'fails without published_at' do
-      feat_entry = build(:featured_entry, data: {})
+      feat_entry = build(:featured_entry, published_at: nil)
       expect(feat_entry.valid?).to be_falsy
     end
   end
@@ -86,15 +86,6 @@ RSpec.describe FeaturedEntry, type: :model do
       revised.destroy
       previous.reload
       expect(previous.revised_published_entry_id).to eq(featured_entry.id)
-    end
-
-    it 'destroys menu_group_published_entry_topic' do
-      featured_entry.menu_groups << create(:menu_group, domain: featured_entry.domain)
-      count = FeaturedEntry.count
-      join_count = MenuGroupPublishedEntryTopic.count
-      featured_entry.destroy
-      expect(FeaturedEntry.count).to eq(count-1)
-      expect(MenuGroupPublishedEntryTopic.count).to eq(join_count-1)
     end
   end
 

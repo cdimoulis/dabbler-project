@@ -21,12 +21,8 @@
 
 class FeaturedEntry < PublishedEntry
 
-  default_scope { order("data ->> 'published_at' DESC") }
-
   belongs_to :revised_featured_entry, class_name: 'FeaturedEntry', foreign_key: 'revised_published_entry_id'
   has_one :previous_featured_entry, class_name: 'FeaturedEntry', foreign_key: 'revised_published_entry_id'
-
-  validate :valid_data
 
   # Clear out old join models
   def menu_group_published_entry_topics_attributes=(*args)
@@ -36,20 +32,9 @@ class FeaturedEntry < PublishedEntry
 
   # For date_range concern
   def self.default_date_attribute
-    "data ->> 'published_at'"
+    "published_at"
   end
 
   protected
-
-  def valid_data
-    # Data needs to have published_at key
-    if self.data.nil?
-      errors.add(:data, 'Data Error: Data is nil')
-    else
-      if !self.data.has_key?('published_at') || data['published_at'].nil?
-        errors.add(:published_at, 'Data Error: FeaturedEntry data object required published_at')
-      end
-    end
-  end
 
 end
