@@ -76,7 +76,7 @@ RSpec.describe MenuGroup, type: :model do
     end
 
     context 'ordering' do
-      it 'fails invalid menu_group_ordering' do
+      it 'fails invalid topic_ordering' do
         menu_group = build(:menu_group, topic_ordering: ['text', 'order', 'oreo'])
         expect(menu_group.valid?).to be_falsy
       end

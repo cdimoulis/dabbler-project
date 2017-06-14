@@ -34,7 +34,8 @@ module Ordering
   # Menu Ordering values are valid
   def valid_child_ordering
     # If ORDERING_CHILD exists and is a class
-    if self.class::ORDERING_CHILD.present?()
+    # if self.class::ORDERING_CHILD.present?()
+    if self.class.const_defined?(:ORDERING_CHILD)
       # Build the attribute for ordering
       ordering_attribute = "#{self.class::ORDERING_CHILD.underscore}_ordering"
       # Get the child model
@@ -62,7 +63,11 @@ module Ordering
   # Published Entry Ordering values are valid
   def valid_published_entry_ordering
     if attribute_present?(:published_entry_ordering)
-      valid_orderings = PublishedEntry.column_names - ['id'] + self.class::PUBLISHED_ENTRY_PARENTS
+      if self.class.const_defined?(:PUBLISHED_ENTRY_PARENTS)
+        valid_orderings = PublishedEntry.column_names - ['id'] + self.class::PUBLISHED_ENTRY_PARENTS
+      else
+        valid_orderings = PublishedEntry.column_names - ['id']
+      end
       published_entry_ordering.each do |m|
         val = m.split(':')[0]
         if !valid_orderings.include?(val)

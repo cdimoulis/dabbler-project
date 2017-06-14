@@ -55,12 +55,67 @@ RSpec.describe Topic, type: :model do
       expect(topic_b.valid?).to be_falsy
     end
 
-    it 'allows duplicate text with different group' do
+    it 'allows duplicate text with different menu_group' do
       menu_group_a = create(:menu_group)
       menu_group_b = create(:menu_group)
       topic_a = create(:topic, text: "My Topic", menu_group: menu_group_a)
       topic_b = build(:topic, text: "My Topic", menu_group: menu_group_b)
       expect(topic_b.valid?).to be_truthy
+    end
+
+    context 'ordering' do
+      it 'fails invalid published_entry_ordering' do
+        menu_group = build(:menu_group, published_entry_ordering: ['text', 'order', 'Menu'])
+        expect(menu_group.valid?).to be_falsy
+      end
+    end
+  end
+
+  context 'scope' do
+    context 'ordering concern' do
+      let!(:a) { create(:topic, text: 'A', order: nil) }
+      let!(:b) { create(:topic, text: 'B', order: nil) }
+      let!(:c) { create(:topic, text: 'C', order: 3) }
+      let!(:d) { create(:topic, text: 'D', order: 2) }
+      let!(:e) { create(:topic, text: 'E', order: 1) }
+      let!(:f) { create(:topic, text: 'F', order: nil) }
+      let!(:menu_group) { create(:menu_group) }
+
+      it 'orders with menu_group default ordering' do
+        ordered = [e,d,c,a,b,f]
+        expect(Topic.ordering_scope(menu_group).to_a).to match(ordered)
+      end
+
+      it 'orders with menu_group reverse ordering' do
+        menu_group.update_attribute(:topic_ordering, ['order:desc','text:desc'])
+        ordered = [c,d,e,f,b,a]
+        expect(Topic.ordering_scope(menu_group).to_a).to match(ordered)
+      end
+
+      it 'orders correctly with text first' do
+        menu_group.update_attribute(:topic_ordering, ['text:asc','order:asc'])
+        f.update_attribute(:order, 4)
+        b.update_attribute(:order, 5)
+        a.update_attribute(:order, 6)
+        ordered = [a,b,c,d,e,f]
+        expect(Topic.ordering_scope(menu_group).to_a).to match(ordered)
+      end
+
+      it 'orders correctly with all order' do
+        f.update_attribute(:order, 4)
+        b.update_attribute(:order, 5)
+        a.update_attribute(:order, 6)
+        ordered = [e,d,c,f,b,a]
+        expect(Topic.ordering_scope(menu_group).to_a).to match(ordered)
+      end
+
+      it 'orders correctly with no order' do
+        c.update_attribute(:order, nil)
+        d.update_attribute(:order, nil)
+        e.update_attribute(:order, nil)
+        ordered = [a,b,c,d,e,f]
+        expect(Topic.ordering_scope(menu_group).to_a).to match(ordered)
+      end
     end
   end
 
