@@ -22,10 +22,7 @@ RSpec.describe MenuGroup, type: :model do
     it { is_expected.to belong_to(:menu) }
     it { is_expected.to belong_to(:creator).class_name('User') }
     it { is_expected.to have_many(:topics) }
-    it { is_expected.to have_many(:menu_group_published_entry_topics) }
-    it { expect(MenuGroup.reflect_on_association(:published_entries).macro).to eq(:has_many)}
-    it { expect(MenuGroup.reflect_on_association(:published_entries).options[:through]).to eq(:menu_group_published_entry_topics)}
-
+    
     it 'accesses menu' do
       menu = create(:menu)
       menu_group_a = create(:menu_group)

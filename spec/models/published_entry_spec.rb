@@ -30,11 +30,9 @@ RSpec.describe PublishedEntry, type: :model do
     it { is_expected.to belong_to(:entry) }
     it { is_expected.to belong_to(:revised_published_entry) }
     it { is_expected.to have_one(:previous_published_entry) }
-    it { is_expected.to have_many(:menu_group_published_entry_topics) }
-    it { expect(PublishedEntry.reflect_on_association(:menu_groups).macro).to eq(:has_many)}
-    it { expect(PublishedEntry.reflect_on_association(:menu_groups).options[:through]).to eq(:menu_group_published_entry_topics)}
-    it { expect(PublishedEntry.reflect_on_association(:topics).macro).to eq(:has_many)}
-    it { expect(PublishedEntry.reflect_on_association(:topics).options[:through]).to eq(:menu_group_published_entry_topics)}
+    # it { is_expected.to have_many(:menu_group_published_entry_topics) }
+    # it { expect(PublishedEntry.reflect_on_association(:topics).macro).to eq(:has_many)}
+    # it { expect(PublishedEntry.reflect_on_association(:topics).options[:through]).to eq(:menu_group_published_entry_topics)}
 
     it "accesses entry text" do
       published_entry = create(:published_entry)

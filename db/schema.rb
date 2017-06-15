@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170105181734) do
+ActiveRecord::Schema.define(version: 20170102152422) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -60,18 +60,6 @@ ActiveRecord::Schema.define(version: 20170105181734) do
   add_index "entries_users", ["entry_id", "user_id"], name: "index_entries_users_on_entry_id_and_user_id", using: :btree
   add_index "entries_users", ["entry_id"], name: "index_entries_users_on_entry_id", using: :btree
   add_index "entries_users", ["user_id"], name: "index_entries_users_on_user_id", using: :btree
-
-  create_table "menu_group_published_entry_topics", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
-    t.uuid     "menu_group_id",      null: false
-    t.uuid     "topic_id"
-    t.uuid     "published_entry_id", null: false
-    t.datetime "created_at",         null: false
-    t.datetime "updated_at",         null: false
-  end
-
-  add_index "menu_group_published_entry_topics", ["menu_group_id"], name: "index_menu_group_published_entry_topics_on_menu_group_id", using: :btree
-  add_index "menu_group_published_entry_topics", ["published_entry_id"], name: "index_menu_group_published_entry_topics_on_published_entry_id", using: :btree
-  add_index "menu_group_published_entry_topics", ["topic_id"], name: "index_menu_group_published_entry_topics_on_topic_id", using: :btree
 
   create_table "menu_groups", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
     t.string   "text",                                                         null: false

@@ -24,11 +24,13 @@ class FeaturedEntry < PublishedEntry
   belongs_to :revised_featured_entry, class_name: 'FeaturedEntry', foreign_key: 'revised_published_entry_id'
   has_one :previous_featured_entry, class_name: 'FeaturedEntry', foreign_key: 'revised_published_entry_id'
 
+  validates :published_at, presence: true
+
   # Clear out old join models
-  def menu_group_published_entry_topics_attributes=(*args)
-    self.menu_group_published_entry_topics.clear
-    super(*args)
-  end
+  # def menu_group_published_entry_topics_attributes=(*args)
+  #   self.menu_group_published_entry_topics.clear
+  #   super(*args)
+  # end
 
   # For date_range concern
   def self.default_date_attribute

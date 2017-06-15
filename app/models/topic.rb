@@ -19,8 +19,8 @@ class Topic < ApplicationRecord
 
   belongs_to :menu_group
   belongs_to :creator, class_name: "User"
-  has_many :menu_group_published_entry_topics
-  has_many :published_entries, through: :menu_group_published_entry_topics
+  # has_many :menu_group_published_entry_topics
+  # has_many :published_entries, through: :menu_group_published_entry_topics
 
   validates :text, :menu_group_id, :creator_id, presence: true
   validates :text, uniqueness: {scope: :menu_group_id, message: "Topic text must be unique within MenuGroup"}

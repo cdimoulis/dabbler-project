@@ -20,24 +20,24 @@ RSpec.describe Topic, type: :model do
   context 'associations' do
     it { is_expected.to belong_to(:menu_group) }
     it { is_expected.to belong_to(:creator) }
-    it { expect(Topic.reflect_on_association(:published_entries).macro).to eq(:has_many)}
-    it { expect(Topic.reflect_on_association(:published_entries).options[:through]).to eq(:menu_group_published_entry_topics)}
+    # it { expect(Topic.reflect_on_association(:published_entries).macro).to eq(:has_many)}
+    # it { expect(Topic.reflect_on_association(:published_entries).options[:through]).to eq(:menu_group_published_entry_topics)}
     # Appears to be an error in the shoulda matchers for have_many.through
     # it { is_expected.to have_many(:published_entries).through(:group_topic_published_entries) }
 
-    it 'accesses published_entries' do
-      topic = create(:topic)
-      menu = topic.menu_group.menu
-      published_entry_a = create(:published_entry, domain: menu.domain)
-      published_entry_b = create(:published_entry, domain: menu.domain)
-      published_entry_c = create(:published_entry, domain: menu.domain)
-
-      topic.published_entries << published_entry_b
-      topic.published_entries << published_entry_c
-      expect(topic.published_entries).to match([published_entry_b, published_entry_c])
-      join = MenuGroupPublishedEntryTopic.where(topic_id: topic.id)
-      expect(join.length).to eq(2)
-    end
+    # it 'accesses published_entries' do
+    #   topic = create(:topic)
+    #   menu = topic.menu_group.menu
+    #   published_entry_a = create(:published_entry, domain: menu.domain)
+    #   published_entry_b = create(:published_entry, domain: menu.domain)
+    #   published_entry_c = create(:published_entry, domain: menu.domain)
+    #
+    #   topic.published_entries << published_entry_b
+    #   topic.published_entries << published_entry_c
+    #   expect(topic.published_entries).to match([published_entry_b, published_entry_c])
+    #   join = MenuGroupPublishedEntryTopic.where(topic_id: topic.id)
+    #   expect(join.length).to eq(2)
+    # end
   end
 
   context 'validations' do

@@ -30,11 +30,7 @@ class PublishedEntry < ApplicationRecord
   belongs_to :revised_published_entry, class_name: 'PublishedEntry', foreign_key: 'revised_published_entry_id'
   has_one :previous_published_entry, class_name: 'PublishedEntry', foreign_key: 'revised_published_entry_id'
 
-  has_many :menu_group_published_entry_topics, dependent: :destroy, inverse_of: :published_entry
-  has_many :menu_groups, through: :menu_group_published_entry_topics
-  has_many :topics, through: :menu_group_published_entry_topics
-
-  accepts_nested_attributes_for :menu_group_published_entry_topics
+  # accepts_nested_attributes_for :menu_group_published_entry_topics
 
   before_validation :set_author
   before_destroy :check_revision
@@ -54,10 +50,10 @@ class PublishedEntry < ApplicationRecord
   ###
 
   # Clear out old join models when setting new ones
-  def group_topic_published_entries_attributes=(*args)
-    self.group_topic_published_entries.clear
-    super(*args)
-  end
+  # def group_topic_published_entries_attributes=(*args)
+  #   self.group_topic_published_entries.clear
+  #   super(*args)
+  # end
 
 
   ###
@@ -68,7 +64,7 @@ class PublishedEntry < ApplicationRecord
   end
 
   def send_attributes
-    [:text, :group_topic_published_entries]
+    [:text ] #, :group_topic_published_entries]
   end
   ###
   # End AssociationAccessorconcern

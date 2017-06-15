@@ -48,19 +48,6 @@ RSpec.describe FeaturedEntry, type: :model do
       expect(fe_b.previous_featured_entry).to eq(fe_c)
       expect(fe_c.revised_published_entry_id).to eq(fe_b.id)
     end
-
-    it "access menu_groups" do
-      featured_entry = create(:featured_entry)
-      group_a = create(:menu_group)
-      group_b = create(:menu_group)
-      group_c = create(:menu_group)
-      featured_entry.menu_groups << group_b
-      featured_entry.menu_groups << group_c
-
-      expect(featured_entry.menu_groups).to match([group_b, group_c])
-      join = MenuGroupPublishedEntryTopic.where(published_entry_id: featured_entry.id)
-      expect(join.length).to eq(2)
-    end
   end
 
   context 'validations' do
