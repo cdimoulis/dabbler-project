@@ -10,4 +10,8 @@
 #
 
 class PublishedEntriesTopic < ActiveRecord::Base
+
+  belongs_to :published_entry
+  belongs_to :topic
+  
 end

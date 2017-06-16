@@ -12,5 +12,10 @@
 require 'rails_helper'
 
 RSpec.describe PublishedEntriesTopic, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+
+  context 'associations' do
+    it { is_expected.to belong_to(:published_entry) }
+    it { is_expected.to belong_to(:topic) }
+  end
+  
 end

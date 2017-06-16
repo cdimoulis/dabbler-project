@@ -29,7 +29,8 @@ class PublishedEntry < ApplicationRecord
   belongs_to :entry
   belongs_to :revised_published_entry, class_name: 'PublishedEntry', foreign_key: 'revised_published_entry_id'
   has_one :previous_published_entry, class_name: 'PublishedEntry', foreign_key: 'revised_published_entry_id'
-
+  has_many :published_entries_topics
+  has_many :topics, through: :published_entries_topics
   # accepts_nested_attributes_for :menu_group_published_entry_topics
 
   before_validation :set_author

@@ -30,9 +30,9 @@ RSpec.describe PublishedEntry, type: :model do
     it { is_expected.to belong_to(:entry) }
     it { is_expected.to belong_to(:revised_published_entry) }
     it { is_expected.to have_one(:previous_published_entry) }
-    # it { is_expected.to have_many(:menu_group_published_entry_topics) }
-    # it { expect(PublishedEntry.reflect_on_association(:topics).macro).to eq(:has_many)}
-    # it { expect(PublishedEntry.reflect_on_association(:topics).options[:through]).to eq(:menu_group_published_entry_topics)}
+    it { is_expected.to have_many(:published_entries_topics) }
+    it { expect(PublishedEntry.reflect_on_association(:topics).macro).to eq(:has_many)}
+    it { expect(PublishedEntry.reflect_on_association(:topics).options[:through]).to eq(:published_entries_topics)}
 
     it "accesses entry text" do
       published_entry = create(:published_entry)
@@ -41,18 +41,19 @@ RSpec.describe PublishedEntry, type: :model do
       expect(published_entry.text).to eq(entry.text)
     end
 
-    # it "access topics" do
-    #   published_entry = create(:published_entry)
-    #   topic_a = create(:topic, domain: published_entry.domain)
-    #   topic_b = create(:topic, domain: published_entry.domain)
-    #   topic_c = create(:topic, domain: published_entry.domain)
-    #   published_entry.topics << topic_b
-    #   published_entry.topics << topic_c
-    #
-    #   expect(published_entry.topics).to match([topic_b, topic_c])
-    #   join = MenuGroupPublishedEntryTopic.where(published_entry_id: published_entry.id)
-    #   expect(join.length).to eq(2)
-    # end
+    it "access topics" do
+      published_entry = create(:published_entry)
+      menu_group = create(:menu_group, menu: create(:menu, domain: published_entry.domain))
+      topic_a = create(:topic, menu_group: menu_group)
+      topic_b = create(:topic, menu_group: menu_group)
+      topic_c = create(:topic, menu_group: menu_group)
+      published_entry.topics << topic_b
+      published_entry.topics << topic_c
+
+      expect(published_entry.topics).to match([topic_b, topic_c])
+      join = PublishedEntriesTopic.where(published_entry_id: published_entry.id)
+      expect(join.length).to eq(2)
+    end
 
     it 'associates updated entries' do
       pe_a = create(:published_entry)
