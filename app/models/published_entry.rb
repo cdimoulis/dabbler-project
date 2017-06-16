@@ -46,15 +46,15 @@ class PublishedEntry < ApplicationRecord
   scope :current, -> { where(revised_published_entry_id: nil) }
   scope :non_removed, -> { where(removed: false) }
   scope :removed, -> { where(removed: true) }
-  # This scope will order based on the parent's [child]_ordering attribute
+  # This scope will order based on the topic's published_entry_ordering attribute
   scope :ordering_scope, -> (topic) {
     # Table name needed for query clarification
     table = self.table_name
     # The order query string
     ordering = ''
     # Check the parent truly has the ordering_attribute
-    if parent.attribute_present?(:published_entry_ordering)
-      parent.send(:published_entry_ordering).each do |a|
+    if topic.attribute_present?(:published_entry_ordering)
+      topic.send(:published_entry_ordering).each do |a|
         # Split for attribute:direction
         val, dir = a.split(':')
         ordering += "#{table}.#{val} #{dir} NULLS LAST,"

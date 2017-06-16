@@ -30,7 +30,6 @@ class Domain < ApplicationRecord
   validate :only_active_text, :only_active_subdomain
 
   ORDERING_CHILD = "Menu"
-  # PUBLISHED_ENTRY_PARENTS = ['Menu', 'MenuGroup', 'Topic']
 
   protected
 

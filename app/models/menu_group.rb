@@ -28,7 +28,6 @@ class MenuGroup < ApplicationRecord
   validate :menu_exists
 
   ORDERING_CHILD = "Topic"
-  # PUBLISHED_ENTRY_PARENTS = ['Topic']
 
   protected
 

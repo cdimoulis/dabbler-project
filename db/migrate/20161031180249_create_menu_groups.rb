@@ -14,6 +14,7 @@ class CreateMenuGroups < ActiveRecord::Migration
     add_index :menu_groups, :text
     add_index :menu_groups, :menu_id
     add_index :menu_groups, :creator_id
+    add_index :menu_groups, :order
     add_index :menu_groups, [:menu_id, :text], unique: true
   end
 end

@@ -14,6 +14,7 @@ class CreateTopics < ActiveRecord::Migration
     add_index :topics, :text
     add_index :topics, :menu_group_id
     add_index :topics, :creator_id
+    add_index :topics, :order
     add_index :topics, [:text, :menu_group_id], unique: true
   end
 end

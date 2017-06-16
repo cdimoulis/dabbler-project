@@ -10,6 +10,7 @@ class CreatePublishedEntriesTopics < ActiveRecord::Migration
 
     add_index :published_entries_topics, :published_entry_id
     add_index :published_entries_topics, :topic_id
+    add_index :published_entries_topics, :order
     add_index :published_entries_topics, [:published_entry_id, :topic_id], unique: true, name: 'index_published_entry_id_and_topic_id'
   end
 end

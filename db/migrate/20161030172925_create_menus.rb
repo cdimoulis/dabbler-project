@@ -14,6 +14,7 @@ class CreateMenus < ActiveRecord::Migration
     add_index :menus, :text
     add_index :menus, :domain_id
     add_index :menus, :creator_id
+    add_index :menus, :order
     add_index :menus, [:text, :domain_id], unique: true
   end
 end

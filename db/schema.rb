@@ -74,6 +74,7 @@ ActiveRecord::Schema.define(version: 20170615203531) do
   add_index "menu_groups", ["creator_id"], name: "index_menu_groups_on_creator_id", using: :btree
   add_index "menu_groups", ["menu_id", "text"], name: "index_menu_groups_on_menu_id_and_text", unique: true, using: :btree
   add_index "menu_groups", ["menu_id"], name: "index_menu_groups_on_menu_id", using: :btree
+  add_index "menu_groups", ["order"], name: "index_menu_groups_on_order", using: :btree
   add_index "menu_groups", ["text"], name: "index_menu_groups_on_text", using: :btree
 
   create_table "menus", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
@@ -89,6 +90,7 @@ ActiveRecord::Schema.define(version: 20170615203531) do
 
   add_index "menus", ["creator_id"], name: "index_menus_on_creator_id", using: :btree
   add_index "menus", ["domain_id"], name: "index_menus_on_domain_id", using: :btree
+  add_index "menus", ["order"], name: "index_menus_on_order", using: :btree
   add_index "menus", ["text", "domain_id"], name: "index_menus_on_text_and_domain_id", unique: true, using: :btree
   add_index "menus", ["text"], name: "index_menus_on_text", using: :btree
 
@@ -140,6 +142,7 @@ ActiveRecord::Schema.define(version: 20170615203531) do
   add_index "published_entries", ["creator_id"], name: "index_published_entries_on_creator_id", using: :btree
   add_index "published_entries", ["domain_id"], name: "index_published_entries_on_domain_id", using: :btree
   add_index "published_entries", ["entry_id"], name: "index_published_entries_on_entry_id", using: :btree
+  add_index "published_entries", ["published_at"], name: "index_published_entries_on_published_at", using: :btree
   add_index "published_entries", ["revised_published_entry_id"], name: "index_published_entries_on_revised_published_entry_id", using: :btree
 
   create_table "published_entries_topics", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
@@ -150,6 +153,7 @@ ActiveRecord::Schema.define(version: 20170615203531) do
     t.datetime "updated_at",         null: false
   end
 
+  add_index "published_entries_topics", ["order"], name: "index_published_entries_topics_on_order", using: :btree
   add_index "published_entries_topics", ["published_entry_id", "topic_id"], name: "index_published_entry_id_and_topic_id", unique: true, using: :btree
   add_index "published_entries_topics", ["published_entry_id"], name: "index_published_entries_topics_on_published_entry_id", using: :btree
   add_index "published_entries_topics", ["topic_id"], name: "index_published_entries_topics_on_topic_id", using: :btree
@@ -167,6 +171,7 @@ ActiveRecord::Schema.define(version: 20170615203531) do
 
   add_index "topics", ["creator_id"], name: "index_topics_on_creator_id", using: :btree
   add_index "topics", ["menu_group_id"], name: "index_topics_on_menu_group_id", using: :btree
+  add_index "topics", ["order"], name: "index_topics_on_order", using: :btree
   add_index "topics", ["text", "menu_group_id"], name: "index_topics_on_text_and_menu_group_id", unique: true, using: :btree
   add_index "topics", ["text"], name: "index_topics_on_text", using: :btree
 

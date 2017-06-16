@@ -57,6 +57,25 @@ Topic.create [
   {text: 'Topic 2', menu_group: mg_2, creator: user}
 ]
 
+e1 = Entry.create(text: 'Entry 1', author: user, content: 'TEST Entry', creator: user)
+e2 = Entry.create(text: 'Entry 2', author: user, content: 'TEST Entry', creator: user)
+e3 = Entry.create(text: 'Entry 3', author: user, content: 'TEST Entry', creator: user)
+e4 = Entry.create(text: 'Entry 4', author: user, content: 'TEST Entry', creator: user)
+
+pe1 = PublishedEntry.create(domain: test_domain, entry: e1, creator: user, published_at: DateTime.parse('2017-06-06').to_s, type: 'PublishedEntry')
+pe2 = PublishedEntry.create(domain: test_domain, entry: e2, creator: user, published_at: DateTime.parse('2017-06-05').to_s, type: 'PublishedEntry')
+pe3 = PublishedEntry.create(domain: test_domain, entry: e3, creator: user, published_at: DateTime.parse('2017-06-04').to_s, type: 'PublishedEntry')
+pe4 = PublishedEntry.create(domain: test_domain, entry: e4, creator: user, published_at: DateTime.parse('2017-06-03').to_s, type: 'PublishedEntry')
+
+topic = Topic.where(text: 'Topic 1').take
+
+PublishedEntriesTopic.create [
+  {published_entry: pe1, topic: topic},
+  {published_entry: pe2, topic: topic},
+  {published_entry: pe3, topic: topic, order: 1},
+  {published_entry: pe4, topic: topic, order: 2}
+]
+
 ### END TEST Domain
 
 ### DEMO Domain
@@ -97,6 +116,25 @@ Topic.create [
   {text: 'Topic c', menu_group: mg_1, creator: user, order: 2},
   {text: 'Topic a', menu_group: mg_2, creator: user},
   {text: 'Topic b', menu_group: mg_2, creator: user}
+]
+
+e1 = Entry.create(text: 'Entry a', author: user, content: 'TEST Entry', creator: user)
+e2 = Entry.create(text: 'Entry b', author: user, content: 'TEST Entry', creator: user)
+e3 = Entry.create(text: 'Entry c', author: user, content: 'TEST Entry', creator: user)
+e4 = Entry.create(text: 'Entry d', author: user, content: 'TEST Entry', creator: user)
+
+pe1 = PublishedEntry.create(domain: demo_domain, entry: e1, creator: user, published_at: DateTime.parse('2017-06-06').to_s, type: 'PublishedEntry')
+pe2 = PublishedEntry.create(domain: demo_domain, entry: e2, creator: user, published_at: DateTime.parse('2017-06-05').to_s, type: 'PublishedEntry')
+pe3 = PublishedEntry.create(domain: demo_domain, entry: e3, creator: user, published_at: DateTime.parse('2017-06-04').to_s, type: 'PublishedEntry')
+pe4 = PublishedEntry.create(domain: demo_domain, entry: e4, creator: user, published_at: DateTime.parse('2017-06-03').to_s, type: 'PublishedEntry')
+
+topic = Topic.where(text: 'Topic a').take
+
+PublishedEntriesTopic.create [
+  {published_entry: pe1, topic: topic},
+  {published_entry: pe2, topic: topic},
+  {published_entry: pe3, topic: topic, order: 1},
+  {published_entry: pe4, topic: topic, order: 2}
 ]
 
 ### END DEMO Domain

@@ -20,6 +20,7 @@ class CreatePublishedEntries < ActiveRecord::Migration
     add_index :published_entries, :creator_id
     add_index :published_entries, :domain_id
     add_index :published_entries, :entry_id
+    add_index :published_entries, :published_at
     add_index :published_entries, :revised_published_entry_id
   end
 end

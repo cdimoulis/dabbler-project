@@ -46,7 +46,11 @@ module Ordering
         return
       end
       # Valid attributes for ordering
-      valid_orderings = child_resource.column_names - ['id']
+      if self.class.const_defined?(:ADDITIONAL_ORDER_ATTRIBUTES)
+        valid_orderings = child_resource.column_names - ['id'] + self.class::ADDITIONAL_ORDER_ATTRIBUTES
+      else
+        valid_orderings = child_resource.column_names - ['id']
+      end
       # Check if attribute exists
       if attribute_present?(ordering_attribute.to_sym)
         # Loop and check that array
