@@ -95,6 +95,34 @@ RSpec.describe PublishedEntry, type: :model do
     end
   end
 
+  context 'scope' do
+    let!(:a) { create(:published_entry) }
+    let!(:b) { create(:published_entry) }
+    let!(:c) { create(:published_entry) }
+
+    it 'only shows current' do
+      new_pe = create(:published_entry)
+      a.revised_published_entry = new_pe
+      a.save
+      order = [b,c,new_pe]
+      expect(PublishedEntry.current.order('created_at asc').to_a).to match(order)
+    end
+
+    it 'only shows non removed' do
+      a.removed = true
+      a.save
+      order = [b,c]
+      expect(PublishedEntry.non_removed.order('created_at asc').to_a).to match(order)
+    end
+
+    it 'only shows removed' do
+      a.removed = true
+      a.save
+      order = [a]
+      expect(PublishedEntry.removed.order('created_at asc').to_a).to match(order)
+    end
+  end
+
   context 'save' do
     it 'locks entry on creation' do
       entry = create(:entry)

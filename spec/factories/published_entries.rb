@@ -26,7 +26,7 @@ FactoryGirl.define do
     author_id { author.present? ? author.id : nil }
     domain { create(:domain) }
     domain_id { domain.present? ? domain.id : nil }
-    notes "This entry has some notes"
+    notes { entry.present? ? entry.text : "This entry has some notes" }
     tags ['tag_a', 'tag_b']
     published_at DateTime.now
     type 'PublishedEntry'
