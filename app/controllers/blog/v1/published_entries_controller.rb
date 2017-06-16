@@ -54,6 +54,14 @@ class Blog::V1::PublishedEntriesController < Blog::V1::BlogController
       @scopes.push({scope: :current})
     end
 
+    if params[:published]
+      @scopes.push({scope: :published})
+    end
+
+    if params[:not_published]
+      @scopes.push({scope: :not_published})
+    end
+
     if params[:removed]
       @scopes.push({scope: :removed})
     else
