@@ -9,7 +9,6 @@
 #  image_url                  :string
 #  notes                      :text
 #  tags                       :text             is an Array
-#  order                      :integer
 #  published_at               :datetime
 #  type                       :string
 #  revised_published_entry_id :uuid
@@ -31,7 +30,8 @@ class PublishedEntry < ApplicationRecord
   has_one :previous_published_entry, class_name: 'PublishedEntry', foreign_key: 'revised_published_entry_id'
   has_many :published_entries_topics
   has_many :topics, through: :published_entries_topics
-  # accepts_nested_attributes_for :menu_group_published_entry_topics
+
+  # accepts_nested_attributes_for :published_entries_topics
 
   before_validation :set_author
   before_destroy :check_revision
@@ -46,12 +46,29 @@ class PublishedEntry < ApplicationRecord
   scope :current, -> { where(revised_published_entry_id: nil) }
   scope :non_removed, -> { where(removed: false) }
   scope :removed, -> { where(removed: true) }
+  # This scope will order based on the parent's [child]_ordering attribute
+  scope :ordering_scope, -> (topic) {
+    # Table name needed for query clarification
+    table = self.table_name
+    # The order query string
+    ordering = ''
+    # Check the parent truly has the ordering_attribute
+    if parent.attribute_present?(:published_entry_ordering)
+      parent.send(:published_entry_ordering).each do |a|
+        # Split for attribute:direction
+        val, dir = a.split(':')
+        ordering += "#{table}.#{val} #{dir} NULLS LAST,"
+      end
+    end
+    # Remove ending comma
+    order(ordering.chomp(','))
+  }
   ###
   # End Scopes
   ###
 
   # Clear out old join models when setting new ones
-  # def group_topic_published_entries_attributes=(*args)
+  # def published_entries_topics_attributes=(*args)
   #   self.group_topic_published_entries.clear
   #   super(*args)
   # end

@@ -2,16 +2,15 @@
 #
 # Table name: menu_groups
 #
-#  id                       :uuid             not null, primary key
-#  text                     :string           not null
-#  description              :text
-#  menu_id                  :uuid             not null
-#  order                    :integer
-#  topic_ordering           :text             default(["\"order:asc\"", "\"text:asc\""]), is an Array
-#  published_entry_ordering :text             default(["\"published_at:desc\""]), is an Array
-#  creator_id               :uuid             not null
-#  created_at               :datetime         not null
-#  updated_at               :datetime         not null
+#  id             :uuid             not null, primary key
+#  text           :string           not null
+#  description    :text
+#  menu_id        :uuid             not null
+#  order          :integer
+#  topic_ordering :text             default(["\"order:asc\"", "\"text:asc\""]), is an Array
+#  creator_id     :uuid             not null
+#  created_at     :datetime         not null
+#  updated_at     :datetime         not null
 #
 
 class MenuGroup < ApplicationRecord
@@ -29,7 +28,7 @@ class MenuGroup < ApplicationRecord
   validate :menu_exists
 
   ORDERING_CHILD = "Topic"
-  PUBLISHED_ENTRY_PARENTS = ['Topic']
+  # PUBLISHED_ENTRY_PARENTS = ['Topic']
 
   protected
 

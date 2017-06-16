@@ -82,8 +82,8 @@ mb = Menu.where(text: 'DEMO Menu B').take
 
 MenuGroup.create [
   {text: 'MenuGroup a', menu: ma, creator: user},
-  {text: 'MenuGroup b', menu: ma, creator: user},
-  {text: 'MenuGroup c', menu: ma, creator: user},
+  {text: 'MenuGroup b', menu: ma, creator: user, order: 1},
+  {text: 'MenuGroup c', menu: ma, creator: user, order: 2},
   {text: 'MenuGroup a', menu: mb, creator: user},
   {text: 'MenuGroup b', menu: mb, creator: user}
 ]

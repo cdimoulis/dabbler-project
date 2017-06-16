@@ -3,8 +3,9 @@
 # Table name: published_entries_topics
 #
 #  id                 :uuid             not null, primary key
-#  published_entry_id :uuid
-#  topic_id           :uuid
+#  published_entry_id :uuid             not null
+#  topic_id           :uuid             not null
+#  order              :uuid
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
 #
@@ -27,5 +28,4 @@ class PublishedEntriesTopic < ActiveRecord::Base
       end
     end
   end
-
 end

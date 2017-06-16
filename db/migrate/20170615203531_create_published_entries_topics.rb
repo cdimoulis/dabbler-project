@@ -3,6 +3,7 @@ class CreatePublishedEntriesTopics < ActiveRecord::Migration
     create_table :published_entries_topics, id: :uuid, default: "uuid_generate_v4()", force: true do |t|
       t.uuid :published_entry_id, null: false
       t.uuid :topic_id, null: false
+      t.uuid :order
 
       t.timestamps null: false
     end

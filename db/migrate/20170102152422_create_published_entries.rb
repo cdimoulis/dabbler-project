@@ -7,10 +7,8 @@ class CreatePublishedEntries < ActiveRecord::Migration
       t.string :image_url
       t.text :notes
       t.text :tags, array: true
-      t.integer :order
       t.datetime :published_at
       t.string :type
-      # t.json :data
       t.uuid :revised_published_entry_id
       t.boolean :removed, default: false
       t.uuid :creator_id, null: false   # The logged in user who actually published this

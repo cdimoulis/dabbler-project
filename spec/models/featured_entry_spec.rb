@@ -9,7 +9,6 @@
 #  image_url                  :string
 #  notes                      :text
 #  tags                       :text             is an Array
-#  order                      :integer
 #  published_at               :datetime
 #  type                       :string
 #  revised_published_entry_id :uuid

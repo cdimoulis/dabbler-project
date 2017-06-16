@@ -6,7 +6,6 @@ class CreateMenuGroups < ActiveRecord::Migration
       t.uuid :menu_id, null: false
       t.integer :order
       t.text :topic_ordering, default: ['order:asc', 'text:asc'], array: true
-      t.text :published_entry_ordering, default: ['published_at:desc'], array: true
       t.uuid :creator_id, null: false   # The logged in user
 
       t.timestamps null: false

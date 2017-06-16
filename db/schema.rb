@@ -18,15 +18,14 @@ ActiveRecord::Schema.define(version: 20170615203531) do
   enable_extension "uuid-ossp"
 
   create_table "domains", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
-    t.string   "text",                                                         null: false
+    t.string   "text",                                              null: false
     t.text     "description"
-    t.string   "subdomain",                                                    null: false
-    t.boolean  "active",                   default: true
-    t.text     "menu_ordering",            default: ["order:asc", "text:asc"],              array: true
-    t.text     "published_entry_ordering", default: ["published_at:desc"],                  array: true
-    t.uuid     "creator_id",                                                   null: false
-    t.datetime "created_at",                                                   null: false
-    t.datetime "updated_at",                                                   null: false
+    t.string   "subdomain",                                         null: false
+    t.boolean  "active",        default: true
+    t.text     "menu_ordering", default: ["order:asc", "text:asc"],              array: true
+    t.uuid     "creator_id",                                        null: false
+    t.datetime "created_at",                                        null: false
+    t.datetime "updated_at",                                        null: false
   end
 
   add_index "domains", ["creator_id"], name: "index_domains_on_creator_id", using: :btree
@@ -62,15 +61,14 @@ ActiveRecord::Schema.define(version: 20170615203531) do
   add_index "entries_users", ["user_id"], name: "index_entries_users_on_user_id", using: :btree
 
   create_table "menu_groups", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
-    t.string   "text",                                                         null: false
+    t.string   "text",                                               null: false
     t.text     "description"
-    t.uuid     "menu_id",                                                      null: false
+    t.uuid     "menu_id",                                            null: false
     t.integer  "order"
-    t.text     "topic_ordering",           default: ["order:asc", "text:asc"],              array: true
-    t.text     "published_entry_ordering", default: ["published_at:desc"],                  array: true
-    t.uuid     "creator_id",                                                   null: false
-    t.datetime "created_at",                                                   null: false
-    t.datetime "updated_at",                                                   null: false
+    t.text     "topic_ordering", default: ["order:asc", "text:asc"],              array: true
+    t.uuid     "creator_id",                                         null: false
+    t.datetime "created_at",                                         null: false
+    t.datetime "updated_at",                                         null: false
   end
 
   add_index "menu_groups", ["creator_id"], name: "index_menu_groups_on_creator_id", using: :btree
@@ -79,15 +77,14 @@ ActiveRecord::Schema.define(version: 20170615203531) do
   add_index "menu_groups", ["text"], name: "index_menu_groups_on_text", using: :btree
 
   create_table "menus", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
-    t.string   "text",                                                         null: false
+    t.string   "text",                                                    null: false
     t.text     "description"
-    t.uuid     "domain_id",                                                    null: false
+    t.uuid     "domain_id",                                               null: false
     t.integer  "order"
-    t.text     "menu_group_ordering",      default: ["order:asc", "text:asc"],              array: true
-    t.text     "published_entry_ordering", default: ["published_at:desc"],                  array: true
-    t.uuid     "creator_id",                                                   null: false
-    t.datetime "created_at",                                                   null: false
-    t.datetime "updated_at",                                                   null: false
+    t.text     "menu_group_ordering", default: ["order:asc", "text:asc"],              array: true
+    t.uuid     "creator_id",                                              null: false
+    t.datetime "created_at",                                              null: false
+    t.datetime "updated_at",                                              null: false
   end
 
   add_index "menus", ["creator_id"], name: "index_menus_on_creator_id", using: :btree
@@ -130,7 +127,6 @@ ActiveRecord::Schema.define(version: 20170615203531) do
     t.string   "image_url"
     t.text     "notes"
     t.text     "tags",                                                    array: true
-    t.integer  "order"
     t.datetime "published_at"
     t.string   "type"
     t.uuid     "revised_published_entry_id"
@@ -149,6 +145,7 @@ ActiveRecord::Schema.define(version: 20170615203531) do
   create_table "published_entries_topics", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
     t.uuid     "published_entry_id", null: false
     t.uuid     "topic_id",           null: false
+    t.uuid     "order"
     t.datetime "created_at",         null: false
     t.datetime "updated_at",         null: false
   end
