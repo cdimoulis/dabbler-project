@@ -128,6 +128,13 @@ RSpec.describe PublishedEntry, type: :model do
       order = [c,b]
       expect(PublishedEntry.published.order('published_at desc').to_a).to match(order)
     end
+
+    it 'only shows not published' do
+      a.published_at = (DateTime.now + 2.days).to_s
+      a.save
+      order = [a]
+      expect(PublishedEntry.not_published.order('published_at desc').to_a).to match(order)
+    end
   end
 
   context 'save' do
