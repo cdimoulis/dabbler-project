@@ -17,6 +17,7 @@ class PublishedEntriesTopic < ActiveRecord::Base
 
   validates :published_entry_id, :topic_id, presence: true
   validates :published_entry_id, uniqueness: {scope: :topic_id, message: "PublishedEntry can only be in a topic once"}
+  validates :order, uniqueness: {scope: :topic_id, message: 'Order must be unique within a topic'}
   validate :same_domain
 
   protected

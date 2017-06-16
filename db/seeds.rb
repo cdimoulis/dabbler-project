@@ -62,10 +62,10 @@ e2 = Entry.create(text: 'Entry 2', author: user, content: 'TEST Entry', creator:
 e3 = Entry.create(text: 'Entry 3', author: user, content: 'TEST Entry', creator: user)
 e4 = Entry.create(text: 'Entry 4', author: user, content: 'TEST Entry', creator: user)
 
-pe1 = PublishedEntry.create(domain: test_domain, entry: e1, creator: user, published_at: DateTime.parse('2017-06-06').to_s, type: 'PublishedEntry')
-pe2 = PublishedEntry.create(domain: test_domain, entry: e2, creator: user, published_at: DateTime.parse('2017-06-05').to_s, type: 'PublishedEntry')
-pe3 = PublishedEntry.create(domain: test_domain, entry: e3, creator: user, published_at: DateTime.parse('2017-06-04').to_s, type: 'PublishedEntry')
-pe4 = PublishedEntry.create(domain: test_domain, entry: e4, creator: user, published_at: DateTime.parse('2017-06-03').to_s, type: 'PublishedEntry')
+pe1 = PublishedEntry.create(domain: test_domain, entry: e1, notes: e1.text, creator: user, published_at: DateTime.parse('2017-06-06').to_s, type: 'PublishedEntry')
+pe2 = PublishedEntry.create(domain: test_domain, entry: e2, notes: e2.text, creator: user, published_at: DateTime.parse('2017-06-05').to_s, type: 'PublishedEntry')
+pe3 = PublishedEntry.create(domain: test_domain, entry: e3, notes: e3.text, creator: user, published_at: DateTime.parse('2017-06-04').to_s, type: 'PublishedEntry')
+pe4 = PublishedEntry.create(domain: test_domain, entry: e4, notes: e4.text, creator: user, published_at: DateTime.parse('2017-06-03').to_s, type: 'PublishedEntry')
 
 topic = Topic.where(text: 'Topic 1').take
 
@@ -123,10 +123,10 @@ e2 = Entry.create(text: 'Entry b', author: user, content: 'TEST Entry', creator:
 e3 = Entry.create(text: 'Entry c', author: user, content: 'TEST Entry', creator: user)
 e4 = Entry.create(text: 'Entry d', author: user, content: 'TEST Entry', creator: user)
 
-pe1 = PublishedEntry.create(domain: demo_domain, entry: e1, creator: user, published_at: DateTime.parse('2017-06-06').to_s, type: 'PublishedEntry')
-pe2 = PublishedEntry.create(domain: demo_domain, entry: e2, creator: user, published_at: DateTime.parse('2017-06-05').to_s, type: 'PublishedEntry')
-pe3 = PublishedEntry.create(domain: demo_domain, entry: e3, creator: user, published_at: DateTime.parse('2017-06-04').to_s, type: 'PublishedEntry')
-pe4 = PublishedEntry.create(domain: demo_domain, entry: e4, creator: user, published_at: DateTime.parse('2017-06-03').to_s, type: 'PublishedEntry')
+pe1 = PublishedEntry.create(domain: demo_domain, entry: e1, notes: e1.text, creator: user, published_at: DateTime.parse('2017-06-06').to_s, type: 'PublishedEntry')
+pe2 = PublishedEntry.create(domain: demo_domain, entry: e2, notes: e2.text, creator: user, published_at: DateTime.parse('2017-06-05').to_s, type: 'PublishedEntry')
+pe3 = PublishedEntry.create(domain: demo_domain, entry: e3, notes: e3.text, creator: user, published_at: DateTime.parse('2017-06-04').to_s, type: 'PublishedEntry')
+pe4 = PublishedEntry.create(domain: demo_domain, entry: e4, notes: e4.text, creator: user, published_at: DateTime.parse('2017-06-03').to_s, type: 'PublishedEntry')
 
 topic = Topic.where(text: 'Topic a').take
 

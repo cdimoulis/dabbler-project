@@ -84,7 +84,7 @@ RSpec.describe Topic, type: :model do
 
     context 'ordering' do
       it 'fails invalid published_entry_ordering' do
-        menu_group = build(:menu_group, published_entry_ordering: ['text', 'order', 'Menu'])
+        menu_group = build(:menu_group, topic_ordering: ['text', 'order', 'Menu'])
         expect(menu_group.valid?).to be_falsy
       end
     end

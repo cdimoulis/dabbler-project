@@ -148,7 +148,7 @@ ActiveRecord::Schema.define(version: 20170615203531) do
   create_table "published_entries_topics", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
     t.uuid     "published_entry_id", null: false
     t.uuid     "topic_id",           null: false
-    t.uuid     "order"
+    t.integer  "order"
     t.datetime "created_at",         null: false
     t.datetime "updated_at",         null: false
   end

@@ -49,6 +49,15 @@ RSpec.describe PublishedEntriesTopic, type: :model do
       dup = build(:published_entries_topic, topic: topic, published_entry: pe)
       expect(dup.valid?).to be_falsy
     end
+
+    it 'failse if topic has duplicate order' do
+      topic = create(:topic)
+      pe = create(:published_entry, domain: topic.domain)
+      pe1 = create(:published_entry, domain: topic.domain)
+      pub_topic = create(:published_entries_topic, topic: topic, published_entry: pe, order: 1)
+      dup = build(:published_entries_topic, topic: topic, published_entry: pe1, order: 1)
+      expect(dup.valid?).to be_falsy
+    end
   end
 
 end

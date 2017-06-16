@@ -54,14 +54,23 @@ class PublishedEntry < ApplicationRecord
     ordering = ''
     # Check the parent truly has the ordering_attribute
     if topic.attribute_present?(:published_entry_ordering)
+      # if order then inclue published_entries_topics
       topic.send(:published_entry_ordering).each do |a|
         # Split for attribute:direction
         val, dir = a.split(':')
-        ordering += "#{table}.#{val} #{dir} NULLS LAST,"
+        # If val is order then table is published_entries_topics
+        if val == 'order'
+          t = 'published_entries_topics'
+        else
+          t = table
+        end
+
+        ordering += "#{t}.#{val} #{dir} NULLS LAST,"
       end
     end
     # Remove ending comma
-    order(ordering.chomp(','))
+    # Includes published_entries_topics
+    includes(:published_entries_topics).order(ordering.chomp(','))
   }
   ###
   # End Scopes

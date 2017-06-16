@@ -68,16 +68,6 @@ RSpec.describe Domain do
         domain = build(:domain, menu_ordering: ['text', 'order', 'oreo'])
         expect(domain.valid?).to be_falsy
       end
-
-      it 'fails invalid published_entry_ordering' do
-        domain = build(:domain, published_entry_ordering: ['text', 'order', 'oreo'])
-        expect(domain.valid?).to be_falsy
-      end
-
-      it 'allows published_entry_ordering parents' do
-        domain = build(:domain, published_entry_ordering: ['Menu', 'MenuGroup', 'Topic'])
-        expect(domain.valid?).to be_truthy
-      end
     end
   end
 

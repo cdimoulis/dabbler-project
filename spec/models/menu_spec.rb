@@ -66,16 +66,6 @@ RSpec.describe Menu, type: :model do
         menu = build(:menu, menu_group_ordering: ['text', 'order', 'oreo'])
         expect(menu.valid?).to be_falsy
       end
-
-      it 'fails invalid published_entry_ordering' do
-        menu = build(:menu, published_entry_ordering: ['text', 'order', 'oreo'])
-        expect(menu.valid?).to be_falsy
-      end
-
-      it 'allows published_entry_ordering parents' do
-        menu = build(:menu, published_entry_ordering: ['MenuGroup', 'Topic'])
-        expect(menu.valid?).to be_truthy
-      end
     end
   end
 
