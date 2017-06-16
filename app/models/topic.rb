@@ -24,6 +24,7 @@ class Topic < ApplicationRecord
 
   validates :text, :menu_group_id, :creator_id, presence: true
   validates :text, uniqueness: {scope: :menu_group_id, message: "Topic text must be unique within MenuGroup"}
+  validates :order, uniqueness: {scope: :menu_group_id, message: "Topic order must be unique within a MenuGroup"}, allow_blank: true
   validate :menu_group_exists
 
   protected

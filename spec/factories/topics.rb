@@ -20,6 +20,7 @@ FactoryGirl.define do
     description { "#{text} test topic" }
     menu_group { create(:menu_group) }
     menu_group_id { menu_group.present? ? menu_group.id : nil }
+    order { Topic.count }
     creator { create(:user) }
     creator_id { creator.present? ? creator.id : nil }
 

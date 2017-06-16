@@ -64,6 +64,22 @@ RSpec.describe Topic, type: :model do
       expect(topic_b.valid?).to be_truthy
     end
 
+    it 'requires unique order within menu_group' do
+      topic_a = create(:topic)
+      topic_b = build(:topic, menu_group: topic_a.menu_group, order: topic_a.order)
+      expect(topic_b.valid?).to be_falsy
+    end
+
+    it 'unique order only applies to menu' do
+      menu_group_a = create(:menu_group)
+      menu_group_b = create(:menu_group, menu: menu_group_a.menu)
+      topic_a = create(:topic)
+      topic_a.menu_group = menu_group_a
+      topic_b = create(:topic, order: topic_a.order)
+      topic_b.menu_group = menu_group_b
+      expect(topic_b.valid?).to be_truthy
+    end
+
     context 'ordering' do
       it 'fails invalid published_entry_ordering' do
         menu_group = build(:menu_group, published_entry_ordering: ['text', 'order', 'Menu'])
