@@ -1,5 +1,4 @@
 class Blog::V1::FeaturedEntriesController < Blog::V1::BlogController
-  include HasCreator
   include PageRecords
   include DateRange
 
@@ -33,7 +32,6 @@ class Blog::V1::FeaturedEntriesController < Blog::V1::BlogController
 
   def permitted_params
     params.require(:featured_entry).permit(:author_id, :domain_id, :entry_id,
-                                          {group_topic_published_entries_attributes: [:id, :group_id, :topic_id, :published_entry_id]},
                                           :image_url, :notes, :tags, :data,
                                           :current, :removed).tap do |whitelist|
       whitelist[:data] = params[:featured_entry][:data]
@@ -53,13 +51,13 @@ class Blog::V1::FeaturedEntriesController < Blog::V1::BlogController
   def set_scopes
     @scopes = @scopes || []
     if params[:current]
-      @scopes.push :current
+      @scopes.push({scope: :current})
     end
 
     if params[:removed]
-      @scopes.push :removed
+      @scopes.push({scope: :removed})
     else
-      @scopes.push :non_removed
+      @scopes.push({scope: :non_removed})
     end
   end
 end

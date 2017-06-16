@@ -9,8 +9,9 @@
 #  image_url                  :string
 #  notes                      :text
 #  tags                       :text             is an Array
+#  order                      :integer
+#  published_at               :datetime
 #  type                       :string
-#  data                       :json
 #  revised_published_entry_id :uuid
 #  removed                    :boolean          default(FALSE)
 #  creator_id                 :uuid             not null
@@ -20,19 +21,17 @@
 
 class PublishedEntry < ApplicationRecord
   include AssociationAccessors
+  include SetCreator
 
   belongs_to :author, class_name: 'User'
   belongs_to :creator, class_name: 'User'
   belongs_to :domain
   belongs_to :entry
-
-  has_many :group_topic_published_entries, dependent: :destroy, inverse_of: :published_entry
-  has_many :groups, through: :group_topic_published_entries
-  has_many :topics, through: :group_topic_published_entries
   belongs_to :revised_published_entry, class_name: 'PublishedEntry', foreign_key: 'revised_published_entry_id'
   has_one :previous_published_entry, class_name: 'PublishedEntry', foreign_key: 'revised_published_entry_id'
-
-  accepts_nested_attributes_for :group_topic_published_entries
+  has_many :published_entries_topics
+  has_many :topics, through: :published_entries_topics
+  # accepts_nested_attributes_for :menu_group_published_entry_topics
 
   before_validation :set_author
   before_destroy :check_revision
@@ -52,10 +51,10 @@ class PublishedEntry < ApplicationRecord
   ###
 
   # Clear out old join models when setting new ones
-  def group_topic_published_entries_attributes=(*args)
-    self.group_topic_published_entries.clear
-    super(*args)
-  end
+  # def group_topic_published_entries_attributes=(*args)
+  #   self.group_topic_published_entries.clear
+  #   super(*args)
+  # end
 
 
   ###
@@ -66,7 +65,7 @@ class PublishedEntry < ApplicationRecord
   end
 
   def send_attributes
-    [:text, :group_topic_published_entries]
+    [:text ] #, :group_topic_published_entries]
   end
   ###
   # End AssociationAccessorconcern

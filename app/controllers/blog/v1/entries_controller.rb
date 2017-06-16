@@ -1,7 +1,6 @@
 class Blog::V1::EntriesController < Blog::V1::BlogController
   include PageRecords
   include DateRange
-  include HasCreator
 
   before_action :require_login, only: [:create, :update, :destroy]
   before_action :set_scopes, only: [:index]
@@ -117,7 +116,7 @@ class Blog::V1::EntriesController < Blog::V1::BlogController
   def set_scopes
     @scopes = @scopes || []
     if params[:unpublished]
-      @scopes.push :unpublished
+      @scopes.push({scope: :unpublished})
     end
   end
 

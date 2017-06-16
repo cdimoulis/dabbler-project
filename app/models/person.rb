@@ -29,6 +29,7 @@
 #
 
 class Person < ApplicationRecord
+  include SetCreator
   include PersonLists
   include Addresses
 

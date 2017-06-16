@@ -6,21 +6,9 @@ RSpec.describe Blog::V1::DomainsController do
   context '#single_index' do
     let!(:domain) { create(:domain) }
 
-    it 'returns correct domain for group' do
-      group = create(:group, domain: domain)
-      get blog_v1_group_domain_path(group_id: group.id), format: :json
-      expect(assigns(:record)).to eq(domain)
-    end
-
-    it 'returns correct domain for featured_group' do
-      group = create(:featured_group, domain: domain)
-      get blog_v1_group_domain_path(group_id: group.id), format: :json
-      expect(assigns(:record)).to eq(domain)
-    end
-
-    it 'returns correct domain for tutorial_group' do
-      group = create(:tutorial_group, domain: domain)
-      get blog_v1_group_domain_path(group_id: group.id), format: :json
+    it 'returns correct domain for menu_group' do
+      menu_group = create(:menu_group, domain: domain)
+      get blog_v1_menu_group_domain_path(menu_group_id: menu_group.id), format: :json
       expect(assigns(:record)).to eq(domain)
     end
 
@@ -42,10 +30,5 @@ RSpec.describe Blog::V1::DomainsController do
       expect(assigns(:record)).to eq(domain)
     end
 
-    it 'returns correct domain for tutorial_entry' do
-      tutorial_entry = create(:tutorial_entry, domain: domain)
-      get blog_v1_tutorial_entry_domain_path(tutorial_entry_id: tutorial_entry.id), format: :json
-      expect(assigns(:record)).to eq(domain)
-    end
   end
 end

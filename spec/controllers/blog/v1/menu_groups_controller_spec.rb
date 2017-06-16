@@ -25,9 +25,7 @@ RSpec.describe Blog::V1::MenuGroupsController, type: :controller do
 
   # Tests for INDEX route
   context "#index" do
-    let!(:fly) {create(:featured_group, text: 'Fly Group')}
-    let!(:hotel) {create(:tutorial_group, text: 'Hotel Group')}
-    let!(:menu) {create(:menu_group, text: 'Menu Group')}
+    let!(:menu_group) {create(:menu_group, text: 'Menu Group')}
 
     before do
       get :index, format: :json
@@ -42,22 +40,70 @@ RSpec.describe Blog::V1::MenuGroupsController, type: :controller do
       tg_b = create(:menu_group, domain: hotel.domain, order: 1)
       tg_c = create(:menu_group, domain: hotel.domain, order: 2)
       get :index, format: :json
-      expect(assigns(:records).to_a).to match([menu,tg_b,tg_c,tg_a])
+      expect(assigns(:records).to_a).to match([menu_group,tg_b,tg_c,tg_a])
     end
 
   end
 
   # Tests for SHOW route
   context "#show" do
-    let!(:menu) { create(:menu_group, text: "Menu Group") }
+    let!(:menu_group) { create(:menu_group, text: "Menu Group") }
 
     # Before running a test do this
     before do
-      get :show, id: menu.id, format: :json
+      get :show, id: menu_group.id, format: :json
     end
 
-    it { expect(assigns(:record)).to eq(menu) }
+    it { is_expected.to respond_with(:success) }
 
+    it 'returns JSON' do
+      # look_like_json found in support/matchers/json_matchers.rb
+      expect(response.body).to look_like_json
+    end
+
+    it { expect(assigns(:record)).to eq(menu_group) }
+  end
+
+
+  # Test for UPDATE route
+  context "#update" do
+    let!(:travel) { create(:domain, text: "Travel") }
+    let!(:hotel) { create(:menu_group, text: 'Hotel Group', domain: travel) }
+
+    before do
+      sign_in
+    end
+
+    it "succeeds" do
+      update_params = {description: "Hotel entries in Travel"}
+      put :update, id: hotel.id, menu_group: update_params, format: :json
+      expect(response).to have_http_status(:success)
+      expect(assigns(:record).description).to eq(update_params[:description])
+    end
+
+    it "prevents invalid updates" do
+      fly = create(:menu_group, text: 'Fly Group', domain: travel)
+      update_params = {text: "Hotel Group"}
+      put :update, id: fly.id, menu_group: update_params, format: :json
+      expect(response).to have_http_status(424)
+    end
+  end
+
+  # Test for DESTROY route
+  context "#destroy" do
+    let!(:travel) { create(:domain, text: "Travel") }
+    let!(:hotel) { create(:menu_group, text: 'Hotel Group', domain: travel) }
+    let!(:current) { MenuGroup.count }
+
+    before do
+      sign_in
+      delete :destroy, id: hotel.id, format: :json
+    end
+
+    it "succeeds" do
+      expect(response).to have_http_status(:success)
+      expect(MenuGroup.count).to eq(current-1)
+    end
   end
 
 end

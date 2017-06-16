@@ -9,8 +9,9 @@
 #  image_url                  :string
 #  notes                      :text
 #  tags                       :text             is an Array
+#  order                      :integer
+#  published_at               :datetime
 #  type                       :string
-#  data                       :json
 #  revised_published_entry_id :uuid
 #  removed                    :boolean          default(FALSE)
 #  creator_id                 :uuid             not null
@@ -20,36 +21,22 @@
 
 class FeaturedEntry < PublishedEntry
 
-  default_scope { order("data ->> 'published_at' DESC") }
-
-  has_many :featured_groups, through: :group_topic_published_entries, foreign_key: 'group_id'
   belongs_to :revised_featured_entry, class_name: 'FeaturedEntry', foreign_key: 'revised_published_entry_id'
   has_one :previous_featured_entry, class_name: 'FeaturedEntry', foreign_key: 'revised_published_entry_id'
 
-  validate :valid_data
+  validates :published_at, presence: true
 
   # Clear out old join models
-  def group_topic_published_entries_attributes=(*args)
-    self.group_topic_published_entries.clear
-    super(*args)
-  end
+  # def menu_group_published_entry_topics_attributes=(*args)
+  #   self.menu_group_published_entry_topics.clear
+  #   super(*args)
+  # end
 
   # For date_range concern
   def self.default_date_attribute
-    "data ->> 'published_at'"
+    "published_at"
   end
 
   protected
-
-  def valid_data
-    # Data needs to have published_at key
-    if self.data.nil?
-      errors.add(:data, 'Data Error: Data is nil')
-    else
-      if !self.data.has_key?('published_at') || data['published_at'].nil?
-        errors.add(:published_at, 'Data Error: FeaturedEntry data object required published_at')
-      end
-    end
-  end
 
 end

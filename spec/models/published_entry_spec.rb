@@ -9,8 +9,9 @@
 #  image_url                  :string
 #  notes                      :text
 #  tags                       :text             is an Array
+#  order                      :integer
+#  published_at               :datetime
 #  type                       :string
-#  data                       :json
 #  revised_published_entry_id :uuid
 #  removed                    :boolean          default(FALSE)
 #  creator_id                 :uuid             not null
@@ -24,12 +25,14 @@ RSpec.describe PublishedEntry, type: :model do
 
   context 'associations' do
     it { is_expected.to belong_to(:author) }
+    it { is_expected.to belong_to(:creator) }
     it { is_expected.to belong_to(:domain) }
     it { is_expected.to belong_to(:entry) }
-    it { expect(PublishedEntry.reflect_on_association(:groups).macro).to eq(:has_many)}
-    it { expect(PublishedEntry.reflect_on_association(:groups).options[:through]).to eq(:group_topic_published_entries)}
+    it { is_expected.to belong_to(:revised_published_entry) }
+    it { is_expected.to have_one(:previous_published_entry) }
+    it { is_expected.to have_many(:published_entries_topics) }
     it { expect(PublishedEntry.reflect_on_association(:topics).macro).to eq(:has_many)}
-    it { expect(PublishedEntry.reflect_on_association(:topics).options[:through]).to eq(:group_topic_published_entries)}
+    it { expect(PublishedEntry.reflect_on_association(:topics).options[:through]).to eq(:published_entries_topics)}
 
     it "accesses entry text" do
       published_entry = create(:published_entry)
@@ -40,27 +43,15 @@ RSpec.describe PublishedEntry, type: :model do
 
     it "access topics" do
       published_entry = create(:published_entry)
-      topic_a = create(:topic, domain: published_entry.domain)
-      topic_b = create(:topic, domain: published_entry.domain)
-      topic_c = create(:topic, domain: published_entry.domain)
+      menu_group = create(:menu_group, menu: create(:menu, domain: published_entry.domain))
+      topic_a = create(:topic, menu_group: menu_group)
+      topic_b = create(:topic, menu_group: menu_group)
+      topic_c = create(:topic, menu_group: menu_group)
       published_entry.topics << topic_b
       published_entry.topics << topic_c
 
       expect(published_entry.topics).to match([topic_b, topic_c])
-      join = GroupTopicPublishedEntry.where(published_entry_id: published_entry.id)
-      expect(join.length).to eq(2)
-    end
-
-    it "access groups" do
-      published_entry = create(:published_entry)
-      group_a = create(:featured_group, domain: published_entry.domain)
-      group_b = create(:featured_group, domain: published_entry.domain)
-      group_c = create(:tutorial_group, domain: published_entry.domain)
-      published_entry.groups << group_b
-      published_entry.groups << group_c
-
-      expect(published_entry.groups).to match([group_b, group_c])
-      join = GroupTopicPublishedEntry.where(published_entry_id: published_entry.id)
+      join = PublishedEntriesTopic.where(published_entry_id: published_entry.id)
       expect(join.length).to eq(2)
     end
 
@@ -100,14 +91,14 @@ RSpec.describe PublishedEntry, type: :model do
 
     it 'requires revision type match' do
       featured_entry = create(:featured_entry)
-      tutorial_entry = build(:tutorial_entry, revised_published_entry_id: featured_entry.id)
+      tutorial_entry = build(:published_entry, revised_published_entry_id: featured_entry.id)
       expect(tutorial_entry.valid?).to be_falsy
     end
   end
 
   context 'save' do
     it 'locks entry on creation' do
-      entry = create(:entry_with_creator)
+      entry = create(:entry)
       expect(entry.locked).to be_falsy
       published_entry = create(:published_entry, entry: entry)
       entry.reload

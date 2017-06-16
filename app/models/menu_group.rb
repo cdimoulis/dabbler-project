@@ -1,32 +1,41 @@
 # == Schema Information
 #
-# Table name: groups
+# Table name: menu_groups
 #
-#  id          :uuid             not null, primary key
-#  text        :string           not null
-#  description :text
-#  domain_id   :uuid             not null
-#  order       :integer          not null
-#  type        :string           not null
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
+#  id                       :uuid             not null, primary key
+#  text                     :string           not null
+#  description              :text
+#  menu_id                  :uuid             not null
+#  order                    :integer
+#  topic_ordering           :text             default(["\"order:asc\"", "\"text:asc\""]), is an Array
+#  published_entry_ordering :text             default(["\"published_at:desc\""]), is an Array
+#  creator_id               :uuid             not null
+#  created_at               :datetime         not null
+#  updated_at               :datetime         not null
 #
 
-class MenuGroup < Group
+class MenuGroup < ApplicationRecord
+  include SetCreator
+  include Ordering
 
-  default_scope { order(order: :asc) }
+  belongs_to :creator, class_name: "User"
+  belongs_to :menu
+  has_one :domain, through: :menu
+  has_many :topics
 
-  has_one :menus_menu_group, dependent: :destroy
-  has_one :menu, through: :menus_menu_group
-  # has_many :menu_entries, through: :group_topic_published_entries, foreign_key: 'published_entry_id'
+  validates :text, :menu_id, presence: true
+  validates :text, uniqueness: {scope: [:menu_id], message: "MenuGroup text must be unique within a Menu"}
+  validates :order, uniqueness: {scope: :menu_id, message: "MenuGroup order must be unique within a Menu"}, allow_blank: true
+  validate :menu_exists
 
-  validate :valid_order
+  ORDERING_CHILD = "Topic"
+  PUBLISHED_ENTRY_PARENTS = ['Topic']
 
   protected
 
-  def valid_order
-    if menus_menu_group.present? && !menus_menu_group.valid?
-      errors.add(:order, 'Order must be unique within a Menu')
+  def menu_exists
+    if attribute_present?(:menu_id) and !Menu.exists?(menu_id)
+      errors.add(:menu_id, "Invalid Menu: Does not exist")
     end
   end
 

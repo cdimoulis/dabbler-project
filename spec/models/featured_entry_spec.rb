@@ -9,8 +9,9 @@
 #  image_url                  :string
 #  notes                      :text
 #  tags                       :text             is an Array
+#  order                      :integer
+#  published_at               :datetime
 #  type                       :string
-#  data                       :json
 #  revised_published_entry_id :uuid
 #  removed                    :boolean          default(FALSE)
 #  creator_id                 :uuid             not null
@@ -30,6 +31,9 @@ RSpec.describe FeaturedEntry, type: :model do
   end
 
   context 'associations' do
+    it { is_expected.to belong_to(:revised_featured_entry) }
+    it { is_expected.to have_one(:previous_featured_entry) }
+
     it 'associates updated entries' do
       fe_a = create(:featured_entry)
       fe_b = create(:featured_entry)
@@ -44,24 +48,11 @@ RSpec.describe FeaturedEntry, type: :model do
       expect(fe_b.previous_featured_entry).to eq(fe_c)
       expect(fe_c.revised_published_entry_id).to eq(fe_b.id)
     end
-
-    it "access groups" do
-      featured_entry = create(:featured_entry)
-      group_a = create(:featured_group, domain: featured_entry.domain)
-      group_b = create(:featured_group, domain: featured_entry.domain)
-      group_c = create(:featured_group, domain: featured_entry.domain)
-      featured_entry.featured_groups << group_b
-      featured_entry.groups << group_c
-
-      expect(featured_entry.groups).to match([group_b, group_c])
-      join = GroupTopicPublishedEntry.where(published_entry_id: featured_entry.id)
-      expect(join.length).to eq(2)
-    end
   end
 
   context 'validations' do
     it 'fails without published_at' do
-      feat_entry = build(:featured_entry, data: {})
+      feat_entry = build(:featured_entry, published_at: nil)
       expect(feat_entry.valid?).to be_falsy
     end
   end
@@ -82,15 +73,6 @@ RSpec.describe FeaturedEntry, type: :model do
       revised.destroy
       previous.reload
       expect(previous.revised_published_entry_id).to eq(featured_entry.id)
-    end
-
-    it 'destroys group_topic_published_entry' do
-      featured_entry.groups << create(:featured_group, domain: featured_entry.domain)
-      count = FeaturedEntry.count
-      join_count = GroupTopicPublishedEntry.count
-      featured_entry.destroy
-      expect(FeaturedEntry.count).to eq(count-1)
-      expect(GroupTopicPublishedEntry.count).to eq(join_count-1)
     end
   end
 

@@ -26,11 +26,8 @@ FactoryGirl.define do
     content "Here is some info to know about..."
     updated_entry nil
     updated_entry_id { updated_entry.present? ? updated_entry.id : nil }
-
-    factory :entry_with_creator do
-      creator { author }
-      creator_id { creator.present? ? creator.id : nil }
-    end
+    creator { author }
+    creator_id { creator.present? ? creator.id : nil }
 
     factory :entry_without_author do
       author nil
