@@ -147,11 +147,15 @@ ActiveRecord::Schema.define(version: 20170615203531) do
   add_index "published_entries", ["revised_published_entry_id"], name: "index_published_entries_on_revised_published_entry_id", using: :btree
 
   create_table "published_entries_topics", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
-    t.uuid     "published_entry_id"
-    t.uuid     "topic_id"
+    t.uuid     "published_entry_id", null: false
+    t.uuid     "topic_id",           null: false
     t.datetime "created_at",         null: false
     t.datetime "updated_at",         null: false
   end
+
+  add_index "published_entries_topics", ["published_entry_id", "topic_id"], name: "index_published_entry_id_and_topic_id", unique: true, using: :btree
+  add_index "published_entries_topics", ["published_entry_id"], name: "index_published_entries_topics_on_published_entry_id", using: :btree
+  add_index "published_entries_topics", ["topic_id"], name: "index_published_entries_topics_on_topic_id", using: :btree
 
   create_table "topics", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
     t.string   "text",                                                     null: false
