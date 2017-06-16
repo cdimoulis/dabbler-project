@@ -22,6 +22,7 @@ RSpec.describe Menu, type: :model do
     it { is_expected.to belong_to(:domain) }
     it { is_expected.to belong_to(:creator).class_name('User') }
     it { is_expected.to have_many(:menu_groups) }
+    it { is_expected.to have_many(:topics).through(:menu_groups) }
   end
 
   context '.save' do

@@ -20,9 +20,10 @@ RSpec.describe MenuGroup, type: :model do
 
   context 'associations' do
     it { is_expected.to belong_to(:menu) }
+    it { is_expected.to have_one(:domain).through(:menu) }
     it { is_expected.to belong_to(:creator).class_name('User') }
     it { is_expected.to have_many(:topics) }
-    
+
     it 'accesses menu' do
       menu = create(:menu)
       menu_group_a = create(:menu_group)

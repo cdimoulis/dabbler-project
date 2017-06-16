@@ -21,6 +21,7 @@ class Menu < ActiveRecord::Base
   belongs_to :domain
   belongs_to :creator, class_name: "User"
   has_many :menu_groups
+  has_many :topics, through: :menu_groups
 
   validates :text, uniqueness: {scope: :domain_id, message: "Menu text must be unique within a Domain"}
   validates :domain_id, presence: :true

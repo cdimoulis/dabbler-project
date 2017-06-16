@@ -40,10 +40,21 @@ mb = Menu.where(text: 'TEST Menu B').take
 
 MenuGroup.create [
   {text: 'MenuGroup 1', menu: ma, creator: user},
-  {text: 'MenuGroup 2', menu: ma, creator: user},
-  {text: 'MenuGroup 3', menu: ma, creator: user},
+  {text: 'MenuGroup 2', menu: ma, creator: user, order: 1},
+  {text: 'MenuGroup 3', menu: ma, creator: user, order: 2},
   {text: 'MenuGroup 1', menu: mb, creator: user},
   {text: 'MenuGroup 2', menu: mb, creator: user}
+]
+
+mg_1 = MenuGroup.where(text: 'MenuGroup 1', menu_id: ma.id).take
+mg_2 = MenuGroup.where(text: 'MenuGroup 2', menu_id: mb.id).take
+
+Topic.create [
+  {text: 'Topic 1', menu_group: mg_1, creator: user},
+  {text: 'Topic 2', menu_group: mg_1, creator: user, order: 1},
+  {text: 'Topic 3', menu_group: mg_1, creator: user, order: 2},
+  {text: 'Topic 1', menu_group: mg_2, creator: user},
+  {text: 'Topic 2', menu_group: mg_2, creator: user}
 ]
 
 ### END TEST Domain
@@ -75,6 +86,17 @@ MenuGroup.create [
   {text: 'MenuGroup c', menu: ma, creator: user},
   {text: 'MenuGroup a', menu: mb, creator: user},
   {text: 'MenuGroup b', menu: mb, creator: user}
+]
+
+mg_1 = MenuGroup.where(text: 'MenuGroup a', menu_id: ma.id).take
+mg_2 = MenuGroup.where(text: 'MenuGroup b', menu_id: mb.id).take
+
+Topic.create [
+  {text: 'Topic a', menu_group: mg_1, creator: user},
+  {text: 'Topic b', menu_group: mg_1, creator: user, order: 1},
+  {text: 'Topic c', menu_group: mg_1, creator: user, order: 2},
+  {text: 'Topic a', menu_group: mg_2, creator: user},
+  {text: 'Topic b', menu_group: mg_2, creator: user}
 ]
 
 ### END DEMO Domain

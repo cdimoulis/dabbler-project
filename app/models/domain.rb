@@ -22,6 +22,7 @@ class Domain < ApplicationRecord
 
   has_many :menus
   has_many :menu_groups, through: :menus
+  has_many :topics, through: :menu_groups
   has_many :published_entries
   has_many :featured_entries
   belongs_to :creator, class_name: "User"

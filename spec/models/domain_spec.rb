@@ -20,6 +20,8 @@ RSpec.describe Domain do
 
   context 'associations' do
     it { is_expected.to have_many(:menus) }
+    it { is_expected.to have_many(:menu_groups).through(:menus) }
+    it { is_expected.to have_many(:topics).through(:menu_groups) }
     it { is_expected.to have_many(:published_entries) }
     it { is_expected.to have_many(:featured_entries) }
     it { is_expected.to belong_to(:creator).class_name('User') }

@@ -19,6 +19,8 @@ RSpec.describe Topic, type: :model do
 
   context 'associations' do
     it { is_expected.to belong_to(:menu_group) }
+    it { is_expected.to have_one(:menu).through(:menu_group) }
+    it { is_expected.to have_one(:domain).through(:menu) }
     it { is_expected.to belong_to(:creator) }
     it { is_expected.to have_many(:published_entries_topics) }
     it { expect(Topic.reflect_on_association(:published_entries).macro).to eq(:has_many)}
