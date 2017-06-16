@@ -46,6 +46,7 @@ class PublishedEntry < ApplicationRecord
   scope :current, -> { where(revised_published_entry_id: nil) }
   scope :non_removed, -> { where(removed: false) }
   scope :removed, -> { where(removed: true) }
+  scope :published, -> { where('published_at < ?', DateTime.now) }
   # This scope will order based on the topic's published_entry_ordering attribute
   scope :ordering_scope, -> (topic) {
     # Table name needed for query clarification

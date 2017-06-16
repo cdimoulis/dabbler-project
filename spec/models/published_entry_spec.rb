@@ -96,30 +96,37 @@ RSpec.describe PublishedEntry, type: :model do
   end
 
   context 'scope' do
-    let!(:a) { create(:published_entry) }
-    let!(:b) { create(:published_entry) }
-    let!(:c) { create(:published_entry) }
+    let!(:a) { create(:published_entry, published_at: DateTime.now - 3.days) }
+    let!(:b) { create(:published_entry, published_at: DateTime.now - 2.days) }
+    let!(:c) { create(:published_entry, published_at: DateTime.now - 1.days) }
 
     it 'only shows current' do
-      new_pe = create(:published_entry)
+      new_pe = create(:published_entry, published_at: DateTime.now)
       a.revised_published_entry = new_pe
       a.save
-      order = [b,c,new_pe]
-      expect(PublishedEntry.current.order('created_at asc').to_a).to match(order)
+      order = [new_pe,c,b]
+      expect(PublishedEntry.current.order('published_at desc').to_a).to match(order)
     end
 
     it 'only shows non removed' do
       a.removed = true
       a.save
-      order = [b,c]
-      expect(PublishedEntry.non_removed.order('created_at asc').to_a).to match(order)
+      order = [c,b]
+      expect(PublishedEntry.non_removed.order('published_at desc').to_a).to match(order)
     end
 
     it 'only shows removed' do
       a.removed = true
       a.save
       order = [a]
-      expect(PublishedEntry.removed.order('created_at asc').to_a).to match(order)
+      expect(PublishedEntry.removed.order('published_at desc').to_a).to match(order)
+    end
+
+    it 'only shows published' do
+      a.published_at = (DateTime.now + 2.days).to_s
+      a.save
+      order = [c,b]
+      expect(PublishedEntry.published.order('published_at desc').to_a).to match(order)
     end
   end
 
