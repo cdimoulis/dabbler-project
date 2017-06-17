@@ -55,7 +55,7 @@ class PublishedEntry < ApplicationRecord
     # The order query string
     ordering = ''
     # Check the parent truly has the ordering_attribute
-    if topic.attribute_present?(:published_entry_ordering)
+    if topic.present? and topic.attribute_present?(:published_entry_ordering)
       # if order then inclue published_entries_topics
       topic.send(:published_entry_ordering).each do |a|
         # Split for attribute:direction
