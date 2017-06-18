@@ -35,15 +35,17 @@ class Domain < ApplicationRecord
 
   # Only one active Domain can have the same text
   def only_active_text
-    texts = Domain.where(active: true).pluck('text')
+    # All domain texts except this one
+    texts = Domain.where(active: true).where.not(id: self.id).pluck('text')
     if texts.include?(text)
-      errors.add(:text, 'Text must be unique among valid Domains')
+      errors.add(:text, 'Text must be unique among active Domains')
     end
   end
 
   # Only one active Domain can have the same subdomain
   def only_active_subdomain
-    subdomains = Domain.where(active: true).pluck('subdomain')
+    # All domain subdomains except this one
+    subdomains = Domain.where(active: true).where.not(id: self.id).pluck('subdomain')
     if subdomains.include?(subdomain)
       errors.add(:subdomain, 'Subdomains must be unique among valid Domains')
     end

@@ -18,7 +18,7 @@ class Blog::V1::DomainsController < Blog::V1::BlogController
   ###
   # Association methods
   ###
-  
+
 
   ###
   # End Association methods
@@ -26,7 +26,8 @@ class Blog::V1::DomainsController < Blog::V1::BlogController
   protected
 
   def permitted_params
-    params.require(:domain).permit(:text, :description, :subdomain, :active)
+    params.require(:domain).permit(:text, :description, :subdomain, :active,
+                                    :menu_ordering)
   end
 
 end

@@ -37,16 +37,16 @@ RSpec.describe Blog::V1::DomainsController do
     it 'returns JSON' do
       # look_like_json found in support/matchers/json_matchers.rb
       expect(response.body).to look_like_json
-      order = [code.id, travel.id]
-      expect(assigns(:records).pluck('id')).to match(order)
+      order = [code, travel]
+      expect(assigns(:records).to_a).to match(order)
     end
 
   end
 
   # Tests for SHOW route
   context "#show" do
-
     let!(:travel) { create(:domain, text: "Travel") }
+    let!(:code) {create(:domain, text: 'Code')}
 
     # Before running a test do this
     before do
@@ -86,5 +86,4 @@ RSpec.describe Blog::V1::DomainsController do
       expect(response).to have_http_status(424)
     end
   end
-
 end
