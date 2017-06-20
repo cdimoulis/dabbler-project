@@ -5,11 +5,13 @@ module HasOrdering
   included do
     before_action :set_ordering_scopes, only: [:index]
   end
-  
+
   # set the ordering scope found in the Ordering model concern
   def set_ordering_scopes
     # get_resources() from default_api_actions concern
     resource_name, resource_id, parent_name, parent_id = get_resources()
+
+    return if parent_name.nil? or parent_id.nil?
     # Rescue block in case resource_name is not a model class
     begin
       resource_model = resource_name.classify.constantize

@@ -8,6 +8,7 @@ class Blog::V1::MenusController < Blog::V1::BlogController
   protected
 
   def permitted_params
-    params.require(:menu).permit(:text, :description, :domain_id, :order)
+    params.require(:menu).permit(:text, :description, :domain_id, :order,
+                                  menu_group_ordering: [])
   end
 end

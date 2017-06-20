@@ -41,6 +41,26 @@ RSpec.describe Blog::V1::MenusController, type: :controller do
     it { expect(assigns(:record)).to eq(menu) }
   end
 
+  # Tests for INDEX route
+  context "#index" do
+    let!(:menu_a) { create(:menu) }
+    let!(:menu_b) { create(:menu) }
+
+    before do
+      get :index, format: :json
+    end
+
+    it { is_expected.to respond_with(:success) }
+
+    it 'returns JSON' do
+      # look_like_json found in support/matchers/json_matchers.rb
+      expect(response.body).to look_like_json
+      order = [menu_a, menu_b]
+      expect(assigns(:records).to_a).to match(order)
+    end
+
+  end
+
   # Test for UPDATE route
   context "#update" do
     before do
@@ -54,6 +74,20 @@ RSpec.describe Blog::V1::MenusController, type: :controller do
       put :update, id: menu.id, menu: update_params, format: :json
       expect(response).to have_http_status(:success)
       expect(assigns(:record).description).to eq(update_params[:description])
+    end
+
+    it "updates menu_group_ordering" do
+      update_params = {menu_group_ordering: ['created_at:asc', 'text:desc']}
+      put :update, id: menu.id, menu: update_params, format: :json
+      expect(response).to have_http_status(:success)
+      expect(assigns(:record).menu_group_ordering).to eq(update_params[:menu_group_ordering])
+    end
+
+    it "prevents invalid updates" do
+      dup = create(:menu, domain: menu.domain)
+      update_params = {text: menu.text}
+      put :update, id: dup.id, menu: update_params, format: :json
+      expect(response).to have_http_status(424)
     end
   end
 
