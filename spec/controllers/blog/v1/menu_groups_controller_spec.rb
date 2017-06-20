@@ -23,28 +23,6 @@ RSpec.describe Blog::V1::MenuGroupsController, type: :controller do
 
   end
 
-  # Tests for INDEX route
-  context "#index" do
-    let!(:menu_group) {create(:menu_group, text: 'Menu Group')}
-
-    before do
-      get :index, format: :json
-    end
-
-    it 'returns records of proper type' do
-      expect(assigns(:records).length).to eq(1)
-    end
-
-    it 'orders correctly' do
-      tg_a = create(:menu_group, domain: hotel.domain, order: 3)
-      tg_b = create(:menu_group, domain: hotel.domain, order: 1)
-      tg_c = create(:menu_group, domain: hotel.domain, order: 2)
-      get :index, format: :json
-      expect(assigns(:records).to_a).to match([menu_group,tg_b,tg_c,tg_a])
-    end
-
-  end
-
   # Tests for SHOW route
   context "#show" do
     let!(:menu_group) { create(:menu_group, text: "Menu Group") }
@@ -64,11 +42,30 @@ RSpec.describe Blog::V1::MenuGroupsController, type: :controller do
     it { expect(assigns(:record)).to eq(menu_group) }
   end
 
+  # Tests for INDEX route
+  context "#index" do
+    let!(:menu_group_a) {create(:menu_group)}
+    let!(:menu_group_b) {create(:menu_group)}
+
+    before do
+      get :index, format: :json
+    end
+
+    it { is_expected.to respond_with(:success) }
+
+    it 'returns JSON' do
+      # look_like_json found in support/matchers/json_matchers.rb
+      expect(response.body).to look_like_json
+      order = [menu_group_a, menu_group_b]
+      expect(assigns(:records).to_a).to match(order)
+    end
+
+  end
 
   # Test for UPDATE route
   context "#update" do
-    let!(:travel) { create(:domain, text: "Travel") }
-    let!(:hotel) { create(:menu_group, text: 'Hotel Group', domain: travel) }
+    let!(:menu) { create(:menu, text: "Travel") }
+    let!(:menu_group) { create(:menu_group, text: 'Hotel Group', menu: menu) }
 
     before do
       sign_in
@@ -76,15 +73,22 @@ RSpec.describe Blog::V1::MenuGroupsController, type: :controller do
 
     it "succeeds" do
       update_params = {description: "Hotel entries in Travel"}
-      put :update, id: hotel.id, menu_group: update_params, format: :json
+      put :update, id: menu_group.id, menu_group: update_params, format: :json
       expect(response).to have_http_status(:success)
       expect(assigns(:record).description).to eq(update_params[:description])
     end
 
+    it "updates topic_ordering" do
+      update_params = {topic_ordering: ['created_at:asc', 'text:desc']}
+      put :update, id: menu_group.id, menu_group: update_params, format: :json
+      expect(response).to have_http_status(:success)
+      expect(assigns(:record).topic_ordering).to eq(update_params[:topic_ordering])
+    end
+
     it "prevents invalid updates" do
-      fly = create(:menu_group, text: 'Fly Group', domain: travel)
-      update_params = {text: "Hotel Group"}
-      put :update, id: fly.id, menu_group: update_params, format: :json
+      dup = create(:menu_group, menu: menu)
+      update_params = {text: menu_group.text}
+      put :update, id: dup.id, menu_group: update_params, format: :json
       expect(response).to have_http_status(424)
     end
   end
