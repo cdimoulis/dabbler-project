@@ -14,13 +14,10 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :domains, except: exc_new_edit + [:destroy], constraints: uuid_constraints do
         resources :featured_entries, except: exc_new_edit, parent: :domains
-        resources :featured_groups, except: exc_new_edit, parent: :domains
-        resources :groups, except: exc_new_edit, parent: :domains
         resources :menus, only: [:create, :index], parent: :domain
+        resources :menu_groups, only: :index, parent: :domains
         resources :published_entries, only: :index, parent: :domains
-        resources :topics, except: exc_new_edit + exc_create_update, parent: :domains
-        resources :tutorial_entries, except: exc_new_edit, parent: :domains
-        resources :tutorial_groups, except: exc_new_edit, parent: :domains
+        resources :topics, only: :index, parent: :domains
       end
 
       resources :entries, except: exc_new_edit, constraints: uuid_constraints do
