@@ -79,6 +79,13 @@ RSpec.describe Blog::V1::DomainsController do
       expect(assigns(:record).description).to eq(update_params[:description])
     end
 
+    it "updates menu_ordering" do
+      update_params = {menu_ordering: ['created_at:asc', 'text:desc']}
+      put :update, id: code.id, domain: update_params, format: :json
+      expect(response).to have_http_status(:success)
+      expect(assigns(:record).menu_ordering).to eq(update_params[:menu_ordering])
+    end
+
     it "prevents invalid updates" do
       travel = create(:domain, text: "Travel")
       update_params = {text: "Code"}

@@ -27,7 +27,7 @@ class Blog::V1::DomainsController < Blog::V1::BlogController
 
   def permitted_params
     params.require(:domain).permit(:text, :description, :subdomain, :active,
-                                    :menu_ordering)
+                                    menu_ordering: [])
   end
 
 end
