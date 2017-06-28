@@ -78,10 +78,10 @@ module Ordering
           val,order = m.split(':')
           order = order || 'asc'
           if !self.class.VALID_CHILD_ORDERING_ATTRIBUTES.include?(val)
-            errors.add(ordering_attribute.to_sym, "#{val} is not a valid menu ordering value")
+            errors.add(ordering_attribute.to_sym, "#{val} is not a valid #{self.class::ORDERING_CHILD} ordering value")
           end
           if !(order.downcase == 'asc' || order.downcase == 'desc')
-            errors.add(ordering_attribute.to_sym, "#{order} is not a valid menu ordering direction")
+            errors.add(ordering_attribute.to_sym, "#{order} is not a valid #{self.class::ORDERING_CHILD} ordering direction")
           end
         end
       end

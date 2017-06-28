@@ -42,12 +42,10 @@ RSpec.describe Blog::V1::TopicsController, type: :controller do
       order = [one.id, two.id]
       expect(assigns(:records).pluck('id')).to match(order)
     end
-
   end
 
   # Tests for SHOW route
   context "#show" do
-
     let!(:topic) { create(:topic) }
 
     # Before running a test do this
@@ -67,9 +65,8 @@ RSpec.describe Blog::V1::TopicsController, type: :controller do
 
   # Test for UPDATE route
   context "#update" do
-
     let!(:menu_group) { create(:menu_group) }
-    let!(:topic_a) { create(:topic_without_domain, text: 'Topic A', menu_group: menu_group) }
+    let!(:topic) { create(:topic, menu_group: menu_group) }
 
     before do
       sign_in
@@ -77,14 +74,22 @@ RSpec.describe Blog::V1::TopicsController, type: :controller do
 
     it "succeeds" do
       update_params = {description: "Important topic"}
-      put :update, id: topic_a.id, topic: update_params, format: :json
+      put :update, id: topic.id, topic: update_params, format: :json
       expect(response).to have_http_status(:success)
       expect(assigns(:record).description).to eq(update_params[:description])
     end
 
+    it "updates published_entry_ordering" do
+      update_params = {published_entry_ordering: ['created_at:asc']}
+      put :update, id: topic.id, topic: update_params, format: :json
+      puts "\n\n#{assigns(:record).errors.inspect}\n\n"
+      expect(response).to have_http_status(:success)
+      expect(assigns(:record).published_entry_ordering).to eq(update_params[:published_entry_ordering])
+    end
+
     it "prevents invalid updates" do
-      topic_b = create(:topic, text: 'Topic A')
-      update_params = {menu_group_id: menu_group.id, domain_id: menu_group.domain_id}
+      topic_b = create(:topic, text: topic.text)
+      update_params = {menu_group_id: menu_group.id}
       put :update, id: topic_b.id, topic: update_params, format: :json
       expect(response).to have_http_status(424)
     end
@@ -92,12 +97,13 @@ RSpec.describe Blog::V1::TopicsController, type: :controller do
 
   # Test for DESTROY route
   context "#destroy" do
-    let!(:topic) { create(:topic) }
+    let!(:topic_a) { create(:topic) }
+    let!(:topic_b) { create(:topic) }
     let!(:current) { Topic.count }
 
     before do
       sign_in
-      delete :destroy, id: topic.id, format: :json
+      delete :destroy, id: topic_a.id, format: :json
     end
 
     it "succeeds" do

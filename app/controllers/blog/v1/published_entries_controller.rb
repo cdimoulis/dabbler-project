@@ -32,7 +32,7 @@ class Blog::V1::PublishedEntriesController < Blog::V1::BlogController
 
   def permitted_params
     params.require(:published_entry).permit(:author_id, :domain_id, :entry_id,
-                                            {menu_group_published_entry_topics_attributes: [:id, :group_id, :topic_id, :published_entry_id]},
+                                            {published_entries_topics_attributes: [:topic_id, :published_entry_id, :order]},
                                             :image_url, :notes, :tags, :data, :type,
                                             :current, :removed).tap do |whitelist|
       whitelist[:data] = params[:published_entry][:data]

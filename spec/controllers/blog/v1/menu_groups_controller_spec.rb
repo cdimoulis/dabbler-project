@@ -4,8 +4,11 @@ RSpec.describe Blog::V1::MenuGroupsController, type: :controller do
 
   # tests for CREATE route
   context "#create" do
+    let!(:current_user) { sign_in }
+    # Need to act like the application controller set the current_user
+    # Clearance sign_in does not call controller hooks
     before do
-      sign_in
+      Thread.current[:user] = current_user
     end
 
     it 'errors - no data' do
@@ -18,28 +21,9 @@ RSpec.describe Blog::V1::MenuGroupsController, type: :controller do
       menu_group = attributes_for(:menu_group)
       post :create, menu_group: menu_group, format: :json
       expect(response).to have_http_status(:success)
+      expect(assigns(:record).creator_id).to eq(current_user.id)
       expect(MenuGroup.count).to eq(current+1)
     end
-
-  end
-
-  # Tests for SHOW route
-  context "#show" do
-    let!(:menu_group) { create(:menu_group, text: "Menu Group") }
-
-    # Before running a test do this
-    before do
-      get :show, id: menu_group.id, format: :json
-    end
-
-    it { is_expected.to respond_with(:success) }
-
-    it 'returns JSON' do
-      # look_like_json found in support/matchers/json_matchers.rb
-      expect(response.body).to look_like_json
-    end
-
-    it { expect(assigns(:record)).to eq(menu_group) }
   end
 
   # Tests for INDEX route
@@ -59,7 +43,25 @@ RSpec.describe Blog::V1::MenuGroupsController, type: :controller do
       order = [menu_group_a, menu_group_b]
       expect(assigns(:records).to_a).to match(order)
     end
+  end
 
+  # Tests for SHOW route
+  context "#show" do
+    let!(:menu_group) { create(:menu_group, text: "Menu Group") }
+
+    # Before running a test do this
+    before do
+      get :show, id: menu_group.id, format: :json
+    end
+
+    it { is_expected.to respond_with(:success) }
+
+    it 'returns JSON' do
+      # look_like_json found in support/matchers/json_matchers.rb
+      expect(response.body).to look_like_json
+    end
+
+    it { expect(assigns(:record)).to eq(menu_group) }
   end
 
   # Test for UPDATE route
@@ -95,13 +97,13 @@ RSpec.describe Blog::V1::MenuGroupsController, type: :controller do
 
   # Test for DESTROY route
   context "#destroy" do
-    let!(:travel) { create(:domain, text: "Travel") }
-    let!(:hotel) { create(:menu_group, text: 'Hotel Group', domain: travel) }
+    let!(:menu_group_a) { create(:menu_group) }
+    let!(:menu_group_b) { create(:menu_group) }
     let!(:current) { MenuGroup.count }
 
     before do
       sign_in
-      delete :destroy, id: hotel.id, format: :json
+      delete :destroy, id: menu_group_b.id, format: :json
     end
 
     it "succeeds" do

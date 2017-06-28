@@ -4,8 +4,11 @@ RSpec.describe Blog::V1::MenusController, type: :controller do
 
   # tests for CREATE route
   context "#create" do
+    let!(:current_user) { sign_in }
+    # Need to act like the application controller set the current_user
+    # Clearance sign_in does not call controller hooks
     before do
-      sign_in
+      Thread.current[:user] = current_user
     end
 
     it 'errors - no data' do
@@ -15,10 +18,30 @@ RSpec.describe Blog::V1::MenusController, type: :controller do
 
     it 'succeeds' do
       current = Menu.count
-      menu = attributes_for(:menu)
+      menu = attributes_for(:menu, creator: nil)
       post :create, menu: menu, format: :json
       expect(response).to have_http_status(:success)
+      expect(assigns(:record).creator_id).to eq(current_user.id)
       expect(Menu.count).to eq(current+1)
+    end
+  end
+
+  # Tests for INDEX route
+  context "#index" do
+    let!(:menu_a) { create(:menu) }
+    let!(:menu_b) { create(:menu) }
+
+    before do
+      get :index, format: :json
+    end
+
+    it { is_expected.to respond_with(:success) }
+
+    it 'returns JSON' do
+      # look_like_json found in support/matchers/json_matchers.rb
+      expect(response.body).to look_like_json
+      order = [menu_a, menu_b]
+      expect(assigns(:records).to_a).to match(order)
     end
   end
 
@@ -39,26 +62,6 @@ RSpec.describe Blog::V1::MenusController, type: :controller do
     end
 
     it { expect(assigns(:record)).to eq(menu) }
-  end
-
-  # Tests for INDEX route
-  context "#index" do
-    let!(:menu_a) { create(:menu) }
-    let!(:menu_b) { create(:menu) }
-
-    before do
-      get :index, format: :json
-    end
-
-    it { is_expected.to respond_with(:success) }
-
-    it 'returns JSON' do
-      # look_like_json found in support/matchers/json_matchers.rb
-      expect(response.body).to look_like_json
-      order = [menu_a, menu_b]
-      expect(assigns(:records).to_a).to match(order)
-    end
-
   end
 
   # Test for UPDATE route
@@ -85,7 +88,7 @@ RSpec.describe Blog::V1::MenusController, type: :controller do
 
     it "prevents invalid updates" do
       dup = create(:menu, domain: menu.domain)
-      update_params = {text: menu.text}
+      update_params = {menu_group_ordering: ['created_at:asc', 'text:downy']}
       put :update, id: dup.id, menu: update_params, format: :json
       expect(response).to have_http_status(424)
     end
