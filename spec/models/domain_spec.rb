@@ -65,7 +65,7 @@ RSpec.describe Domain do
 
     context 'ordering' do
       it 'fails invalid menu_ordering' do
-        domain = build(:domain, menu_ordering: ['text', 'order', 'oreo'])
+        domain = build(:domain, menu_ordering: ['text', 'order:downy'])
         expect(domain.valid?).to be_falsy
       end
     end

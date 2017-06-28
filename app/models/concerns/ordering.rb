@@ -75,9 +75,13 @@ module Ordering
       if attribute_present?(ordering_attribute.to_sym) and self.class.VALID_CHILD_ORDERING_ATTRIBUTES.present?
         # Loop and check that array
         self.send(ordering_attribute).each do |m|
-          val = m.split(':')[0]
+          val,order = m.split(':')
+          order = order || 'asc'
           if !self.class.VALID_CHILD_ORDERING_ATTRIBUTES.include?(val)
             errors.add(ordering_attribute.to_sym, "#{val} is not a valid menu ordering value")
+          end
+          if !(order.downcase == 'asc' || order.downcase == 'desc')
+            errors.add(ordering_attribute.to_sym, "#{order} is not a valid menu ordering direction")
           end
         end
       end
