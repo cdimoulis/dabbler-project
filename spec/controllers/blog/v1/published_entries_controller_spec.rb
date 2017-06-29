@@ -2,40 +2,127 @@ require 'rails_helper'
 
 RSpec.describe Blog::V1::PublishedEntriesController, type: :controller do
 
+  # tests for CREATE route
+  context "#create" do
+    before do
+      sign_in
+    end
+
+    it 'errors - no data' do
+      post :create
+      expect(response).to have_http_status(422)
+    end
+
+    it 'succeeds' do
+      current = PublishedEntry.count
+      published_entry = attributes_for(:published_entry)
+      post :create, published_entry: published_entry, format: :json
+      expect(response).to have_http_status(:success)
+      expect(PublishedEntry.count).to eq(current+1)
+    end
+  end
+
   # Tests for INDEX route
   context "#index" do
-    let!(:one) {create(:published_entry)}
-    let!(:two) {create(:published_entry)}
+    let!(:one) { create(:published_entry, published_at: (DateTime.now - 1.days).strftime, created_at: (DateTime.now - 8.days).strftime) }
+    let!(:two) { create(:published_entry, published_at: (DateTime.now - 2.days).strftime, created_at: (DateTime.now - 7.days).strftime) }
+    let!(:three) { create(:published_entry, published_at: (DateTime.now - 3.days).strftime, created_at: (DateTime.now - 6.days).strftime) }
+    let!(:four) { create(:published_entry, published_at: (DateTime.now - 4.days).strftime, created_at: (DateTime.now - 5.days).strftime) }
+    let!(:five) { create(:published_entry, published_at: (DateTime.now - 5.days).strftime, created_at: (DateTime.now - 4.days).strftime) }
+    let!(:six) { create(:published_entry, published_at: (DateTime.now - 6.days).strftime, created_at: (DateTime.now - 3.days).strftime) }
 
     it 'returns JSON' do
       get :index, format: :json
-      # look_like_json found in support/matchers/json_matchers.rb
       expect(response).to have_http_status(:success)
+      # look_like_json found in support/matchers/json_matchers.rb
       expect(response.body).to look_like_json
-      order = [one, two]
+      order = [one, two, three, four, five, six]
       expect(assigns(:records).to_a).to match(order)
     end
 
     it 'ignores removed' do
-      three = create(:published_entry, removed: true)
+      three.update_attribute('removed', true)
+      five.update_attribute('removed', true)
       get :index, format: :json
-      order = [one, two]
+      order = [one, two, four, six]
       expect(assigns(:records).to_a).to match(order)
     end
 
     it 'shows removed' do
       two.update_attribute('removed', true)
-      three = create(:published_entry, removed: true)
+      four.update_attribute('removed', true)
       get :index, removed: true, format: :json
-      order = [two, three]
+      order = [two, four]
       expect(assigns(:records).to_a).to match(order)
     end
 
+    it 'shows current' do
+      two.update_attribute('revised_published_entry_id', one.id)
+      four.update_attribute('revised_published_entry_id', three.id)
+      get :index, current: true, format: :json
+      order = [one, three, five, six]
+      expect(assigns(:records).to_a).to match(order)
+    end
+
+    it 'shows published' do
+      two.update_attribute('published_at', DateTime.now + 2.days)
+      four.update_attribute('published_at', DateTime.now + 1.minute)
+      get :index, published: true, format: :json
+      order = [one, three, five, six]
+      expect(assigns(:records).to_a).to match(order)
+    end
+
+    it 'shows unpublished' do
+      two.update_attribute('published_at', DateTime.now + 2.days)
+      four.update_attribute('published_at', DateTime.now + 1.minute)
+      get :index, unpublished: true, format: :json
+      order = [two, four]
+      expect(assigns(:records).to_a).to match(order)
+    end
+
+    it 'handles date range' do
+      # From only
+      get :index, from: 3.days.ago, format: :json
+      expect(assigns(:records).length).to eq(3)
+      order = [one, two, three]
+      expect(assigns(:records).to_a).to match(order)
+
+      # To only
+      get :index, to: 3.days.ago, format: :json
+      expect(assigns(:records).length).to eq(2)
+      order = [four, five]
+      expect(assigns(:records).to_a).to match(order)
+
+      # From only
+      get :index, from: 4.days.ago, to: 2.days.ago, format: :json
+      expect(assigns(:records).length).to eq(2)
+      order = [three, four]
+      expect(assigns(:records).to_a).to match(order)
+    end
+
+    it 'pages records' do
+      # count only
+      get :index, count: 2, format: :json
+      expect(assigns(:records).length).to eq(2)
+      order = [one, two]
+      expect(assigns(:records).to_a).to match(order)
+
+      # start only
+      get :index, start: 2, format: :json
+      expect(assigns(:records).length).to eq(3)
+      order = [three, four, five]
+      expect(assigns(:records).to_a).to match(order)
+
+      # count andd start
+      get :index, start: 1, count: 2, format: :json
+      expect(assigns(:records).length).to eq(2)
+      order = [two, three]
+      expect(assigns(:records).to_a).to match(order)
+    end
   end
 
   # Tests for SHOW route
   context "#show" do
-
     let!(:published_entry) { create(:published_entry) }
 
     # Before running a test do this
@@ -57,6 +144,4 @@ RSpec.describe Blog::V1::PublishedEntriesController, type: :controller do
 
     it { expect(assigns(:record)).to eq(published_entry) }
   end
-
-
 end

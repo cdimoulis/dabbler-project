@@ -3,7 +3,6 @@ class Blog::V1::PublishedEntriesController < Blog::V1::BlogController
   include DateRange
 
   before_action :require_login, only: [:create, :update, :destroy]
-  before_action :check_data, only: :update
   before_action :set_scopes, only: [:index]
 
   respond_to :json
@@ -33,19 +32,8 @@ class Blog::V1::PublishedEntriesController < Blog::V1::BlogController
   def permitted_params
     params.require(:published_entry).permit(:author_id, :domain_id, :entry_id,
                                             {published_entries_topics_attributes: [:topic_id, :published_entry_id, :order]},
-                                            :image_url, :notes, :tags, :data, :type,
-                                            :current, :removed).tap do |whitelist|
-      whitelist[:data] = params[:published_entry][:data]
-    end
-  end
-
-  # Check json data on update
-  def check_data
-    # When updating
-    if params.include?(:published_entry) and (!params[:published_entry].include?(:data) or params[:published_entry][:data].nil?)
-      record = PublishedEntry.where('id = ?', params[:id]).take
-      params[:published_entry][:data] = record.data
-    end
+                                            :image_url, :notes, :tags, :type,
+                                            :current, :removed)
   end
 
   def set_scopes

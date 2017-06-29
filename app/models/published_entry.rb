@@ -31,7 +31,7 @@ class PublishedEntry < ApplicationRecord
   has_many :published_entries_topics
   has_many :topics, through: :published_entries_topics
 
-  # accepts_nested_attributes_for :published_entries_topics
+  accepts_nested_attributes_for :published_entries_topics
 
   before_validation :set_author
   before_destroy :check_revision
@@ -79,10 +79,10 @@ class PublishedEntry < ApplicationRecord
   ###
 
   # Clear out old join models when setting new ones
-  # def published_entries_topics_attributes=(*args)
-  #   self.group_topic_published_entries.clear
-  #   super(*args)
-  # end
+  def published_entries_topics_attributes=(*args)
+    self.published_entries_topics.clear
+    super(*args)
+  end
 
 
   ###
