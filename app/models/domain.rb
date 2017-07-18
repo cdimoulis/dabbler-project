@@ -29,6 +29,7 @@ class Domain < ApplicationRecord
   validates :text, :subdomain, presence: true
   validate :only_active_text, :only_active_subdomain
 
+  # For Ordering concern
   ORDERING_CHILD = "Menu"
 
   protected

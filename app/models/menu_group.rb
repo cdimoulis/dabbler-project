@@ -27,6 +27,7 @@ class MenuGroup < ApplicationRecord
   validates :order, uniqueness: {scope: :menu_id, message: "MenuGroup order must be unique within a Menu"}, allow_blank: true
   validate :menu_exists
 
+  # For Ordering concern
   ORDERING_CHILD = "Topic"
 
   protected

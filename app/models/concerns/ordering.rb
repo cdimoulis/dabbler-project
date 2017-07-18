@@ -1,12 +1,39 @@
+#######
+# Ordering Concern
+#
+# Purpose: Allow a "parent" model to contain desired ordering if its has_many
+# "children".
+#
+# Requirements:
+# The "parent" model should have an attribute called
+# {child}_ordering. Replace {child} with the name of the model. This is a
+# priority array (first value take precedence). The values should be in the form
+# {attribute}:{direction=asc|dsc}. This states which attribute to order by and
+# whether to be ascending or descending. Each attribute must be an attribute of
+# the child model (verified in :valid_child_ordering). Values that are not
+# attributes of the child can be explicitly specified (more later).
+# The parent model will also contain a class variable ORDERING_CHILD which will
+# contain the name of the "child" model.
+# Optionally the parent can have the class variable ADDITIONAL_ORDER_ATTRIBUTES
+# populated with an array of strings that are additional accepted attributes for
+# the {child}_ordering attribute. However if this is done the child model will
+# need to write its own :ordering_scope to handle the additional attributes.
+#
+# Example:
+# A menu has_many pages (thus page belongs_to menu). The menu will have
+# an attribute called page_ordering and a class variable ORDERING_CHILD = "Page".
+########
+
 module Ordering
   extend ActiveSupport::Concern
 
   included do
-    validate :valid_child_ordering #, :valid_published_entry_ordering
+    validate :valid_child_ordering
 
     ####
     # Constants
     ####
+    # Setup a list of valid attributes for self.ORDERING_CHILD
     def self.VALID_CHILD_ORDERING_ATTRIBUTES
       if self.const_defined?(:ORDERING_CHILD)
         # Get the child model
@@ -58,7 +85,7 @@ module Ordering
   ####
   # Validations
   ####
-  # Menu Ordering values are valid
+  # Checks that Ordering values are valid
   def valid_child_ordering
     # If ORDERING_CHILD exists and is a class
     if self.class.const_defined?(:ORDERING_CHILD)

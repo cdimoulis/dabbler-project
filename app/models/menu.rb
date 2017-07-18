@@ -26,6 +26,7 @@ class Menu < ActiveRecord::Base
   validates :domain_id, presence: :true
   validates :order, uniqueness: {scope: :domain_id, message: "Menu order must be unique within a Domain"}, allow_blank: true
 
+  # For Ordering concern
   ORDERING_CHILD = "MenuGroup"
 
 end

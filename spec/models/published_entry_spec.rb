@@ -96,9 +96,10 @@ RSpec.describe PublishedEntry, type: :model do
   end
 
   context 'scope' do
-    let!(:a) { create(:published_entry, published_at: DateTime.now - 3.days) }
-    let!(:b) { create(:published_entry, published_at: DateTime.now - 2.days) }
-    let!(:c) { create(:published_entry, published_at: DateTime.now - 1.days) }
+    let!(:domain) { create(:domain) }
+    let!(:a) { create(:published_entry, published_at: DateTime.now - 3.days, domain: domain) }
+    let!(:b) { create(:published_entry, published_at: DateTime.now - 2.days, domain: domain) }
+    let!(:c) { create(:published_entry, published_at: DateTime.now - 1.days, domain: domain) }
 
     it 'only shows current' do
       new_pe = create(:published_entry, published_at: DateTime.now)
@@ -134,6 +135,24 @@ RSpec.describe PublishedEntry, type: :model do
       a.save
       order = [a]
       expect(PublishedEntry.not_published.order('published_at desc').to_a).to match(order)
+    end
+
+    it 'orders correctly with topic' do
+      topic = create(:topic_with_domain, domain: domain)
+      create(:published_entries_topic, topic: topic, published_entry: a, order: 1)
+      create(:published_entries_topic, topic: topic, published_entry: b, order: 2)
+      create(:published_entries_topic, topic: topic, published_entry: c, order: 3)
+      order = [c,b,a]
+      expect(PublishedEntry.ordering_scope(topic).to_a).to match(order)
+    end
+
+    it 'orders correctly via topic => published_entries_topic' do
+      topic = create(:topic_with_domain, published_entry_ordering: ["order:asc"], domain: domain)
+      create(:published_entries_topic, topic: topic, published_entry: a, order: 1)
+      create(:published_entries_topic, topic: topic, published_entry: b, order: 2)
+      create(:published_entries_topic, topic: topic, published_entry: c, order: 3)
+      order = [a,b,c]
+      expect(topic.published_entries.ordering_scope(topic).to_a).to match(order)
     end
   end
 

@@ -50,7 +50,7 @@ mg_1 = MenuGroup.where(text: 'MenuGroup 1', menu_id: ma.id).take
 mg_2 = MenuGroup.where(text: 'MenuGroup 2', menu_id: mb.id).take
 
 Topic.create [
-  {text: 'Topic 1', menu_group: mg_1, creator: user},
+  {text: 'Topic 1', menu_group: mg_1, creator: user, published_entry_ordering: ['order:asc']},
   {text: 'Topic 2', menu_group: mg_1, creator: user, order: 1},
   {text: 'Topic 3', menu_group: mg_1, creator: user, order: 2},
   {text: 'Topic 1', menu_group: mg_2, creator: user},
@@ -67,7 +67,7 @@ pe2 = PublishedEntry.create(domain: test_domain, entry: e2, notes: e2.text, crea
 pe3 = PublishedEntry.create(domain: test_domain, entry: e3, notes: e3.text, creator: user, published_at: DateTime.parse('2017-06-04').to_s, type: 'PublishedEntry')
 pe4 = PublishedEntry.create(domain: test_domain, entry: e4, notes: e4.text, creator: user, published_at: DateTime.parse('2017-06-03').to_s, type: 'PublishedEntry')
 
-topic = Topic.where(text: 'Topic 1').take
+topic = Topic.where(text: 'Topic 1', menu_group_id: mg_1.id).take
 
 PublishedEntriesTopic.create [
   {published_entry: pe1, topic: topic},

@@ -28,6 +28,15 @@ FactoryGirl.define do
       menu_group nil
       menu_group_id nil
     end
+
+    factory :topic_with_domain do
+      transient do
+        domain { create(:domain) }
+      end
+
+      menu { create(:menu, domain: domain) }
+      menu_group { create(:menu_group, menu: menu) }
+    end
   end
 
 end

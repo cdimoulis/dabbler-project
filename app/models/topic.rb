@@ -19,7 +19,7 @@ class Topic < ApplicationRecord
 
   belongs_to :menu_group
   belongs_to :creator, class_name: "User"
-  has_many :published_entries_topics
+  has_many :published_entries_topics, dependent: :destroy
   has_many :published_entries, through: :published_entries_topics
   has_one :menu, through: :menu_group
   has_one :domain, through: :menu
@@ -29,6 +29,7 @@ class Topic < ApplicationRecord
   validates :order, uniqueness: {scope: :menu_group_id, message: "Topic order must be unique within a MenuGroup"}, allow_blank: true
   validate :menu_group_exists
 
+  # For Ordering concern
   ORDERING_CHILD = "PublishedEntry"
   ADDITIONAL_ORDER_ATTRIBUTES = ["order"]
 
