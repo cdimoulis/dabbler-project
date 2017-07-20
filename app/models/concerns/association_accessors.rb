@@ -1,3 +1,11 @@
+#####
+# AssociationAccessors Concern
+#
+# Purpose: To allow for the models to access and alter the attributes of their
+# associations.
+#
+# Requirements:
+# To be able to
 module AssociationAccessors
   extend ActiveSupport::Concern
 
@@ -41,7 +49,7 @@ module AssociationAccessors
             end
             instance_variable_get "@#{attribute}"
           end
-          
+
           # Define setter
           self.send :define_singleton_method, "#{attribute}=" do |arg|
             # Get the association record
