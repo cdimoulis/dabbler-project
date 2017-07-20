@@ -84,6 +84,11 @@ class PublishedEntry < ApplicationRecord
     super(*args)
   end
 
+  # For date_range concern
+  def self.default_date_attribute
+    "published_at"
+  end
+
 
   ###
   # For AssociationAccessors concern

@@ -53,7 +53,7 @@ class Blog::V1::PublishedEntriesController < Blog::V1::BlogController
     if params[:removed]
       @scopes.push({scope: :removed})
     else
-      @scopes.push({scope: :non_removed})
+      @scopes.push({scope: :not_removed})
     end
   end
 

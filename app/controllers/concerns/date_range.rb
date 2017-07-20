@@ -10,7 +10,6 @@ module DateRange
   def dateRangeRecords
     from = params.has_key?(:from) ? params[:from] : nil
     to = params.has_key?(:to) ? params[:to] : nil
-
     # Default attribute for paging is created_at
     date_attribute = 'created_at'
 
@@ -23,7 +22,7 @@ module DateRange
     elsif @resource.respond_to?(:default_date_attribute) && !@resource.default_date_attribute.nil?
       date_attribute = @resource.default_date_attribute
     end
-    
+
     # Starting date, no ending date
     if to.nil? and !from.nil?
       @records = @records.where("#{date_attribute} >= ?", from)
