@@ -6,6 +6,11 @@ RSpec.describe Blog::V1::DomainsController do
   context '#single_index' do
     let!(:domain) { create(:domain) }
 
+    it 'returns correct domain for menu' do
+      menu = create(:menu, domain: domain)
+      get blog_v1_menu_domain_path(menu_id: menu.id), format: :json
+      expect(assigns(:record)).to eq(domain)
+    end
     # it 'returns correct domain for menu_group' do
     #   menu_group = create(:menu_group, domain: domain)
     #   get blog_v1_menu_group_domain_path(menu_group_id: menu_group.id), format: :json

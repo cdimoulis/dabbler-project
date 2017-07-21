@@ -187,9 +187,9 @@ module DefaultApiActions
           @errors[:msg] = "#{resource_name.classify}: Invalid Parent: #{parent_name} is not associated with #{resource_name}."
         end
       else
-        puts "\n\n#{resource_name.classify}: Invalid Parent: #{parent_name} of id #{parent_id} does not exist.\n\n"
-        Rails.logger.debug "\n\n#{resource_name.classify}: Invalid Parent: #{parent_name} of id #{parent_id} does not exist.\n\n"
-        @errors[:msg] = "#{resource_name.classify}: Invalid Parent: #{parent_name} of id #{parent_id} does not exist."
+        puts "\n\n#{resource_name.classify}: Invalid Parent: #{parent_name} of id ''#{parent_id}'' does not exist.\n\n"
+        Rails.logger.debug "\n\n#{resource_name.classify}: Invalid Parent: #{parent_name} of id '#{parent_id}' does not exist.\n\n"
+        @errors[:msg] = "#{resource_name.classify}: Invalid Parent: #{parent_name} of id '#{parent_id}' does not exist."
       end
     rescue NameError => e
       puts "\n\n#{resource_name.classify}: Invalid parent: #{parent_name}", error: "#{e}\n\n"
