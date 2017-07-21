@@ -47,5 +47,4 @@ RSpec.describe Blog::V1::MenusController do
       expect(JSON.parse(response.body)).to eq(Menu.VALID_CHILD_ORDERING_ATTRIBUTES)
     end
   end
-
 end

@@ -44,12 +44,22 @@ module Ordering
           return
         end
         # Valid attributes for ordering
-        parent_id_ref = "#{self.name.underscore}_id"
-        if self.const_defined?(:ADDITIONAL_ORDER_ATTRIBUTES)
-          return child_resource.column_names - ['id', parent_id_ref] + self::ADDITIONAL_ORDER_ATTRIBUTES
-        else
-          return child_resource.column_names - ['id', parent_id_ref]
+        # Attributes to remove
+        remove_attrs = ['id']
+        # Add {parent}_id attribute to remove_attr list
+        parent_id_attr = "#{self.name.underscore}_id"
+        remove_attrs += [parent_id_attr]
+        # Add {child}_ordering attribute to remove_att list
+        if child_resource.const_defined?(:ORDERING_CHILD)
+          ordering_attr = "#{child_resource::ORDERING_CHILD.underscore}_ordering"
+          remove_attrs += [ordering_attr]
         end
+        valid_attrs = child_resource.column_names - remove_attrs
+        if self.const_defined?(:ADDITIONAL_ORDER_ATTRIBUTES)
+          valid_attrs += self::ADDITIONAL_ORDER_ATTRIBUTES
+        end
+
+        return valid_attrs
       end
     end
 
