@@ -44,10 +44,11 @@ module Ordering
           return
         end
         # Valid attributes for ordering
+        parent_id_ref = "#{self.name.underscore}_id"
         if self.const_defined?(:ADDITIONAL_ORDER_ATTRIBUTES)
-          return child_resource.column_names - ['id'] + self::ADDITIONAL_ORDER_ATTRIBUTES
+          return child_resource.column_names - ['id', parent_id_ref] + self::ADDITIONAL_ORDER_ATTRIBUTES
         else
-          return child_resource.column_names - ['id']
+          return child_resource.column_names - ['id', parent_id_ref]
         end
       end
     end

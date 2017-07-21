@@ -35,15 +35,16 @@ Rails.application.routes.draw do
         # resources :topics, only: :index, parent: :featured_entries
       end
 
-      resources :menus, except: exc_new_edit, constraints: uuid_constraints do
-        # resources :menu_groups, only: :index, parent: :menus
-      end
-
       resources :menu_groups, except: exc_new_edit, constraints: uuid_constraints do
         # resource :domain, only: :show, action: 'single_index', parent: :menu_groups
         # resources :featured_entries, only: :index, parent: :menu_groups
         # resources :published_entries, only: :index, parent: :menu_groups
         # resources :topics, except: exc_new_edit + [:update], parent: :menu_groups
+      end
+
+      resources :menus, except: exc_new_edit, constraints: uuid_constraints do
+        resources :child_orderings, only: :index, to: 'menus#child_orderings'
+        # resources :menu_groups, only: :index, parent: :menus
       end
 
       resources :people, except: exc_new_edit, constraints: uuid_constraints
