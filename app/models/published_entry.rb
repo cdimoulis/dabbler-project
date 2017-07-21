@@ -31,8 +31,6 @@ class PublishedEntry < ApplicationRecord
   has_many :published_entries_topics, dependent: :destroy
   has_many :topics, through: :published_entries_topics
 
-  accepts_nested_attributes_for :published_entries_topics
-
   before_validation :set_author
   before_destroy :check_revision
   after_create :lock_entry
@@ -79,10 +77,11 @@ class PublishedEntry < ApplicationRecord
   ###
 
   # Clear out old join models when setting new ones
-  def published_entries_topics_attributes=(*args)
-    self.published_entries_topics.clear
-    super(*args)
-  end
+  # def published_entries_topics=(*args)
+  #   puts "\n\nargs #{args}\n\n"
+  #   self.published_entries_topics.clear
+  #   super(*args)
+  # end
 
   # For date_range concern
   def self.default_date_attribute

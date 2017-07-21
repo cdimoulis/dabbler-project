@@ -152,7 +152,6 @@ RSpec.describe Blog::V1::FeaturedEntriesController, type: :controller do
       sign_in
     end
 
-
     let!(:featured_entry) { create(:featured_entry) }
 
     it "succeeds" do

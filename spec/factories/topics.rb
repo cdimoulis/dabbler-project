@@ -31,7 +31,8 @@ FactoryGirl.define do
 
     factory :topic_with_domain do
       transient do
-        domain { create(:domain) }
+        domain_id nil
+        domain { domain_id.present? ? Domain.where("id = ?", domain_id).take : create(:domain) }
       end
 
       menu { create(:menu, domain: domain) }

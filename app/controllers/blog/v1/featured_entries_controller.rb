@@ -31,7 +31,6 @@ class Blog::V1::FeaturedEntriesController < Blog::V1::BlogController
 
   def permitted_params
     params.require(:featured_entry).permit(:author_id, :domain_id, :entry_id,
-                                          {published_entries_topics_attributes: [:topic_id, :published_entry_id, :order]},
                                           :image_url, :notes, :tags, :published_at,
                                           :current, :removed)
   end

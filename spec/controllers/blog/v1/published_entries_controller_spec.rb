@@ -144,4 +144,43 @@ RSpec.describe Blog::V1::PublishedEntriesController, type: :controller do
 
     it { expect(assigns(:record)).to eq(published_entry) }
   end
+
+  # Test for UPDATE route
+  context "#update" do
+    before do
+      sign_in
+    end
+
+    let!(:published_entry) { create(:published_entry) }
+
+    it "succeeds" do
+      feat_entry = create(:published_entry, published_at: (DateTime.now - 1.days).strftime)
+
+      update_params = {published_at: (DateTime.now - 2.days).strftime}
+      put :update, id: published_entry.id, published_entry: update_params, format: :json
+      expect(response).to have_http_status(:success)
+      expect(assigns(:record).published_at).to eq(update_params[:published_at])
+
+      get :index, format: :json
+      order = [feat_entry.id, published_entry.id]
+      expect(assigns(:records).pluck('id')).to match(order)
+    end
+
+  end
+
+  # Test for DESTROY route
+  context "#destroy" do
+    let!(:published_entry) { create(:published_entry) }
+
+    before do
+      sign_in
+    end
+
+    it "succeeds" do
+      delete :destroy, id: published_entry.id, format: :json
+      expect(response).to have_http_status(:success)
+      expect(assigns(:record).id).to eq(published_entry.id)
+      expect(assigns(:record).removed).to be_truthy
+    end
+  end
 end
