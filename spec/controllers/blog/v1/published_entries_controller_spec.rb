@@ -31,7 +31,7 @@ RSpec.describe Blog::V1::PublishedEntriesController, type: :controller do
     let!(:five) { create(:published_entry, published_at: (DateTime.now.end_of_day - 5.days).strftime, created_at: (DateTime.now.end_of_day - 4.days).strftime) }
     let!(:six) { create(:published_entry, published_at: (DateTime.now.end_of_day - 6.days).strftime, created_at: (DateTime.now.end_of_day - 3.days).strftime) }
 
-    it 'returns JSON' do
+    it 'returns correct records' do
       get :index, format: :json
       expect(response).to have_http_status(:success)
       # look_like_json found in support/matchers/json_matchers.rb

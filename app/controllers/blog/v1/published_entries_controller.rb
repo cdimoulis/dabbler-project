@@ -32,8 +32,8 @@ class Blog::V1::PublishedEntriesController < Blog::V1::BlogController
   def permitted_params
     params.require(:published_entry).permit(:author_id, :domain_id, :entry_id,
                                             {published_entries_topics_attributes: [:topic_id, :published_entry_id, :order]},
-                                            :image_url, :notes, :tags, :type,
-                                            :current, :removed)
+                                            :image_url, :notes, :tags, :published_at,
+                                            :type, :current, :removed)
   end
 
   def set_scopes
@@ -56,5 +56,4 @@ class Blog::V1::PublishedEntriesController < Blog::V1::BlogController
       @scopes.push({scope: :not_removed})
     end
   end
-
 end

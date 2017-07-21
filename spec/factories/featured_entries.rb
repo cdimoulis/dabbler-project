@@ -9,7 +9,6 @@
 #  image_url                  :string
 #  notes                      :text
 #  tags                       :text             is an Array
-#  order                      :integer
 #  published_at               :datetime
 #  type                       :string
 #  revised_published_entry_id :uuid
@@ -27,7 +26,7 @@ FactoryGirl.define do
     author_id { author.present? ? author.id : nil }
     domain { create(:domain) }
     domain_id { domain.present? ? domain.id : nil }
-    notes "Notes for entry"
+    notes { entry.present? ? entry.text : "This entry has some notes" }
     tags ['tag_a', 'tag_b']
     published_at DateTime.now
     creator { entry.present? ? entry.author : nil }

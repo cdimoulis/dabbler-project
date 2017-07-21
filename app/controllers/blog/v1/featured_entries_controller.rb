@@ -3,7 +3,6 @@ class Blog::V1::FeaturedEntriesController < Blog::V1::BlogController
   include DateRange
 
   before_action :require_login, only: [:create, :update, :destroy]
-  before_action :check_data, only: [:create, :update]
   before_action :set_scopes, only: [:index]
 
   respond_to :json
@@ -32,20 +31,9 @@ class Blog::V1::FeaturedEntriesController < Blog::V1::BlogController
 
   def permitted_params
     params.require(:featured_entry).permit(:author_id, :domain_id, :entry_id,
-                                          :image_url, :notes, :tags, :data,
-                                          :current, :removed).tap do |whitelist|
-      whitelist[:data] = params[:featured_entry][:data]
-    end
-  end
-
-  # Check json data on update
-  def check_data
-    # When updating add existing data attribute to params if params data attribute is nil
-    # This is to preserve data
-    if params.include?(:featured_entry) and (!params[:featured_entry].include?(:data) or params[:featured_entry][:data].nil?)
-      record = FeaturedEntry.where('id = ?', params[:id]).take
-      params[:featured_entry][:data] = record.data
-    end
+                                          {published_entries_topics_attributes: [:topic_id, :published_entry_id, :order]},
+                                          :image_url, :notes, :tags, :published_at,
+                                          :current, :removed)
   end
 
   def set_scopes
@@ -54,10 +42,18 @@ class Blog::V1::FeaturedEntriesController < Blog::V1::BlogController
       @scopes.push({scope: :current})
     end
 
+    if params[:published]
+      @scopes.push({scope: :published})
+    end
+
+    if params[:not_published]
+      @scopes.push({scope: :not_published})
+    end
+
     if params[:removed]
       @scopes.push({scope: :removed})
     else
-      @scopes.push({scope: :non_removed})
+      @scopes.push({scope: :not_removed})
     end
   end
 end
