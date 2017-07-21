@@ -213,8 +213,8 @@ module DefaultApiActions
     resource_name, resource_id = get_resources()
     # The class of the model being created
     @resource = resource_name.classify.constantize
-
     @record = @resource.where("id = ?", resource_id).take
+
     if @record.nil?
       render :json => {}, :status => 404
     else
@@ -247,10 +247,14 @@ module DefaultApiActions
     @resource = resource_name.classify.constantize
 
     @record = @resource.where("id = ?", resource_id).take
-    if !@record.nil? and @record.destroy
-      respond_with :blog, :v1, @record
+    if @record.present?
+      if @record.destroy
+        respond_with :blog, :v1, @record
+      else
+        render :json => {errors: @record.errors}, :status => 424
+      end
     else
-      render :json => {errors: @record.errors}, :status => 424
+      render :json => {errors: {msg: "Record not found"}}, :status => 404
     end
   end
   ###

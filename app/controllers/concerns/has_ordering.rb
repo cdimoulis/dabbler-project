@@ -6,6 +6,26 @@ module HasOrdering
     before_action :set_ordering_scopes, only: [:index]
   end
 
+  ###
+  # Actions
+  ###
+  def child_orderings
+    # resource_name: model being created
+    # resource_id: id of model being created
+    resource_name, resource_id = get_resources()
+    # The class of the model being created
+    @resource = resource_name.classify.constantize
+
+    if @resource.respond_to?(:VALID_CHILD_ORDERING_ATTRIBUTES)
+      respond_with :blog, :v1, @resource.VALID_CHILD_ORDERING_ATTRIBUTES
+    else
+      render :json => {errors: {msg: "Valid Ordering not found"}}, :status => 404
+    end
+  end
+  ###
+  # End Actions
+  ###
+
   # set the ordering scope found in the Ordering model concern
   def set_ordering_scopes
     # get_resources() from default_api_actions concern

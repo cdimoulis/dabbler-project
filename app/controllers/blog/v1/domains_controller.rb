@@ -1,4 +1,6 @@
 class Blog::V1::DomainsController < Blog::V1::BlogController
+  include HasOrdering
+  
   before_action :require_login, only: [:create, :update, :destroy]
 
   respond_to :json
