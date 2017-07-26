@@ -11,12 +11,13 @@ RSpec.describe Blog::V1::DomainsController do
       get blog_v1_menu_domain_path(menu_id: menu.id), format: :json
       expect(assigns(:record)).to eq(domain)
     end
-    # it 'returns correct domain for menu_group' do
-    #   menu_group = create(:menu_group, domain: domain)
-    #   get blog_v1_menu_group_domain_path(menu_group_id: menu_group.id), format: :json
-    #   expect(assigns(:record)).to eq(domain)
-    # end
-    #
+
+    it 'returns correct domain for menu_group' do
+      menu_group = create(:menu_group_with_domain, domain: domain)
+      get blog_v1_menu_group_domain_path(menu_group_id: menu_group.id), format: :json
+      expect(assigns(:record)).to eq(domain)
+    end
+    
     # it 'returns correct domain for topic' do
     #   topic = create(:topic, domain: domain)
     #   get blog_v1_topic_domain_path(topic_id: topic.id), format: :json

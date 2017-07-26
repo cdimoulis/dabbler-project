@@ -29,13 +29,13 @@ FactoryGirl.define do
     factory :domain_with_menu_groups do
       # Set the number of menu groups
       transient do
-        groups_count 5
+        menu_groups_count 5
       end
 
       after(:create) do |domain, evaluator|
         # Domain Group names must be different within same domain
-        (1..evaluator.groups_count).step(1) do |i|
-          create(:menu_group, text: "#{domain.text} #{i} Menu Group", domain: domain)
+        (1..evaluator.menu_groups_count).step(1) do |i|
+          create(:menu_group_with_domain, domain: domain)
         end
       end
     end

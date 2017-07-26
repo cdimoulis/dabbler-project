@@ -42,7 +42,7 @@ RSpec.describe PublishedEntry, type: :model do
 
     it "access topics" do
       published_entry = create(:published_entry)
-      menu_group = create(:menu_group, menu: create(:menu, domain: published_entry.domain))
+      menu_group = create(:menu_group_with_domain, domain: published_entry.domain)
       topic_a = create(:topic, menu_group: menu_group)
       topic_b = create(:topic, menu_group: menu_group)
       topic_c = create(:topic, menu_group: menu_group)
@@ -113,7 +113,7 @@ RSpec.describe PublishedEntry, type: :model do
       a.removed = true
       a.save
       order = [c,b]
-      expect(PublishedEntry.non_removed.order('published_at desc').to_a).to match(order)
+      expect(PublishedEntry.not_removed.order('published_at desc').to_a).to match(order)
     end
 
     it 'only shows removed' do

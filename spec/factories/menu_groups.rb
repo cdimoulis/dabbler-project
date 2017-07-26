@@ -23,6 +23,15 @@ FactoryGirl.define do
     order { MenuGroup.count }
     creator { create(:user) }
     creator_id { creator.present? ? creator.id : nil}
+
+    factory :menu_group_with_domain do
+      transient do
+        domain_id nil
+        domain { domain_id.present? ? Domain.where("id = ?", domain_id).take : create(:domain) }
+      end
+
+      menu {create(:menu, domain: domain) }
+    end
   end
 
 end
