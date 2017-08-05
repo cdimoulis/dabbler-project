@@ -15,7 +15,7 @@ RSpec.describe Blog::V1::FeaturedEntriesController do
     end
 
     it 'creates via entries' do
-      entry = create(:entry_with_creator)
+      entry = create(:entry)
       featured_entry = attributes_for(:featured_entry, entry: nil, author: nil, creator: admin)
       post blog_v1_entry_featured_entries_path(entry_id: entry.id), featured_entry: featured_entry, format: :json
       expect(response).to have_http_status(:success)
@@ -26,7 +26,7 @@ RSpec.describe Blog::V1::FeaturedEntriesController do
   context '#index' do
 
     it 'entry returns correct featured entries' do
-      entry = create(:entry_with_creator)
+      entry = create(:entry)
       featured_entry_a = create(:featured_entry, entry: entry, data: {published_at: (DateTime.now - 1.days).strftime})
       featured_entry_b = create(:featured_entry, entry: entry, data: {published_at: (DateTime.now - 2.days).strftime})
       featured_entry_c = create(:featured_entry, data: {published_at: (DateTime.now - 1.days).strftime})

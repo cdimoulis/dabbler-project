@@ -9,8 +9,8 @@
 #  image_url                  :string
 #  notes                      :text
 #  tags                       :text             is an Array
+#  published_at               :datetime
 #  type                       :string
-#  data                       :json
 #  revised_published_entry_id :uuid
 #  removed                    :boolean          default(FALSE)
 #  creator_id                 :uuid             not null
@@ -24,12 +24,14 @@ RSpec.describe PublishedEntry, type: :model do
 
   context 'associations' do
     it { is_expected.to belong_to(:author) }
+    it { is_expected.to belong_to(:creator) }
     it { is_expected.to belong_to(:domain) }
     it { is_expected.to belong_to(:entry) }
-    it { expect(PublishedEntry.reflect_on_association(:groups).macro).to eq(:has_many)}
-    it { expect(PublishedEntry.reflect_on_association(:groups).options[:through]).to eq(:group_topic_published_entries)}
+    it { is_expected.to belong_to(:revised_published_entry) }
+    it { is_expected.to have_one(:previous_published_entry) }
+    it { is_expected.to have_many(:published_entries_topics) }
     it { expect(PublishedEntry.reflect_on_association(:topics).macro).to eq(:has_many)}
-    it { expect(PublishedEntry.reflect_on_association(:topics).options[:through]).to eq(:group_topic_published_entries)}
+    it { expect(PublishedEntry.reflect_on_association(:topics).options[:through]).to eq(:published_entries_topics)}
 
     it "accesses entry text" do
       published_entry = create(:published_entry)
@@ -40,27 +42,15 @@ RSpec.describe PublishedEntry, type: :model do
 
     it "access topics" do
       published_entry = create(:published_entry)
-      topic_a = create(:topic, domain: published_entry.domain)
-      topic_b = create(:topic, domain: published_entry.domain)
-      topic_c = create(:topic, domain: published_entry.domain)
+      menu_group = create(:menu_group_with_domain, domain: published_entry.domain)
+      topic_a = create(:topic, menu_group: menu_group)
+      topic_b = create(:topic, menu_group: menu_group)
+      topic_c = create(:topic, menu_group: menu_group)
       published_entry.topics << topic_b
       published_entry.topics << topic_c
 
       expect(published_entry.topics).to match([topic_b, topic_c])
-      join = GroupTopicPublishedEntry.where(published_entry_id: published_entry.id)
-      expect(join.length).to eq(2)
-    end
-
-    it "access groups" do
-      published_entry = create(:published_entry)
-      group_a = create(:featured_group, domain: published_entry.domain)
-      group_b = create(:featured_group, domain: published_entry.domain)
-      group_c = create(:tutorial_group, domain: published_entry.domain)
-      published_entry.groups << group_b
-      published_entry.groups << group_c
-
-      expect(published_entry.groups).to match([group_b, group_c])
-      join = GroupTopicPublishedEntry.where(published_entry_id: published_entry.id)
+      join = PublishedEntriesTopic.where(published_entry_id: published_entry.id)
       expect(join.length).to eq(2)
     end
 
@@ -99,14 +89,76 @@ RSpec.describe PublishedEntry, type: :model do
     end
 
     it 'requires revision type match' do
-      tutorial_entry = build(:tutorial_entry, revised_published_entry: published_entry)
+      featured_entry = create(:featured_entry)
+      tutorial_entry = build(:published_entry, revised_published_entry_id: featured_entry.id)
       expect(tutorial_entry.valid?).to be_falsy
+    end
+  end
+
+  context 'scope' do
+    let!(:domain) { create(:domain) }
+    let!(:a) { create(:published_entry, published_at: DateTime.now - 3.days, domain: domain) }
+    let!(:b) { create(:published_entry, published_at: DateTime.now - 2.days, domain: domain) }
+    let!(:c) { create(:published_entry, published_at: DateTime.now - 1.days, domain: domain) }
+
+    it 'only shows current' do
+      new_pe = create(:published_entry, published_at: DateTime.now)
+      a.revised_published_entry = new_pe
+      a.save
+      order = [new_pe,c,b]
+      expect(PublishedEntry.current.order('published_at desc').to_a).to match(order)
+    end
+
+    it 'only shows non removed' do
+      a.removed = true
+      a.save
+      order = [c,b]
+      expect(PublishedEntry.not_removed.order('published_at desc').to_a).to match(order)
+    end
+
+    it 'only shows removed' do
+      a.removed = true
+      a.save
+      order = [a]
+      expect(PublishedEntry.removed.order('published_at desc').to_a).to match(order)
+    end
+
+    it 'only shows published' do
+      a.published_at = (DateTime.now + 2.days).to_s
+      a.save
+      order = [c,b]
+      expect(PublishedEntry.published.order('published_at desc').to_a).to match(order)
+    end
+
+    it 'only shows not published' do
+      a.published_at = (DateTime.now + 2.days).to_s
+      a.save
+      order = [a]
+      expect(PublishedEntry.not_published.order('published_at desc').to_a).to match(order)
+    end
+
+    it 'orders correctly with topic' do
+      topic = create(:topic_with_domain, domain: domain)
+      create(:published_entries_topic, topic: topic, published_entry: a, order: 1)
+      create(:published_entries_topic, topic: topic, published_entry: b, order: 2)
+      create(:published_entries_topic, topic: topic, published_entry: c, order: 3)
+      order = [c,b,a]
+      expect(PublishedEntry.ordering_scope(topic).to_a).to match(order)
+    end
+
+    it 'orders correctly via topic => published_entries_topic' do
+      topic = create(:topic_with_domain, published_entry_ordering: ["order:asc"], domain: domain)
+      create(:published_entries_topic, topic: topic, published_entry: a, order: 1)
+      create(:published_entries_topic, topic: topic, published_entry: b, order: 2)
+      create(:published_entries_topic, topic: topic, published_entry: c, order: 3)
+      order = [a,b,c]
+      expect(topic.published_entries.ordering_scope(topic).to_a).to match(order)
     end
   end
 
   context 'save' do
     it 'locks entry on creation' do
-      entry = create(:entry_with_creator)
+      entry = create(:entry)
       expect(entry.locked).to be_falsy
       published_entry = create(:published_entry, entry: entry)
       entry.reload

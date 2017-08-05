@@ -13,84 +13,65 @@ Rails.application.routes.draw do
   namespace :blog do
     namespace :v1 do
       resources :domains, except: exc_new_edit + [:destroy], constraints: uuid_constraints do
-        resources :groups, except: exc_new_edit, parent: :domains
-        resources :featured_groups, except: exc_new_edit, parent: :domains
-        resources :tutorial_groups, except: exc_new_edit, parent: :domains
-        resources :topics, except: exc_new_edit + exc_create_update, parent: :domains
-        resources :published_entries, only: :index, parent: :domains
-        resources :featured_entries, except: exc_new_edit, parent: :domains
-        resources :tutorial_entries, except: exc_new_edit, parent: :domains
+        resources :child_orderings, only: :index, to: 'domains#child_orderings'
+        # resources :featured_entries, except: exc_new_edit, parent: :domains
+        resources :menu_groups, only: :index, parent: :domains
+        resources :menus, only: [:create, :index], parent: :domain
+        # resources :published_entries, only: :index, parent: :domains
+        # resources :topics, only: :index, parent: :domains
       end
 
       resources :entries, except: exc_new_edit, constraints: uuid_constraints do
-        resource :author, to: 'users#author', only: :show, parent: :entries
-        resources :contributors, to: 'users#contributors', only: :index, parent: :entries
-        resources :published_entries, only: [:create, :index], parent: :entries
-        resources :featured_entries, only: [:create, :index], parent: :entries
-        resources :tutorial_entries, only: [:create, :index], parent: :entries
+        # resource :author, to: 'users#author', only: :show, parent: :entries
+        # resources :contributors, to: 'users#contributors', only: :index, parent: :entries
+        # resources :featured_entries, only: [:create, :index], parent: :entries
+        # resources :published_entries, only: [:create, :index], parent: :entries
       end
 
       resources :featured_entries, except: exc_new_edit, constraints: uuid_constraints do
-        resource :domain, only: :show, action: 'single_index', parent: :featured_entries
-        resource :entry, only: :show, action: 'single_index', parent: :featured_entries
-        resources :featured_groups, only: :index, parent: :featured_entries
-        resources :topics, only: :index, parent: :featured_entries
+        # resource :domain, only: :show, action: 'single_index', parent: :featured_entries
+        # resource :entry, only: :show, action: 'single_index', parent: :featured_entries
+        # resources :menu_groups, only: :index, parent: :featured_entries
+        # resources :topics, only: :index, parent: :featured_entries
       end
 
-      resources :featured_groups, except: exc_new_edit, constraints: uuid_constraints do
-        resource :domain, only: :show, action: 'single_index', parent: :featured_groups
-        resources :topics, except: exc_new_edit + [:update], parent: :featured_groups
-        resources :featured_entries, only: :index, parent: :featured_groups
+      resources :menu_groups, except: exc_new_edit, constraints: uuid_constraints do
+        resources :child_orderings, only: :index, to: 'menu_groups#child_orderings'
+        resource :domain, only: :show, action: 'single_index', parent: :menu_groups
+        # resources :featured_entries, only: :index, parent: :menu_groups
+        # resources :published_entries, only: :index, parent: :menu_groups
+        # resources :topics, except: exc_new_edit + [:update], parent: :menu_groups
       end
 
-      # We will not create a group without it being DomainGroup or TutorialGroup
-      resources :groups, except: exc_new_edit + [:create], constraints: uuid_constraints do
-        resource :domain, only: :show, action: 'single_index', parent: :groups
-        resources :topics, except: exc_new_edit + [:update], parent: :groups
-        resources :published_entries, only: :index, parent: :groups
-        resources :featured_entries, only: :index, parent: :groups
-        resources :tutorial_entries, only: :index, parent: :groups
+      resources :menus, except: exc_new_edit, constraints: uuid_constraints do
+        resources :child_orderings, only: :index, to: 'menus#child_orderings'
+        resource :domain, only: :show, action: 'single_index', parent: :menus
+        # resources :menu_groups, only: :index, parent: :menus
       end
 
       resources :people, except: exc_new_edit, constraints: uuid_constraints
 
       # Only index and show.
       # Create, update, destroy done through associated FeaturedEntry or TutorialEntry
-      resources :published_entries, except: exc_new_edit + exc_create_update + [:destroy], constraints: uuid_constraints do
-        resource :domain, only: :show, action: 'single_index', parent: :published_entries
-        resource :entry, only: :show, action: 'single_index', parent: :published_entries
-        resources :groups, only: :index, parent: :published_entries
-        resources :topics, only: :index, parent: :published_entries
+      resources :published_entries, except: exc_new_edit, constraints: uuid_constraints do
+        # resource :domain, only: :show, action: 'single_index', parent: :published_entries
+        # resource :entry, only: :show, action: 'single_index', parent: :published_entries
+        # resources :menu_groups, only: :index, parent: :published_entries
+        # resources :topics, only: :index, parent: :published_entries
       end
 
       resources :topics, except: exc_new_edit, constraints: uuid_constraints do
-        resource :domain, only: :show, action: 'single_index', parent: :topics
-        resource :group, only: :show, action: 'single_index', parent: :topics
-        resource :featured_group, only: :show, action: 'single_index', parent: :topics
-        resource :tutorial_group, only: :show, action: 'single_index', parent: :topics
-        resources :published_entries, only: :index, parent: :topics
-        resources :featured_entries, only: :index, parent: :topics
-        resources :tutorial_entries, only: :index, parent: :topics
-      end
-
-      resources :tutorial_entries, except: exc_new_edit, constraints: uuid_constraints do
-        resource :domain, only: :show, action: 'single_index', parent: :tutorial_entries
-        resource :entry, only: :show, action: 'single_index', parent: :tutorial_entries
-        resources :tutorial_groups, only: :index, parent: :tutorial_entries
-        resources :topics, only: :index, parent: :tutorial_entries
-      end
-
-      resources :tutorial_groups, except: exc_new_edit, constraints: uuid_constraints do
-        resource :domain, only: :show, action: 'single_index', parent: :tutorial_groups
-        resources :topics, except: exc_new_edit + [:update], parent: :tutorial_groups
-        resources :tutorial_entries, only: :index, parent: :tutorial_groups
+        resources :child_orderings, only: :index, to: 'topics#child_orderings'
+        # resource :domain, only: :show, action: 'single_index', parent: :topics
+        # resources :featured_entries, only: :index, parent: :topics
+        # resource :menu_group, only: :show, action: 'single_index', parent: :topics
+        # resources :published_entries, only: :index, parent: :topics
       end
 
       resources :users, except: exc_new_edit, constraints: uuid_constraints do
-        resources :entries, to: 'entries#entries', only: :index, parent: :users
-        resources :contributions, to: 'entries#contributions', only: :index, parent: :users
+        # resources :contributions, to: 'entries#contributions', only: :index, parent: :users
+        # resources :entries, to: 'entries#entries', only: :index, parent: :users
       end
-
     end
   end
   #####

@@ -2,14 +2,15 @@
 #
 # Table name: topics
 #
-#  id          :uuid             not null, primary key
-#  text        :string           not null
-#  description :text
-#  domain_id   :uuid             not null
-#  group_id    :uuid             not null
-#  creator_id  :uuid             not null
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
+#  id                       :uuid             not null, primary key
+#  text                     :string           not null
+#  description              :text
+#  menu_group_id            :uuid             not null
+#  order                    :integer
+#  published_entry_ordering :text             default(["\"published_at:desc\""]), is an Array
+#  creator_id               :uuid             not null
+#  created_at               :datetime         not null
+#  updated_at               :datetime         not null
 #
 
 require 'rails_helper'
@@ -17,25 +18,27 @@ require 'rails_helper'
 RSpec.describe Topic, type: :model do
 
   context 'associations' do
-    it { is_expected.to belong_to(:domain) }
-    it { is_expected.to belong_to(:group) }
-    it { is_expected.to belong_to(:tutorial_group) }
-    it { is_expected.to belong_to(:featured_group) }
+    it { is_expected.to belong_to(:menu_group) }
+    it { is_expected.to have_one(:menu).through(:menu_group) }
+    it { is_expected.to have_one(:domain).through(:menu) }
+    it { is_expected.to belong_to(:creator) }
+    it { is_expected.to have_many(:published_entries_topics) }
     it { expect(Topic.reflect_on_association(:published_entries).macro).to eq(:has_many)}
-    it { expect(Topic.reflect_on_association(:published_entries).options[:through]).to eq(:group_topic_published_entries)}
+    it { expect(Topic.reflect_on_association(:published_entries).options[:through]).to eq(:published_entries_topics)}
     # Appears to be an error in the shoulda matchers for have_many.through
-    # it { is_expected.to have_many(:published_entries).through(:group_topic_published_entries) }
+    # it { is_expected.to have_many(:published_entries).through(:published_entries_topics) }
 
     it 'accesses published_entries' do
       topic = create(:topic)
-      published_entry_a = create(:published_entry, domain: topic.domain)
-      published_entry_b = create(:published_entry, domain: topic.domain)
-      published_entry_c = create(:published_entry, domain: topic.domain)
+      menu = topic.menu_group.menu
+      published_entry_a = create(:published_entry, domain: menu.domain)
+      published_entry_b = create(:published_entry, domain: menu.domain)
+      published_entry_c = create(:published_entry, domain: menu.domain)
 
       topic.published_entries << published_entry_b
       topic.published_entries << published_entry_c
       expect(topic.published_entries).to match([published_entry_b, published_entry_c])
-      join = GroupTopicPublishedEntry.where(topic_id: topic.id)
+      join = PublishedEntriesTopic.where(topic_id: topic.id)
       expect(join.length).to eq(2)
     end
   end
@@ -43,42 +46,95 @@ RSpec.describe Topic, type: :model do
   context 'validations' do
     let!(:topic) { build(:topic) }
 
-    it 'requires valid domain' do
-      topic.domain_id = "52af11a3-0527-454e-bab2-ded1dcdb4ac7"
+    it 'requires valid menu_group' do
+      topic.menu_group_id = "52af11a3-0527-454e-bab2-ded1dcdb4ac7"
       expect(topic.valid?).to be_falsy
     end
 
-    it 'requires valid group' do
-      topic.group_id = "52af11a3-0527-454e-bab2-ded1dcdb4ac7"
-      expect(topic.valid?).to be_falsy
-    end
-
-    it 'requires domain and group domain to be same' do
-      domain = create(:domain)
-      topic.domain_id = domain.id
-      expect(topic.valid?).to be_falsy
-    end
-
-    it 'sets domain_id from group if nil' do
-      d = build(:domain)
-      topic = build(:topic_without_domain)
-      expect(topic.valid?).to be_truthy
-      expect(topic.domain_id).to eq(topic.group.domain_id)
-    end
-
-    it 'does not allow duplicate text {scoped => :group}' do
-      group = create(:group)
-      topic_a = create(:topic, text: "My Topic", group: group, domain_id: group.domain_id)
-      topic_b = build(:topic, text: "My Topic", group: group, domain_id: group.domain_id)
+    it 'does not allow duplicate text within same menu_group' do
+      menu_group = create(:menu_group)
+      topic_a = create(:topic, text: "My Topic", menu_group: menu_group)
+      topic_b = build(:topic, text: "My Topic", menu_group: menu_group)
       expect(topic_b.valid?).to be_falsy
     end
 
-    it 'allows duplicate text with different group' do
-      group_a = create(:group)
-      group_b = create(:group)
-      topic_a = create(:topic, text: "My Topic", group: group_a, domain_id: group_a.domain_id)
-      topic_b = build(:topic, text: "My Topic", group: group_b, domain_id: group_b.domain_id)
+    it 'allows duplicate text with different menu_group' do
+      menu_group_a = create(:menu_group)
+      menu_group_b = create(:menu_group)
+      topic_a = create(:topic, text: "My Topic", menu_group: menu_group_a)
+      topic_b = build(:topic, text: "My Topic", menu_group: menu_group_b)
       expect(topic_b.valid?).to be_truthy
+    end
+
+    it 'requires unique order within menu_group' do
+      topic_a = create(:topic)
+      topic_b = build(:topic, menu_group: topic_a.menu_group, order: topic_a.order)
+      expect(topic_b.valid?).to be_falsy
+    end
+
+    it 'unique order only applies to menu' do
+      menu_group_a = create(:menu_group)
+      menu_group_b = create(:menu_group, menu: menu_group_a.menu)
+      topic_a = create(:topic)
+      topic_a.menu_group = menu_group_a
+      topic_b = create(:topic, order: topic_a.order)
+      topic_b.menu_group = menu_group_b
+      expect(topic_b.valid?).to be_truthy
+    end
+
+    context 'ordering' do
+      it 'fails invalid published_entry_ordering' do
+        menu_group = build(:menu_group, topic_ordering: ['text', 'order', 'Menu'])
+        expect(menu_group.valid?).to be_falsy
+      end
+    end
+  end
+
+  context 'scope' do
+    context 'ordering concern' do
+      let!(:a) { create(:topic, text: 'A', order: nil) }
+      let!(:b) { create(:topic, text: 'B', order: nil) }
+      let!(:c) { create(:topic, text: 'C', order: 3) }
+      let!(:d) { create(:topic, text: 'D', order: 2) }
+      let!(:e) { create(:topic, text: 'E', order: 1) }
+      let!(:f) { create(:topic, text: 'F', order: nil) }
+      let!(:menu_group) { create(:menu_group) }
+
+      it 'orders with menu_group default ordering' do
+        ordered = [e,d,c,a,b,f]
+        expect(Topic.ordering_scope(menu_group).to_a).to match(ordered)
+      end
+
+      it 'orders with menu_group reverse ordering' do
+        menu_group.update_attribute(:topic_ordering, ['order:desc','text:desc'])
+        ordered = [c,d,e,f,b,a]
+        expect(Topic.ordering_scope(menu_group).to_a).to match(ordered)
+      end
+
+      it 'orders correctly with text first' do
+        menu_group.update_attribute(:topic_ordering, ['text:asc','order:asc'])
+        f.update_attribute(:order, 4)
+        b.update_attribute(:order, 5)
+        a.update_attribute(:order, 6)
+        ordered = [a,b,c,d,e,f]
+        expect(Topic.ordering_scope(menu_group).to_a).to match(ordered)
+      end
+
+      it 'orders correctly with all order' do
+        f.update_attribute(:order, 4)
+        b.update_attribute(:order, 5)
+        a.update_attribute(:order, 6)
+        ordered = [e,d,c,f,b,a]
+        expect(Topic.ordering_scope(menu_group).to_a).to match(ordered)
+      end
+
+      it 'orders correctly with no order' do
+        c.update_attribute(:order, nil)
+        d.update_attribute(:order, nil)
+        e.update_attribute(:order, nil)
+        ordered = [a,b,c,d,e,f]
+        expect(Topic.ordering_scope(menu_group).to_a).to match(ordered)
+      end
     end
   end
 

@@ -8,7 +8,7 @@ RSpec.describe Blog::V1::UsersController do
     let!(:entry_a) { create(:entry, text: "Entry A", author: author, creator: author) }
     let!(:entry_b) { create(:entry, text: "Entry B", author: author, creator: author) }
     let!(:entry_c) { create(:entry, text: "Entry C", author: author, creator: author) }
-    let!(:entry_d) { create(:entry_with_creator, text: "Entry D") }
+    let!(:entry_d) { create(:entry, text: "Entry D") }
     let(:entries_via_user_path) { blog_v1_user_entries_path(user_id: author.id) }
 
     it 'returns correct entries for author' do
@@ -21,10 +21,10 @@ RSpec.describe Blog::V1::UsersController do
 
   context '#contributions' do
     let!(:author) { create(:user) }
-    let!(:entry_a) { create(:entry_with_creator, text: "Entry A") }
-    let!(:entry_b) { create(:entry_with_creator, text: "Entry B") }
-    let!(:entry_c) { create(:entry_with_creator, text: "Entry C") }
-    let!(:entry_d) { create(:entry_with_creator, text: "Entry D") }
+    let!(:entry_a) { create(:entry, text: "Entry A") }
+    let!(:entry_b) { create(:entry, text: "Entry B") }
+    let!(:entry_c) { create(:entry, text: "Entry C") }
+    let!(:entry_d) { create(:entry, text: "Entry D") }
     let(:contributions_via_user_path) { blog_v1_user_contributions_path(user_id: author.id) }
 
     it 'returns correct entries for author' do

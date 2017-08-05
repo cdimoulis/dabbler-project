@@ -23,7 +23,7 @@ FactoryGirl.define do
     password '12345678'
     password_confirmation '12345678'
     person { create(:person, first_name: "User", last_name: "Test") }
-    person_id { person.id }
+    person_id { person.present? ? person.id : nil }
 
     factory :user_as_admin do
       user_type "Admin"

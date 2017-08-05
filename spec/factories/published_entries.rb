@@ -9,8 +9,8 @@
 #  image_url                  :string
 #  notes                      :text
 #  tags                       :text             is an Array
+#  published_at               :datetime
 #  type                       :string
-#  data                       :json
 #  revised_published_entry_id :uuid
 #  removed                    :boolean          default(FALSE)
 #  creator_id                 :uuid             not null
@@ -20,18 +20,19 @@
 
 FactoryGirl.define do
   factory :published_entry do
-    entry { create(:entry_with_creator) }
-    entry_id { entry.id }
-    author { entry.author }
-    author_id { author.id }
+    entry { create(:entry) }
+    entry_id { entry.present? ? entry.id : nil }
+    author { entry.present? ? entry.author : nil }
+    author_id { author.present? ? author.id : nil }
     domain { create(:domain) }
-    domain_id { domain.id }
-    notes "This entry has some notes"
+    domain_id { domain.present? ? domain.id : nil }
+    notes { entry.present? ? entry.text : "This entry has some notes" }
     tags ['tag_a', 'tag_b']
+    published_at DateTime.now
     type 'PublishedEntry'
-    data { {published_at: DateTime.now} }
-    creator { entry.author }
+    creator { entry.present? ? entry.author : nil }
+    creator_id { creator.present? ? creator.id : nil }
     revised_published_entry nil
-    revised_published_entry_id { revised_published_entry ? revised_published_entry.id : nil }
+    revised_published_entry_id { revised_published_entry.present? ? revised_published_entry.id : nil }
   end
 end

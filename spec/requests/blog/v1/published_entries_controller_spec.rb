@@ -15,7 +15,7 @@ RSpec.describe Blog::V1::PublishedEntriesController do
     end
 
     it 'creates via entries' do
-      entry = create(:entry_with_creator)
+      entry = create(:entry)
       published_entry = attributes_for(:published_entry, entry: nil, author: nil, creator: admin)
       post blog_v1_entry_published_entries_path(entry_id: entry.id), published_entry: published_entry, format: :json
       expect(response).to have_http_status(:success)
@@ -26,7 +26,7 @@ RSpec.describe Blog::V1::PublishedEntriesController do
   context '#index' do
 
     it 'entry returns correct published entries' do
-      entry = create(:entry_with_creator)
+      entry = create(:entry)
       published_entry_a = create(:published_entry, entry: entry)
       published_entry_b = create(:published_entry, entry: entry)
       published_entry_c = create(:published_entry)

@@ -1,3 +1,11 @@
+#####
+# AssociationAccessors Concern
+#
+# Purpose: To allow for the models to access and alter the attributes of their
+# associations.
+#
+# Requirements:
+# To be able to
 module AssociationAccessors
   extend ActiveSupport::Concern
 

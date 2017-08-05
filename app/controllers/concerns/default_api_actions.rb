@@ -5,18 +5,26 @@ module DefaultApiActions
   # Standard CRUD Ops
   ###
   def create
-    # TODO: Authorization
-    #   Need to authorize when USERS are added
+    # resource_name: model being created
+    # resource_id: id of model being created
+    # parent_name: model of parent if nested url
+    # parent_id: id of parent model if nested url
     resource_name, resource_id, parent_name, parent_id = get_resources()
+    # Collect errors to know how to return
     @errors = {}
+    # The class of the model being created
     @resource = resource_name.classify.constantize
+    # Try block in case no attributes are specified
     begin
+      # Create the new record
       @record = @resource.new permitted_params
       # If there is a parent then add that model to the
       if !parent_name.nil? and !parent_id.nil?
         # Try block in case parent_name is not a model class
         begin
+          # The class of the parent model
           parent_model = parent_name.classify.constantize
+          # If the parent_id is a model and the new model responds to (has anssociation with) the parent
           if parent_model.exists?(parent_id) and @record.respond_to?(parent_name.singularize)
             @parent = parent_model.find(parent_id)
             @record.send("#{parent_name.singularize}=", @parent)
@@ -28,12 +36,16 @@ module DefaultApiActions
         end
       end
 
-      if @errors.empty?
-        # If HasCreator is included then add creator
-        if self.class.included_modules.include?(HasCreator)
-          add_creator()
-        end
+      # If responds_to creator_id then add creator
+      # This may be redundant to the model concern SetCreator
+      # but I'm considering this as a backup to that before_create callback
+      if @record.respond_to?(:creator_id) && @record.creator_id.nil? && !current_user.nil? && !current_user.id.nil? && self.class.included_modules.include?(HasCreator)
+        add_creator()
+      end
 
+      # If no errors have occurred yet then proceed with save
+      if @errors.empty?
+        # Perform the save if the new model is valid
         if @record.valid? and @record.save
           respond_with :blog, :v1, @record
         else
@@ -57,13 +69,20 @@ module DefaultApiActions
 
 
   def index
+    # resource_name: model being created
+    # resource_id: id of model being created
+    # parent_name: model of parent if nested url
+    # parent_id: id of parent model if nested url
     resource_name, resource_id, parent_name, parent_id = get_resources()
+    # Records to return
     @records = []
+    # Collect errors to know how to return
     @errors = {}
     # fetch from parent
     if !parent_name.nil? and !parent_id.nil?
-      # Try block in case parent_name is not a model class
+      # Rescue block in case parent_name is not a model class
       begin
+        # The class of the parent model
         parent_model = parent_name.classify.constantize
         # Check that the parent model with parent_id exists
         if parent_model.exists?(parent_id)
@@ -95,20 +114,25 @@ module DefaultApiActions
     end
 
     # Add any specified scopes
+    # Scopes should be added to @scopes before index occurs
     if @scopes.present?
       @scopes.each do |s|
-        if @records.respond_to?(s)
-          @records = @records.send(s)
+        if @records.respond_to?(s[:scope])
+          if s[:params].present?
+            @records = @records.send(s[:scope], *s[:params])
+          else
+            @records = @records.send(s[:scope])
+          end
         end
       end
     end
 
-    # If from or to then grab by date
+    # If DateRange concern is included and from or to is in params then grab by date
     if self.class.included_modules.include?(DateRange) && ( params.has_key?(:from) || params.has_key?(:to) )
       dateRangeRecords()
     end
 
-    # If count or start Page records
+    # If PageRecords concern is included and count or start is in params then page records
     if self.class.included_modules.include?(PageRecords) && ( params.has_key?(:count) || params.has_key?(:start) )
       pageRecords()
     end
@@ -124,13 +148,22 @@ module DefaultApiActions
 
 
   def single_index
+    # resource_name: model being created
+    # resource_id: id of model being created
+    # parent_name: model of parent if nested url
+    # parent_id: id of parent model if nested url
     resource, resource_id, parent_name, parent_id = get_resources()
+    # Singularize for route naming convention
     resource_name = resource.singularize
+    # The class of the model being created
     @resource = resource_name.classify.constantize
+    # The attribute that should be used to to acess the id
     id_text = "#{resource_name}_id"
+    # Collect errors to know how to return
     @errors = {}
 
     begin
+      # The class of the parent model
       parent_model = parent_name.classify.constantize
       # Check that parent model exists
       if parent_model.exists?(parent_id)
@@ -154,9 +187,9 @@ module DefaultApiActions
           @errors[:msg] = "#{resource_name.classify}: Invalid Parent: #{parent_name} is not associated with #{resource_name}."
         end
       else
-        puts "\n\n#{resource_name.classify}: Invalid Parent: #{parent_name} of id #{parent_id} does not exist.\n\n"
-        Rails.logger.debug "\n\n#{resource_name.classify}: Invalid Parent: #{parent_name} of id #{parent_id} does not exist.\n\n"
-        @errors[:msg] = "#{resource_name.classify}: Invalid Parent: #{parent_name} of id #{parent_id} does not exist."
+        puts "\n\n#{resource_name.classify}: Invalid Parent: #{parent_name} of id ''#{parent_id}'' does not exist.\n\n"
+        Rails.logger.debug "\n\n#{resource_name.classify}: Invalid Parent: #{parent_name} of id '#{parent_id}' does not exist.\n\n"
+        @errors[:msg] = "#{resource_name.classify}: Invalid Parent: #{parent_name} of id '#{parent_id}' does not exist."
       end
     rescue NameError => e
       puts "\n\n#{resource_name.classify}: Invalid parent: #{parent_name}", error: "#{e}\n\n"
@@ -175,10 +208,13 @@ module DefaultApiActions
 
 
   def show
+    # resource_name: model being created
+    # resource_id: id of model being created
     resource_name, resource_id = get_resources()
+    # The class of the model being created
     @resource = resource_name.classify.constantize
-
     @record = @resource.where("id = ?", resource_id).take
+
     if @record.nil?
       render :json => {}, :status => 404
     else
@@ -188,9 +224,10 @@ module DefaultApiActions
 
 
   def update
-    # TODO: Authorization
-    #   Need to authorize when USERS are added
+    # resource_name: model being created
+    # resource_id: id of model being created
     resource_name, resource_id = get_resources()
+    # The class of the model being created
     @resource = resource_name.classify.constantize
     @record = @resource.where("id = ?", resource_id).take
 
@@ -203,16 +240,21 @@ module DefaultApiActions
 
 
   def destroy
-    # TODO: Authorization
-    #   Need to authorize when USERS are added
+    # resource_name: model being created
+    # resource_id: id of model being created
     resource_name, resource_id = get_resources()
-    resource = resource_name.classify.constantize
+    # The class of the model being created
+    @resource = resource_name.classify.constantize
 
-    @record = resource.where("id = ?", resource_id).take
-    if !@record.nil? and @record.destroy
-      respond_with :blog, :v1, @record
+    @record = @resource.where("id = ?", resource_id).take
+    if @record.present?
+      if @record.destroy
+        respond_with :blog, :v1, @record
+      else
+        render :json => {errors: @record.errors}, :status => 424
+      end
     else
-      render :json => {errors: @record.errors}, :status => 424
+      render :json => {errors: {msg: "Record not found"}}, :status => 404
     end
   end
   ###

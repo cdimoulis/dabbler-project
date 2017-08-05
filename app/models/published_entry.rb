@@ -9,8 +9,8 @@
 #  image_url                  :string
 #  notes                      :text
 #  tags                       :text             is an Array
+#  published_at               :datetime
 #  type                       :string
-#  data                       :json
 #  revised_published_entry_id :uuid
 #  removed                    :boolean          default(FALSE)
 #  creator_id                 :uuid             not null
@@ -20,19 +20,16 @@
 
 class PublishedEntry < ApplicationRecord
   include AssociationAccessors
+  include SetCreator
 
   belongs_to :author, class_name: 'User'
   belongs_to :creator, class_name: 'User'
   belongs_to :domain
   belongs_to :entry
-
-  has_many :group_topic_published_entries, dependent: :destroy, inverse_of: :published_entry
-  has_many :groups, through: :group_topic_published_entries
-  has_many :topics, through: :group_topic_published_entries
   belongs_to :revised_published_entry, class_name: 'PublishedEntry', foreign_key: 'revised_published_entry_id'
   has_one :previous_published_entry, class_name: 'PublishedEntry', foreign_key: 'revised_published_entry_id'
-
-  accepts_nested_attributes_for :group_topic_published_entries
+  has_many :published_entries_topics, dependent: :destroy
+  has_many :topics, through: :published_entries_topics
 
   before_validation :set_author
   before_destroy :check_revision
@@ -45,16 +42,50 @@ class PublishedEntry < ApplicationRecord
   # Scopes
   ###
   scope :current, -> { where(revised_published_entry_id: nil) }
-  scope :non_removed, -> { where(removed: false) }
+  scope :not_removed, -> { where(removed: false) }
   scope :removed, -> { where(removed: true) }
+  scope :published, -> { where('published_at <= ?', DateTime.now) }
+  scope :not_published, -> { where('published_at > ?', DateTime.now) }
+  # This scope will order based on the topic's published_entry_ordering attribute
+  scope :ordering_scope, -> (topic) {
+    # Table name needed for query clarification
+    table = self.table_name
+    # The order query string
+    ordering = ''
+    # Check the parent truly has the ordering_attribute
+    if topic.present? and topic.attribute_present?(:published_entry_ordering)
+      # if order then inclue published_entries_topics
+      topic.send(:published_entry_ordering).each do |a|
+        # Split for attribute:direction
+        val, dir = a.split(':')
+        # If val is order then table is published_entries_topics
+        if val == 'order'
+          t = 'published_entries_topics'
+        else
+          t = table
+        end
+
+        ordering += "#{t}.#{val} #{dir} NULLS LAST,"
+      end
+    end
+    # Remove ending comma
+    # Includes published_entries_topics
+    includes(:published_entries_topics).order(ordering.chomp(','))
+  }
   ###
   # End Scopes
   ###
 
   # Clear out old join models when setting new ones
-  def group_topic_published_entries_attributes=(*args)
-    self.group_topic_published_entries.clear
-    super(*args)
+  # def published_entries_topics=(*args)
+  #   puts "\n\nargs #{args}\n\n"
+  #   self.published_entries_topics.clear
+  #   super(*args)
+  # end
+
+  # For date_range concern
+  def self.default_date_attribute
+    "published_at"
   end
 
 
@@ -66,7 +97,7 @@ class PublishedEntry < ApplicationRecord
   end
 
   def send_attributes
-    [:text, :group_topic_published_entries]
+    [:text ] #, :group_topic_published_entries]
   end
   ###
   # End AssociationAccessorconcern
@@ -111,8 +142,9 @@ class PublishedEntry < ApplicationRecord
   end
 
   def entry_author
-    if attribute_present?(:author_id) and entry.present?
-      if author_id != entry.author_id
+    if attribute_present?(:author_id) and attribute_present?(:entry_id)
+      entry = Entry.where('id = ?', entry_id).take
+      if entry.present? and (author_id != entry.author_id)
         errors.add(:author_id, "Is not the same as Entry author")
         puts "\n\nPublishedEntry error: Invalid author_id #{author_id}\nEntry:#{entry.inspect}\n\n"
         Rails.logger.info "\n\nPublishedEntry error: Invalid author_id #{author_id}\nEntry:#{entry.inspect}\n\n"
@@ -129,11 +161,14 @@ class PublishedEntry < ApplicationRecord
   end
 
   def revision_type
-    if revised_published_entry.present?
-      if revised_published_entry.type != type
-        errors.add(:revised_published_entry_id, "New revised published entry type #{revised_published_entry.type} does not match #{type}")
-        puts "\n\nPublishedEntry error: Invalid revised_published_entry type #{revised_published_entry.type} compared to #{type}\n\n"
-        Rails.logger.info "\n\nPublishedEntry error: Invalid revised_published_entry type #{revised_published_entry.type} compared to #{type}\n\n"
+    if attribute_present?(:revised_published_entry_id)
+      rpe = PublishedEntry.where('id = ?', revised_published_entry_id).take
+      if rpe.present?
+        if rpe.type != type
+          errors.add(:revised_published_entry_id, "New revised published entry type #{revised_published_entry.type} does not match #{type}")
+          puts "\n\nPublishedEntry error: Invalid revised_published_entry type #{revised_published_entry.type} compared to #{type}\n\n"
+          Rails.logger.info "\n\nPublishedEntry error: Invalid revised_published_entry type #{revised_published_entry.type} compared to #{type}\n\n"
+        end
       end
     end
   end

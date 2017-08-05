@@ -20,83 +20,32 @@ RSpec.describe Blog::V1::FeaturedEntriesController, type: :controller do
       expect(response).to have_http_status(:success)
       expect(FeaturedEntry.count).to eq(current+1)
     end
-
-    it 'succeeds with group_topic_published_entries' do
-      count = GroupTopicPublishedEntry.count
-      featured_entry = attributes_for(:featured_entry)
-      gtpe_a = attributes_for(:group_topic_published_entry, domain: featured_entry[:domain], published_entry: nil)
-      gtpe_b = attributes_for(:group_topic_published_entry, domain: featured_entry[:domain], published_entry: nil)
-      featured_entry[:group_topic_published_entries_attributes] = [gtpe_a, gtpe_b]
-      post :create, featured_entry: featured_entry, format: :json
-      expect(response).to have_http_status(:success)
-      expect(GroupTopicPublishedEntry.count).to eq(count+2)
-      expect(GroupTopicPublishedEntry.first.published_entry_id).to eq(FeaturedEntry.first.id)
-    end
   end
 
   # Tests for INDEX route
   context "#index" do
-    let!(:one) { create(:featured_entry, data: {published_at: (DateTime.now - 1.days).strftime}, created_at: (DateTime.now - 8.days).strftime) }
-    let!(:two) { create(:featured_entry, data: {published_at: (DateTime.now - 2.days).strftime}, created_at: (DateTime.now - 7.days).strftime) }
-    let!(:three) { create(:featured_entry, data: {published_at: (DateTime.now - 3.days).strftime}, created_at: (DateTime.now - 6.days).strftime) }
-    let!(:four) { create(:featured_entry, data: {published_at: (DateTime.now - 4.days).strftime}, created_at: (DateTime.now - 5.days).strftime) }
-    let!(:five) { create(:featured_entry, data: {published_at: (DateTime.now - 5.days).strftime}, created_at: (DateTime.now - 4.days).strftime) }
+    let!(:one) { create(:featured_entry, published_at: (DateTime.now.end_of_day - 1.days).strftime, created_at: (DateTime.now.end_of_day - 8.days).strftime) }
+    let!(:two) { create(:featured_entry, published_at: (DateTime.now.end_of_day - 2.days).strftime, created_at: (DateTime.now.end_of_day - 7.days).strftime) }
+    let!(:three) { create(:featured_entry, published_at: (DateTime.now.end_of_day - 3.days).strftime, created_at: (DateTime.now.end_of_day - 6.days).strftime) }
+    let!(:four) { create(:featured_entry, published_at: (DateTime.now.end_of_day - 4.days).strftime, created_at: (DateTime.now.end_of_day - 5.days).strftime) }
+    let!(:five) { create(:featured_entry, published_at: (DateTime.now.end_of_day - 5.days).strftime, created_at: (DateTime.now.end_of_day - 4.days).strftime) }
+    let!(:six) { create(:featured_entry, published_at: (DateTime.now.end_of_day - 6.days).strftime, created_at: (DateTime.now.end_of_day - 3.days).strftime) }
 
     it 'returns correct records' do
       get :index, format: :json
       expect(response).to have_http_status(:success)
       # look_like_json found in support/matchers/json_matchers.rb
       expect(response.body).to look_like_json
-      order = [one, two, three, four, five]
-      expect(assigns(:records).to_a).to match(order)
-    end
-
-    it 'handles date range' do
-      # From only
-      get :index, from: 3.days.ago, format: :json
-      expect(assigns(:records).length).to eq(3)
-      order = [one, two, three]
-      expect(assigns(:records).to_a).to match(order)
-
-      # To only
-      get :index, to: 3.days.ago, format: :json
-      expect(assigns(:records).length).to eq(2)
-      order = [four, five]
-      expect(assigns(:records).to_a).to match(order)
-
-      # From only
-      get :index, from: 4.days.ago, to: 2.days.ago, format: :json
-      expect(assigns(:records).length).to eq(2)
-      order = [three, four]
-      expect(assigns(:records).to_a).to match(order)
-    end
-
-    it 'pages records' do
-      # count only
-      get :index, count: 2, format: :json
-      expect(assigns(:records).length).to eq(2)
-      order = [one, two]
-      expect(assigns(:records).to_a).to match(order)
-
-      # start only
-      get :index, start: 2, format: :json
-      expect(assigns(:records).length).to eq(3)
-      order = [three, four, five]
-      expect(assigns(:records).to_a).to match(order)
-
-      # count andd start
-      get :index, start: 1, count: 2, format: :json
-      expect(assigns(:records).length).to eq(2)
-      order = [two, three]
-      expect(assigns(:records).to_a).to match(order)
+      order = [one, two, three, four, five, six]
+      expect(assigns(:records).order('published_at desc').to_a).to match(order)
     end
 
     it 'ignores removed' do
       two.update_attribute('removed', true)
       four.update_attribute('removed', true)
       get :index, format: :json
-      order = [one, three, five]
-      expect(assigns(:records).to_a).to match(order)
+      order = [one, three, five, six]
+      expect(assigns(:records).order('published_at desc').to_a).to match(order)
     end
 
     it 'shows removed' do
@@ -104,14 +53,77 @@ RSpec.describe Blog::V1::FeaturedEntriesController, type: :controller do
       four.update_attribute('removed', true)
       get :index, removed: true, format: :json
       order = [two, four]
-      expect(assigns(:records).to_a).to match(order)
+      expect(assigns(:records).order('published_at desc').to_a).to match(order)
+    end
+
+    it 'shows current' do
+      two.update_attribute('revised_published_entry_id', one.id)
+      four.update_attribute('revised_published_entry_id', three.id)
+      get :index, current: true, format: :json
+      order = [one, three, five, six]
+      expect(assigns(:records).order('published_at desc').to_a).to match(order)
+    end
+
+    it 'shows published' do
+      two.update_attribute('published_at', DateTime.now + 2.days)
+      four.update_attribute('published_at', DateTime.now + 1.minute)
+      get :index, published: true, format: :json
+      order = [one, three, five, six]
+      expect(assigns(:records).order('published_at desc').to_a).to match(order)
+    end
+
+    it 'shows unpublished' do
+      two.update_attribute('published_at', DateTime.now + 2.days)
+      four.update_attribute('published_at', DateTime.now + 1.minute)
+      get :index, not_published: true, format: :json
+      order = [two, four]
+      expect(assigns(:records).order('published_at desc').to_a).to match(order)
+    end
+
+    it 'handles date range' do
+      # From only
+      get :index, from: 3.days.ago, format: :json
+      expect(assigns(:records).length).to eq(3)
+      order = [one, two, three]
+      expect(assigns(:records).order('published_at desc').to_a).to match(order)
+
+      # To only
+      get :index, to: 3.days.ago, format: :json
+      expect(assigns(:records).length).to eq(3)
+      order = [four, five, six]
+      expect(assigns(:records).order('published_at desc').to_a).to match(order)
+
+      # From only
+      get :index, from: 4.days.ago, to: 2.days.ago, format: :json
+      expect(assigns(:records).length).to eq(2)
+      order = [three, four]
+      expect(assigns(:records).order('published_at desc').to_a).to match(order)
+    end
+
+    it 'pages records' do
+      # count only
+      get :index, count: 2, format: :json
+      expect(assigns(:records).length).to eq(2)
+      order = [one, two]
+      expect(assigns(:records).order('published_at desc').to_a).to match(order)
+
+      # start only
+      get :index, start: 2, format: :json
+      expect(assigns(:records).length).to eq(4)
+      order = [three, four, five, six]
+      expect(assigns(:records).order('published_at desc').to_a).to match(order)
+
+      # count andd start
+      get :index, start: 1, count: 2, format: :json
+      expect(assigns(:records).length).to eq(2)
+      order = [two, three]
+      expect(assigns(:records).order('published_at desc').to_a).to match(order)
     end
 
   end
 
   # Tests for SHOW route
   context "#show" do
-
     let!(:featured_entry) { create(:featured_entry) }
 
     # Before running a test do this
@@ -140,46 +152,19 @@ RSpec.describe Blog::V1::FeaturedEntriesController, type: :controller do
       sign_in
     end
 
-
     let!(:featured_entry) { create(:featured_entry) }
 
     it "succeeds" do
-      feat_entry = create(:featured_entry, data: {published_at: (DateTime.now - 1.days).strftime})
-      # To ensure the join model does not dissapear on update
-      gtpe_a = create(:group_topic_published_entry, domain: featured_entry.domain, published_entry: featured_entry)
-      count = GroupTopicPublishedEntry.count
+      feat_entry = create(:featured_entry, published_at: (DateTime.now - 1.days).strftime)
 
-      update_params = {data: {published_at: (DateTime.now - 2.days).strftime}}
+      update_params = {published_at: (DateTime.now - 2.days).strftime}
       put :update, id: featured_entry.id, featured_entry: update_params, format: :json
       expect(response).to have_http_status(:success)
-      expect(assigns(:record).data['published_at']).to eq(update_params[:data][:published_at])
-      expect(GroupTopicPublishedEntry.count).to eq(count)
+      expect(assigns(:record).published_at).to eq(update_params[:published_at])
 
       get :index, format: :json
       order = [feat_entry.id, featured_entry.id]
       expect(assigns(:records).pluck('id')).to match(order)
-    end
-
-    it 'updates group_topic_published_entries' do
-      gtpe_a = attributes_for(:group_topic_published_entry, domain: featured_entry.domain, published_entry: nil)
-      gtpe_b = attributes_for(:group_topic_published_entry, domain: featured_entry.domain, published_entry: nil)
-
-      gtpe_c = attributes_for(:group_topic_published_entry, domain: featured_entry.domain, published_entry: nil)
-      gtpe_d = attributes_for(:group_topic_published_entry, domain: featured_entry.domain, published_entry: nil)
-
-      # First set
-      update_params = {group_topic_published_entries_attributes: [gtpe_a, gtpe_b]}
-      current = GroupTopicPublishedEntry.count
-      put :update, id: featured_entry.id, featured_entry: update_params, format: :json
-      expect(featured_entry.group_topic_published_entries.pluck('id')).to match(GroupTopicPublishedEntry.pluck('id'))
-      expect(GroupTopicPublishedEntry.count).to eq(2)
-
-      # Second set
-      update_params = {group_topic_published_entries_attributes: [gtpe_a, gtpe_b]}
-      current = GroupTopicPublishedEntry.count
-      put :update, id: featured_entry.id, featured_entry: update_params, format: :json
-      expect(featured_entry.group_topic_published_entries.pluck('id')).to match(GroupTopicPublishedEntry.pluck('id'))
-      expect(GroupTopicPublishedEntry.count).to eq(2)
     end
   end
 

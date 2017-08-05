@@ -11,23 +11,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170105181734) do
+ActiveRecord::Schema.define(version: 20170615203531) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "uuid-ossp"
 
   create_table "domains", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
-    t.string   "text",                       null: false
+    t.string   "text",                                              null: false
     t.text     "description"
-    t.string   "subdomain",                  null: false
-    t.boolean  "active",      default: true
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
+    t.string   "subdomain",                                         null: false
+    t.boolean  "active",        default: true
+    t.text     "menu_ordering", default: ["order:asc", "text:asc"],              array: true
+    t.uuid     "creator_id",                                        null: false
+    t.datetime "created_at",                                        null: false
+    t.datetime "updated_at",                                        null: false
   end
 
-  add_index "domains", ["subdomain"], name: "index_domains_on_subdomain", unique: true, using: :btree
-  add_index "domains", ["text"], name: "index_domains_on_text", unique: true, using: :btree
+  add_index "domains", ["creator_id"], name: "index_domains_on_creator_id", using: :btree
+  add_index "domains", ["subdomain"], name: "index_domains_on_subdomain", using: :btree
+  add_index "domains", ["text"], name: "index_domains_on_text", using: :btree
 
   create_table "entries", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
     t.string   "text",                              null: false
@@ -49,39 +52,47 @@ ActiveRecord::Schema.define(version: 20170105181734) do
   add_index "entries", ["updated_entry_id"], name: "index_entries_on_updated_entry_id", using: :btree
 
   create_table "entries_users", id: false, force: :cascade do |t|
-    t.uuid "entry_id"
-    t.uuid "user_id"
+    t.uuid "entry_id", null: false
+    t.uuid "user_id",  null: false
   end
 
   add_index "entries_users", ["entry_id", "user_id"], name: "index_entries_users_on_entry_id_and_user_id", using: :btree
   add_index "entries_users", ["entry_id"], name: "index_entries_users_on_entry_id", using: :btree
   add_index "entries_users", ["user_id"], name: "index_entries_users_on_user_id", using: :btree
 
-  create_table "group_topic_published_entries", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
-    t.uuid     "group_id",           null: false
-    t.uuid     "topic_id"
-    t.uuid     "published_entry_id", null: false
-    t.datetime "created_at",         null: false
-    t.datetime "updated_at",         null: false
-  end
-
-  add_index "group_topic_published_entries", ["group_id"], name: "index_group_topic_published_entries_on_group_id", using: :btree
-  add_index "group_topic_published_entries", ["published_entry_id"], name: "index_group_topic_published_entries_on_published_entry_id", using: :btree
-  add_index "group_topic_published_entries", ["topic_id"], name: "index_group_topic_published_entries_on_topic_id", using: :btree
-
-  create_table "groups", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
-    t.string   "text",        null: false
+  create_table "menu_groups", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
+    t.string   "text",                                               null: false
     t.text     "description"
-    t.uuid     "domain_id",   null: false
-    t.integer  "order",       null: false
-    t.string   "type",        null: false
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.uuid     "menu_id",                                            null: false
+    t.integer  "order"
+    t.text     "topic_ordering", default: ["order:asc", "text:asc"],              array: true
+    t.uuid     "creator_id",                                         null: false
+    t.datetime "created_at",                                         null: false
+    t.datetime "updated_at",                                         null: false
   end
 
-  add_index "groups", ["domain_id", "type", "text"], name: "index_groups_on_domain_id_and_type_and_text", unique: true, using: :btree
-  add_index "groups", ["domain_id"], name: "index_groups_on_domain_id", using: :btree
-  add_index "groups", ["text"], name: "index_groups_on_text", using: :btree
+  add_index "menu_groups", ["creator_id"], name: "index_menu_groups_on_creator_id", using: :btree
+  add_index "menu_groups", ["menu_id", "text"], name: "index_menu_groups_on_menu_id_and_text", unique: true, using: :btree
+  add_index "menu_groups", ["menu_id"], name: "index_menu_groups_on_menu_id", using: :btree
+  add_index "menu_groups", ["order"], name: "index_menu_groups_on_order", using: :btree
+  add_index "menu_groups", ["text"], name: "index_menu_groups_on_text", using: :btree
+
+  create_table "menus", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
+    t.string   "text",                                                    null: false
+    t.text     "description"
+    t.uuid     "domain_id",                                               null: false
+    t.integer  "order"
+    t.text     "menu_group_ordering", default: ["order:asc", "text:asc"],              array: true
+    t.uuid     "creator_id",                                              null: false
+    t.datetime "created_at",                                              null: false
+    t.datetime "updated_at",                                              null: false
+  end
+
+  add_index "menus", ["creator_id"], name: "index_menus_on_creator_id", using: :btree
+  add_index "menus", ["domain_id"], name: "index_menus_on_domain_id", using: :btree
+  add_index "menus", ["order"], name: "index_menus_on_order", using: :btree
+  add_index "menus", ["text", "domain_id"], name: "index_menus_on_text_and_domain_id", unique: true, using: :btree
+  add_index "menus", ["text"], name: "index_menus_on_text", using: :btree
 
   create_table "people", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
     t.string   "prefix"
@@ -118,8 +129,8 @@ ActiveRecord::Schema.define(version: 20170105181734) do
     t.string   "image_url"
     t.text     "notes"
     t.text     "tags",                                                    array: true
+    t.datetime "published_at"
     t.string   "type"
-    t.json     "data"
     t.uuid     "revised_published_entry_id"
     t.boolean  "removed",                    default: false
     t.uuid     "creator_id",                                 null: false
@@ -131,22 +142,37 @@ ActiveRecord::Schema.define(version: 20170105181734) do
   add_index "published_entries", ["creator_id"], name: "index_published_entries_on_creator_id", using: :btree
   add_index "published_entries", ["domain_id"], name: "index_published_entries_on_domain_id", using: :btree
   add_index "published_entries", ["entry_id"], name: "index_published_entries_on_entry_id", using: :btree
+  add_index "published_entries", ["published_at"], name: "index_published_entries_on_published_at", using: :btree
   add_index "published_entries", ["revised_published_entry_id"], name: "index_published_entries_on_revised_published_entry_id", using: :btree
 
+  create_table "published_entries_topics", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
+    t.uuid     "published_entry_id", null: false
+    t.uuid     "topic_id",           null: false
+    t.integer  "order"
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
+  end
+
+  add_index "published_entries_topics", ["order"], name: "index_published_entries_topics_on_order", using: :btree
+  add_index "published_entries_topics", ["published_entry_id", "topic_id"], name: "index_published_entry_id_and_topic_id", unique: true, using: :btree
+  add_index "published_entries_topics", ["published_entry_id"], name: "index_published_entries_topics_on_published_entry_id", using: :btree
+  add_index "published_entries_topics", ["topic_id"], name: "index_published_entries_topics_on_topic_id", using: :btree
+
   create_table "topics", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
-    t.string   "text",        null: false
+    t.string   "text",                                                     null: false
     t.text     "description"
-    t.uuid     "domain_id",   null: false
-    t.uuid     "group_id",    null: false
-    t.uuid     "creator_id",  null: false
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.uuid     "menu_group_id",                                            null: false
+    t.integer  "order"
+    t.text     "published_entry_ordering", default: ["published_at:desc"],              array: true
+    t.uuid     "creator_id",                                               null: false
+    t.datetime "created_at",                                               null: false
+    t.datetime "updated_at",                                               null: false
   end
 
   add_index "topics", ["creator_id"], name: "index_topics_on_creator_id", using: :btree
-  add_index "topics", ["domain_id"], name: "index_topics_on_domain_id", using: :btree
-  add_index "topics", ["group_id"], name: "index_topics_on_group_id", using: :btree
-  add_index "topics", ["text", "group_id"], name: "index_topics_on_text_and_group_id", unique: true, using: :btree
+  add_index "topics", ["menu_group_id"], name: "index_topics_on_menu_group_id", using: :btree
+  add_index "topics", ["order"], name: "index_topics_on_order", using: :btree
+  add_index "topics", ["text", "menu_group_id"], name: "index_topics_on_text_and_menu_group_id", unique: true, using: :btree
   add_index "topics", ["text"], name: "index_topics_on_text", using: :btree
 
   create_table "users", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
