@@ -17,7 +17,7 @@ Rails.application.routes.draw do
         # resources :featured_entries, except: exc_new_edit, parent: :domains
         resources :menu_groups, only: :index, parent: :domains
         resources :menus, only: [:create, :index], parent: :domain
-        # resources :published_entries, only: :index, parent: :domains
+        resources :published_entries, only: :index, parent: :domains
         resources :topics, only: :index, parent: :domains
       end
 
@@ -54,7 +54,7 @@ Rails.application.routes.draw do
       # Only index and show.
       # Create, update, destroy done through associated FeaturedEntry or TutorialEntry
       resources :published_entries, except: exc_new_edit, constraints: uuid_constraints do
-        # resource :domain, only: :show, action: 'single_index', parent: :published_entries
+        resource :domain, only: :show, action: 'single_index', parent: :published_entries
         # resource :entry, only: :show, action: 'single_index', parent: :published_entries
         # resources :menu_groups, only: :index, parent: :published_entries
         # resources :topics, only: :index, parent: :published_entries
