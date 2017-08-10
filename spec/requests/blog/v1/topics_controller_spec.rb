@@ -26,20 +26,20 @@ RSpec.describe Blog::V1::TopicsController do
   #     expect(Topic.first.menu_group.id).to eq(menu_group.id)
   #   end
   # end
-  #
+
   # # test nested index
-  # context '#index' do
+  context '#index' do
   #   let!(:topic) { create(:topic) }
   #
-  #   it "fetches via domain" do
-  #     menu_group = create(:menu_group, domain: topic.domain)
-  #     topic_b = create(:topic, domain: topic.domain, menu_group: menu_group)
-  #     topic_c = create(:topic)
-  #     route = blog_v1_domain_topics_path(domain_id: topic.domain_id)
-  #     get route, format: :json
-  #     order = [topic.id, topic_b.id]
-  #     expect(assigns(:records).pluck('id')).to match(order)
-  #   end
+    it "fetches via domain" do
+      domain = create(:domain_with_topics)
+      # create one more MenuGroup to add more than 5 from :domain_with_topics
+      topic = create(:topic)
+      get blog_v1_domain_topics_path(domain_id: domain.id), format: :json
+      expect(response).to have_http_status(:success)
+      # :domain_with_topics factory creates 5 groups on default
+      expect(assigns(:records).count).to eq(5)
+    end
   #
   #   it "fetches via menu_group" do
   #     menu_group = topic.menu_group
@@ -76,7 +76,7 @@ RSpec.describe Blog::V1::TopicsController do
   #     order = [topic_b.id, topic_c.id]
   #     expect(assigns(:records).pluck('id')).to match(order)
   #   end
-  # end
+  end
 
   # Valid child ordering attribute
   context "VALID_CHILD_ORDERING_ATTRIBUTES" do

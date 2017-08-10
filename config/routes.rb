@@ -18,7 +18,7 @@ Rails.application.routes.draw do
         resources :menu_groups, only: :index, parent: :domains
         resources :menus, only: [:create, :index], parent: :domain
         # resources :published_entries, only: :index, parent: :domains
-        # resources :topics, only: :index, parent: :domains
+        resources :topics, only: :index, parent: :domains
       end
 
       resources :entries, except: exc_new_edit, constraints: uuid_constraints do
@@ -62,7 +62,7 @@ Rails.application.routes.draw do
 
       resources :topics, except: exc_new_edit, constraints: uuid_constraints do
         resources :child_orderings, only: :index, to: 'topics#child_orderings'
-        # resource :domain, only: :show, action: 'single_index', parent: :topics
+        resource :domain, only: :show, action: 'single_index', parent: :topics
         # resources :featured_entries, only: :index, parent: :topics
         # resource :menu_group, only: :show, action: 'single_index', parent: :topics
         # resources :published_entries, only: :index, parent: :topics

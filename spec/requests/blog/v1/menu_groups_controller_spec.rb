@@ -18,8 +18,8 @@ RSpec.describe Blog::V1::MenuGroupsController do
   #
   #   end
   # end
-  #
-  # # test nested index
+
+  # test nested index
   context '#index' do
     # it "fetches via menu" do
     #   menu = create(:menu)

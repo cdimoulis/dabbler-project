@@ -17,12 +17,12 @@ RSpec.describe Blog::V1::DomainsController do
       get blog_v1_menu_group_domain_path(menu_group_id: menu_group.id), format: :json
       expect(assigns(:record)).to eq(domain)
     end
-    
-    # it 'returns correct domain for topic' do
-    #   topic = create(:topic, domain: domain)
-    #   get blog_v1_topic_domain_path(topic_id: topic.id), format: :json
-    #   expect(assigns(:record)).to eq(domain)
-    # end
+
+    it 'returns correct domain for topic' do
+      topic = create(:topic_with_domain, domain_id: domain.id)
+      get blog_v1_topic_domain_path(topic_id: topic.id), format: :json
+      expect(assigns(:record)).to eq(domain)
+    end
     #
     # it 'returns correct domain for published_entry' do
     #   published_entry = create(:published_entry, domain: domain)
