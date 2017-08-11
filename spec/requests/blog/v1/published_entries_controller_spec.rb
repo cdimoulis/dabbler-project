@@ -45,6 +45,7 @@ RSpec.describe Blog::V1::PublishedEntriesController do
 
       get blog_v1_domain_published_entries_path(domain_id: domain.id), format: :json
       expect(response).to have_http_status(:success)
+      expect(assigns(:records).length).to eq(2)
       expect(assigns(:records).pluck('id')).to include(published_entry_a.id)
       expect(assigns(:records).pluck('id')).to include(published_entry_b.id)
     end

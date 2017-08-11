@@ -14,7 +14,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :domains, except: exc_new_edit + [:destroy], constraints: uuid_constraints do
         resources :child_orderings, only: :index, to: 'domains#child_orderings'
-        # resources :featured_entries, except: exc_new_edit, parent: :domains
+        resources :featured_entries, only: :index, parent: :domains
         resources :menu_groups, only: :index, parent: :domains
         resources :menus, only: [:create, :index], parent: :domain
         resources :published_entries, only: :index, parent: :domains
@@ -29,7 +29,7 @@ Rails.application.routes.draw do
       end
 
       resources :featured_entries, except: exc_new_edit, constraints: uuid_constraints do
-        # resource :domain, only: :show, action: 'single_index', parent: :featured_entries
+        resource :domain, only: :show, action: 'single_index', parent: :featured_entries
         # resource :entry, only: :show, action: 'single_index', parent: :featured_entries
         # resources :menu_groups, only: :index, parent: :featured_entries
         # resources :topics, only: :index, parent: :featured_entries
