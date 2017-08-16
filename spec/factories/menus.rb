@@ -23,6 +23,21 @@ FactoryGirl.define do
     order { Menu.count }
     creator { create(:user) }
     creator_id { creator.present? ? creator.id : nil}
+
+    # Domain with :topics populated
+    factory :menu_with_topics do
+      # Set the number of menu groups
+      transient do
+        topics_count 5
+      end
+
+      after(:create) do |menu, evaluator|
+        # Domain Group names must be different within same domain
+        (1..evaluator.topics_count).step(1) do |i|
+          create(:topic_with_menu, menu_id: menu.id)
+        end
+      end
+    end
   end
 
 end

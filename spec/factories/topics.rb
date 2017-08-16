@@ -38,6 +38,15 @@ FactoryGirl.define do
       menu { create(:menu, domain: domain) }
       menu_group { create(:menu_group, menu: menu) }
     end
+
+    factory :topic_with_menu do
+      transient do
+        menu_id nil
+        menu { menu_id.present? ? Menu.where("id = ?", menu_id).take : create(:menu) }
+      end
+
+      menu_group { create(:menu_group, menu: menu) }
+    end
   end
 
 end

@@ -29,15 +29,23 @@ RSpec.describe Blog::V1::TopicsController do
 
   # # test nested index
   context '#index' do
-  #   let!(:topic) { create(:topic) }
+    let!(:topic) { create(:topic) }
   #
     it "fetches via domain" do
+      # this will add 5 topics from :domain_with_topics. So 6 total
       domain = create(:domain_with_topics)
-      # create one more MenuGroup to add more than 5 from :domain_with_topics
-      topic = create(:topic)
       get blog_v1_domain_topics_path(domain_id: domain.id), format: :json
       expect(response).to have_http_status(:success)
       # :domain_with_topics factory creates 5 groups on default
+      expect(assigns(:records).count).to eq(5)
+    end
+
+    it "fetches via menu" do
+      # this will add 5 topics from :domain_with_topics. So 6 total
+      menu = create(:menu_with_topics)
+      get blog_v1_menu_topics_path(menu_id: menu.id), format: :json
+      expect(response).to have_http_status(:success)
+      # :menu_with_topics factory creates 5 groups on default
       expect(assigns(:records).count).to eq(5)
     end
   #
