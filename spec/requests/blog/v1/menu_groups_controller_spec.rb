@@ -3,21 +3,26 @@ require "rails_helper"
 RSpec.describe Blog::V1::MenuGroupsController do
   include RequestSpecHelper
 
-  # context '#create' do
-  #   let!(:user) { create(:user) }
-  #
-  #   before do
-  #     full_sign_in user, '12345678'
-  #   end
-  #
-  #   after do
-  #     full_sign_out
-  #   end
-  #
-  #   it "succeeds via menu" do
-  #
-  #   end
-  # end
+  context '#create' do
+    let!(:admin) { create(:user) }
+    let!(:menu_group) { attributes_for(:menu_group, menu: nil) }
+
+    before do
+      full_sign_in admin, '12345678'
+    end
+
+    after do
+      full_sign_out
+    end
+
+    it "creates via menu" do
+      menu = create(:menu)
+      post blog_v1_menu_menu_groups_path(menu_id: menu.id), menu_group: menu_group, format: :json
+      expect(response).to have_http_status(:success)
+      expect(menu.menu_groups.count).to eq(1)
+      expect(assigns(:record).menu_id).to eq(menu.id)
+    end
+  end
 
   # test nested index
   context '#index' do
