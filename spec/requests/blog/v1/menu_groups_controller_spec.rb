@@ -26,20 +26,36 @@ RSpec.describe Blog::V1::MenuGroupsController do
 
   # test nested index
   context '#index' do
-    # it "fetches via menu" do
-    #   menu = create(:menu)
-    #   menu_b = create(:menu)
-    #   group_a = create(:menu_group, domain: menu.domain)
-    #   group_b = create(:menu_group, domain: menu.domain)
-    #   group_c = create(:menu_group, domain: menu.domain)
-    #   group_d = create(:menu_group, domain: menu_b.domain)
-    #   menu.menu_groups = [group_a, group_b, group_c]
-    #   menu_b.menu_groups = [group_d]
-    #   url = blog_v1_menu_menu_groups_path(menu_id: menu.id)
-    #   get url, format: :json
-    #   expect(response).to have_http_status(:success)
-    #   expect(assigns(:records).count).to eq(3)
-    # end
+    context 'fetches via menu' do
+      let!(:menu) { create(:menu) }
+
+      context 'has ordering concern' do
+        let!(:a) { create(:menu_group, menu: menu, text: 'A', order: nil) }
+        let!(:b) { create(:menu_group, menu: menu, text: 'B', order: nil) }
+        let!(:c) { create(:menu_group, menu: menu, text: 'C', order: 3) }
+        let!(:d) { create(:menu_group, menu: menu, text: 'D', order: 2) }
+        let!(:e) { create(:menu_group, menu: menu, text: 'E', order: 1) }
+        let!(:f) { create(:menu_group, menu: menu, text: 'F', order: nil) }
+
+        it 'orders correctly with default' do
+          url = blog_v1_menu_menu_groups_path(menu_id: menu.id)
+          get url, format: :json
+          ordered = [e,d,c,a,b,f]
+          expect(assigns(:records).to_a).to match(ordered)
+        end
+
+        it 'orders correctly with text first' do
+          menu.update_attribute(:menu_group_ordering, ['text:asc','order:asc'])
+          f.update_attribute(:order, 4)
+          b.update_attribute(:order, 5)
+          a.update_attribute(:order, 6)
+          url = blog_v1_menu_menu_groups_path(menu_id: menu.id)
+          get url, format: :json
+          ordered = [a,b,c,d,e,f]
+          expect(assigns(:records).to_a).to match(ordered)
+        end
+      end
+    end
 
     it "fetches via domain" do
       domain = create(:domain_with_menu_groups)
