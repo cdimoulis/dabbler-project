@@ -67,12 +67,12 @@ RSpec.describe Blog::V1::MenusController do
       expect(assigns(:record)).to eq(menu)
     end
 
-    # it 'returns correct menu for topic' do
-    #   topic = create(:topic_with_domain, domain_id: domain.id)
-    #   get blog_v1_topic_domain_path(topic_id: topic.id), format: :json
-    #   expect(assigns(:record)).to eq(domain)
-    # end
-    #
+    it 'returns correct menu for topic' do
+      topic = create(:topic_with_menu, menu: menu)
+      get blog_v1_topic_menu_path(topic_id: topic.id), format: :json
+      expect(assigns(:record)).to eq(menu)
+    end
+
     # it 'returns correct menu for published_entry' do
     #   published_entry = create(:published_entry, domain: domain)
     #   get blog_v1_published_entry_domain_path(published_entry_id: published_entry.id), format: :json

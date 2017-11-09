@@ -14,9 +14,12 @@ class Blog::V1::EntriesController < Blog::V1::BlogController
   def update
     entry_id = params[:id]
     entry = Entry.where('id = ?',entry_id).take
+    # If the entry is not locked, update normally
     if !entry.locked
       super
     else
+      # If there is an updated_entry_id then this entry has already been updated
+      # once it has an updated_entry that entry should be updated instead
       if entry.updated_entry_id.present?
         puts "\n\nCould not update Entry record: Record has been previously updated\n\n"
         Rails.logger.debug "\n\nCould not update Entry record: Record has been previously updated\n\n"
