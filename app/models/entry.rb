@@ -51,6 +51,12 @@ class Entry < ApplicationRecord
     # Third attempt includes non updated entries
     includes(:published_entries).where( :published_entries => {:entry_id => nil} ).where(updated_entry_id: nil)
   end
+
+  # Entries that have a published entry
+  def self.published
+    includes(:published_entries).where.not( :published_entries => {:entry_id => nil} )
+  end
+
   ###
   # End Scopes
   ###
@@ -86,7 +92,9 @@ class Entry < ApplicationRecord
     end
   end
 
-  # Replace associations on update
+  # Replace published entry associations on update
+  # This means that any published entries that belonged to this entry will now
+  # belong to the updated_entry
   def replace_associations
     if updated_entry.present?
       published_entries.each do |pe|

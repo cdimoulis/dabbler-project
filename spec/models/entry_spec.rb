@@ -46,16 +46,23 @@ RSpec.describe Entry, type: :model do
   end
 
   context 'scopes' do
-    it 'shows unpublished' do
-      one = create(:entry)
-      two = create(:entry)
-      three = create(:entry)
-      four = create(:entry)
-      five = create(:entry, updated_entry: three)
+    let!(:one) { create(:entry) }
+    let!(:two) { create(:entry) }
+    let!(:three) { create(:entry) }
+    let!(:four) { create(:entry) }
+    let!(:five) { create(:entry, updated_entry: four) }
 
+    before do
       create(:published_entry, entry: two)
       create(:published_entry, entry: four)
+    end
+
+    it 'shows unpublished' do
       expect(Entry.unpublished.to_a).to match([one,three])
+    end
+
+    it 'shows published' do
+      expect(Entry.published.to_a).to match([two, four])
     end
   end
 
