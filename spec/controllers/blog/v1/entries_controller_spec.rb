@@ -24,6 +24,7 @@ RSpec.describe Blog::V1::EntriesController do
 
   # Tests for INDEX route
   context "#index" do
+    let!(:fifth) { create(:entry, text: '5th Entry') }
     let!(:fourth) { create(:entry, text: '4th Entry') }
     let!(:third) { create(:entry, text: '3rd Entry') }
     let!(:second) { create(:entry, text: '2nd Entry') }
@@ -34,7 +35,7 @@ RSpec.describe Blog::V1::EntriesController do
       # look_like_json found in support/matchers/json_matchers.rb
       expect(response).to have_http_status(:success)
       expect(response.body).to look_like_json
-      expect(assigns(:records).to_a).to match([first,second,third,fourth])
+      expect(assigns(:records).to_a).to match([first,second,third,fourth,fifth])
     end
 
     it 'handles date range' do
@@ -47,8 +48,8 @@ RSpec.describe Blog::V1::EntriesController do
 
       # From only
       get :index, from: 6.days.ago, format: :json
-      expect(assigns(:records).length).to eq(2)
-      expect(assigns(:records).to_a).to match([first,second])
+      expect(assigns(:records).length).to eq(3)
+      expect(assigns(:records).to_a).to match([first,second,fifth])
 
       # To only
       get :index, to: 6.days.ago, format: :json
@@ -69,8 +70,8 @@ RSpec.describe Blog::V1::EntriesController do
 
       # start only
       get :index, start: 2, format: :json
-      expect(assigns(:records).length).to eq(2)
-      expect(assigns(:records).to_a).to match([third,fourth])
+      expect(assigns(:records).length).to eq(3)
+      expect(assigns(:records).to_a).to match([third,fourth,fifth])
 
       # count andd start
       get :index, start: 1, count: 2, format: :json
@@ -79,6 +80,8 @@ RSpec.describe Blog::V1::EntriesController do
     end
 
     it 'shows unpublished' do
+      fifth.updated_entry = fourth
+      fifth.save
       create(:published_entry, entry: first)
       create(:published_entry, entry: third)
       get :index, unpublished: true, format: :json
