@@ -51,6 +51,7 @@ RSpec.describe Entry, type: :model do
       two = create(:entry)
       three = create(:entry)
       four = create(:entry)
+      five = create(:entry, updated_entry: three)
 
       create(:published_entry, entry: two)
       create(:published_entry, entry: four)

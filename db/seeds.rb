@@ -61,11 +61,17 @@ e1 = Entry.create(text: 'Entry 1', author: user, content: 'TEST Entry', creator:
 e2 = Entry.create(text: 'Entry 2', author: user, content: 'TEST Entry', creator: user)
 e3 = Entry.create(text: 'Entry 3', author: user, content: 'TEST Entry', creator: user)
 e4 = Entry.create(text: 'Entry 4', author: user, content: 'TEST Entry', creator: user)
+e5 = Entry.create(text: 'Entry 5', author: user, content: 'TEST Entry', creator: user)
+e6 = Entry.create(text: 'Entry 6', author: user, content: 'TEST Entry', creator: user)
+
+# Create an updated entry
+e4.updated_entry_id = e5.id
+e4.save
 
 pe1 = PublishedEntry.create(domain: test_domain, entry: e1, notes: e1.text, creator: user, published_at: DateTime.parse('2017-06-06').to_s, type: 'PublishedEntry')
 pe2 = PublishedEntry.create(domain: test_domain, entry: e2, notes: e2.text, creator: user, published_at: DateTime.parse('2017-06-05').to_s, type: 'PublishedEntry')
 pe3 = PublishedEntry.create(domain: test_domain, entry: e3, notes: e3.text, creator: user, published_at: DateTime.parse('2017-06-04').to_s, type: 'PublishedEntry')
-pe4 = PublishedEntry.create(domain: test_domain, entry: e4, notes: e4.text, creator: user, published_at: DateTime.parse('2017-06-03').to_s, type: 'PublishedEntry')
+pe4 = PublishedEntry.create(domain: test_domain, entry: e5, notes: e5.text, creator: user, published_at: DateTime.parse('2017-06-03').to_s, type: 'PublishedEntry')
 
 topic = Topic.where(text: 'Topic 1', menu_group_id: mg_1.id).take
 
@@ -122,11 +128,17 @@ e1 = Entry.create(text: 'Entry a', author: user, content: 'TEST Entry', creator:
 e2 = Entry.create(text: 'Entry b', author: user, content: 'TEST Entry', creator: user)
 e3 = Entry.create(text: 'Entry c', author: user, content: 'TEST Entry', creator: user)
 e4 = Entry.create(text: 'Entry d', author: user, content: 'TEST Entry', creator: user)
+e5 = Entry.create(text: 'Entry e', author: user, content: 'TEST Entry', creator: user)
+e6 = Entry.create(text: 'Entry f', author: user, content: 'TEST Entry', creator: user)
+
+# Create an updated entry
+e4.updated_entry_id = e5.id
+e4.save
 
 pe1 = PublishedEntry.create(domain: demo_domain, entry: e1, notes: e1.text, creator: user, published_at: DateTime.parse('2017-06-06').to_s, type: 'PublishedEntry')
 pe2 = PublishedEntry.create(domain: demo_domain, entry: e2, notes: e2.text, creator: user, published_at: DateTime.parse('2017-06-05').to_s, type: 'PublishedEntry')
 pe3 = PublishedEntry.create(domain: demo_domain, entry: e3, notes: e3.text, creator: user, published_at: DateTime.parse('2017-06-04').to_s, type: 'PublishedEntry')
-pe4 = PublishedEntry.create(domain: demo_domain, entry: e4, notes: e4.text, creator: user, published_at: DateTime.parse('2017-06-03').to_s, type: 'PublishedEntry')
+pe4 = PublishedEntry.create(domain: demo_domain, entry: e5, notes: e5.text, creator: user, published_at: DateTime.parse('2017-06-03').to_s, type: 'PublishedEntry')
 
 topic = Topic.where(text: 'Topic a').take
 

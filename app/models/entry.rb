@@ -39,9 +39,17 @@ class Entry < ApplicationRecord
   # Scopes
   ###
   # Entries that are not part of a PublishedEntry
+  # or do not have an updated_entry
   def self.unpublished
-    entry_ids = PublishedEntry.pluck('entry_id').uniq
-    where.not(id: entry_ids)
+    # First attempt (keeping for learning purposes)
+    # entry_ids = PublishedEntry.pluck('entry_id').uniq
+    # where.not(id: entry_ids)
+
+    # Second attempt is same result as first attempt, different query (like not 2 queries)
+    # includes(:published_entries).where( :published_entries => {:entry_id => nil} )
+
+    # Third attempt includes non updated entries
+    includes(:published_entries).where( :published_entries => {:entry_id => nil} ).where(updated_entry_id: nil)
   end
   ###
   # End Scopes
