@@ -80,12 +80,21 @@ RSpec.describe Blog::V1::EntriesController do
     end
 
     it 'shows unpublished' do
-      fifth.updated_entry = fourth
+      fifth.updated_entry = third
       fifth.save
       create(:published_entry, entry: first)
       create(:published_entry, entry: third)
       get :index, unpublished: true, format: :json
       expect(assigns(:records).to_a).to match([second,fourth])
+    end
+
+    it 'shows published' do
+      fifth.updated_entry = third
+      fifth.save
+      create(:published_entry, entry: first)
+      create(:published_entry, entry: third)
+      get :index, published: true, format: :json
+      expect(assigns(:records).to_a).to match([first,third])
     end
 
   end

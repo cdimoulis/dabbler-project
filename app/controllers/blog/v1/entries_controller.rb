@@ -121,6 +121,10 @@ class Blog::V1::EntriesController < Blog::V1::BlogController
     if params[:unpublished]
       @scopes.push({scope: :unpublished})
     end
+
+    if params[:published]
+      @scopes.push({scope: :published})
+    end
   end
 
 end
