@@ -81,14 +81,15 @@ RSpec.describe Blog::V1::MenuGroupsController do
     # end
   end
 
-  # context '#single_index' do
-  #   it 'fetches via topic' do
-  #     menu_group = create(:menu_group)
-  #     topic = create(:topic, menu_group: menu_group, domain: menu_group.domain)
-  #     get blog_v1_topic_menu_group_path(topic_id: topic.id), format: :json
-  #     expect(assigns(:record)).to eq(group)
-  #   end
-  # end
+  context '#single_index' do
+    let!(:menu_group) { create(:menu_group) }
+
+    it 'returns correct menu_group for topic' do
+      topic = create(:topic, menu_group: menu_group)
+      get blog_v1_topic_menu_group_path(topic_id: topic.id), format: :json
+      expect(assigns(:record)).to eq(menu_group)
+    end
+  end
 
   # Valid child ordering attribute
   context "VALID_CHILD_ORDERING_ATTRIBUTES" do

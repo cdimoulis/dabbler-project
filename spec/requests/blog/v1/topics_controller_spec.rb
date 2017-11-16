@@ -4,28 +4,27 @@ RSpec.describe Blog::V1::TopicsController do
   include RequestSpecHelper
 
   # Test nested creates
-  # context '#create' do
-  #   let!(:domain) { create(:domain) }
-  #   let!(:topic) { attributes_for(:topic_without_menu_group, domain: domain) }
-  #   let!(:user) { create(:user) }
-  #
-  #   before do
-  #     full_sign_in user, '12345678'
-  #   end
-  #
-  #   after do
-  #     full_sign_out
-  #   end
-  #
-  #   it "succeeds via menu_group" do
-  #     menu_group = create(:menu_group, domain: domain)
-  #     route = blog_v1_menu_group_topics_path(menu_group_id: menu_group.id)
-  #     post route, topic: topic, format: :json
-  #     expect(response).to have_http_status(:success)
-  #     expect(domain.topics.count).to eq(1)
-  #     expect(Topic.first.menu_group.id).to eq(menu_group.id)
-  #   end
-  # end
+  context '#create' do
+    let!(:admin) { create(:user) }
+    let!(:topic) { attributes_for(:topic_without_menu_group) }
+
+    before do
+      full_sign_in admin, '12345678'
+    end
+
+    after do
+      full_sign_out
+    end
+
+    it "succeeds via menu_group" do
+      menu_group = create(:menu_group)
+      route = blog_v1_menu_group_topics_path(menu_group_id: menu_group.id)
+      post route, topic: topic, format: :json
+      expect(response).to have_http_status(:success)
+      expect(menu_group.topics.count).to eq(1)
+      expect(assigns(:record).menu_group_id).to eq(menu_group.id)
+    end
+  end
 
   # # test nested index
   context '#index' do
