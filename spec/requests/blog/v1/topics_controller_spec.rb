@@ -47,16 +47,37 @@ RSpec.describe Blog::V1::TopicsController do
       # :menu_with_topics factory creates 5 groups on default
       expect(assigns(:records).count).to eq(5)
     end
-  #
-  #   it "fetches via menu_group" do
-  #     menu_group = topic.menu_group
-  #     topic_b = create(:topic, domain: topic.domain, menu_group: menu_group)
-  #     topic_c = create(:topic)
-  #     route = blog_v1_menu_group_topics_path(menu_group_id: menu_group.id)
-  #     get route, format: :json
-  #     order = [topic.id, topic_b.id]
-  #     expect(assigns(:records).pluck('id')).to match(order)
-  #   end
+
+    context "fetches via menu_group" do
+      let!(:menu_group) { create(:menu_group) }
+
+      context 'has ordering concern' do
+        let!(:a) { create(:topic, menu_group: menu_group, text: 'A', order: nil) }
+        let!(:b) { create(:topic, menu_group: menu_group, text: 'B', order: nil) }
+        let!(:c) { create(:topic, menu_group: menu_group, text: 'C', order: 3) }
+        let!(:d) { create(:topic, menu_group: menu_group, text: 'D', order: 2) }
+        let!(:e) { create(:topic, menu_group: menu_group, text: 'E', order: 1) }
+        let!(:f) { create(:topic, menu_group: menu_group, text: 'F', order: nil) }
+
+        it 'orders correctly with default' do
+          url = blog_v1_menu_group_topics_path(menu_group_id: menu_group.id)
+          get url, format: :json
+          ordered = [e,d,c,a,b,f]
+          expect(assigns(:records).to_a).to match(ordered)
+        end
+
+        it 'orders correctly with text first' do
+          menu_group.update_attribute(:topic_ordering, ['text:asc','order:asc'])
+          f.update_attribute(:order, 4)
+          b.update_attribute(:order, 5)
+          a.update_attribute(:order, 6)
+          url = blog_v1_menu_group_topics_path(menu_group_id: menu_group.id)
+          get url, format: :json
+          ordered = [a,b,c,d,e,f]
+          expect(assigns(:records).to_a).to match(ordered)
+        end
+      end
+    end
   #
   #   it "fetches via published_entry" do
   #     menu_group = topic.menu_group
