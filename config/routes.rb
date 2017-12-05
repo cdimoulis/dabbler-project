@@ -62,6 +62,8 @@ Rails.application.routes.draw do
         # resources :topics, only: :index, parent: :published_entries
       end
 
+      resources :published_entries_topics, except: exc_new_edit, constraints: uuid_constraints
+
       resources :topics, except: exc_new_edit, constraints: uuid_constraints do
         resources :child_orderings, only: :index, to: 'topics#child_orderings'
         resource :domain, only: :show, action: 'single_index', parent: :topics
