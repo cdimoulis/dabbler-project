@@ -76,10 +76,10 @@ pe4 = PublishedEntry.create(domain: test_domain, entry: e5, notes: e5.text, crea
 topic = Topic.where(text: 'Topic 1', menu_group_id: mg_1.id).take
 
 PublishedEntriesTopic.create [
-  {published_entry: pe1, topic: topic},
-  {published_entry: pe2, topic: topic},
-  {published_entry: pe3, topic: topic, order: 1},
-  {published_entry: pe4, topic: topic, order: 2}
+  {published_entry: pe1, topic: topic, creator_id: user.id},
+  {published_entry: pe2, topic: topic, creator_id: user.id},
+  {published_entry: pe3, topic: topic, order: 1, creator_id: user.id},
+  {published_entry: pe4, topic: topic, order: 2, creator_id: user.id}
 ]
 
 ### END TEST Domain
@@ -143,10 +143,10 @@ pe4 = PublishedEntry.create(domain: demo_domain, entry: e5, notes: e5.text, crea
 topic = Topic.where(text: 'Topic a').take
 
 PublishedEntriesTopic.create [
-  {published_entry: pe1, topic: topic},
-  {published_entry: pe2, topic: topic},
-  {published_entry: pe3, topic: topic, order: 1},
-  {published_entry: pe4, topic: topic, order: 2}
+  {published_entry: pe1, topic: topic, creator_id: user.id},
+  {published_entry: pe2, topic: topic, creator_id: user.id},
+  {published_entry: pe3, topic: topic, order: 1, creator_id: user.id},
+  {published_entry: pe4, topic: topic, order: 2, creator_id: user.id}
 ]
 
 ### END DEMO Domain

@@ -6,11 +6,13 @@
 #  published_entry_id :uuid             not null
 #  topic_id           :uuid             not null
 #  order              :integer
+#  creator_id         :uuid
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
 #
 
 class PublishedEntriesTopic < ActiveRecord::Base
+  include SetCreator
 
   belongs_to :published_entry
   belongs_to :topic

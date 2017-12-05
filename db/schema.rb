@@ -149,10 +149,12 @@ ActiveRecord::Schema.define(version: 20170615203531) do
     t.uuid     "published_entry_id", null: false
     t.uuid     "topic_id",           null: false
     t.integer  "order"
+    t.uuid     "creator_id"
     t.datetime "created_at",         null: false
     t.datetime "updated_at",         null: false
   end
 
+  add_index "published_entries_topics", ["creator_id"], name: "index_published_entries_topics_on_creator_id", using: :btree
   add_index "published_entries_topics", ["order"], name: "index_published_entries_topics_on_order", using: :btree
   add_index "published_entries_topics", ["published_entry_id", "topic_id"], name: "index_published_entry_id_and_topic_id", unique: true, using: :btree
   add_index "published_entries_topics", ["published_entry_id"], name: "index_published_entries_topics_on_published_entry_id", using: :btree
