@@ -113,4 +113,21 @@ RSpec.describe Blog::V1::PublishedEntriesTopicsController, type: :controller do
     end
   end
 
+  # Test for DESTROY route
+  context "#destroy" do
+    let!(:published_entries_topic_a) { create(:published_entries_topic) }
+    let!(:published_entries_topic_b) { create(:published_entries_topic) }
+    let!(:current) { PublishedEntriesTopic.count }
+
+    before do
+      sign_in
+      delete :destroy, id: published_entries_topic_a.id, format: :json
+    end
+
+    it "succeeds" do
+      expect(response).to have_http_status(:success)
+      expect(PublishedEntriesTopic.count).to eq(current-1)
+    end
+  end
+
 end
