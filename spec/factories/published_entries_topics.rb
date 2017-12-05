@@ -17,11 +17,21 @@ FactoryGirl.define do
     published_entry_id { published_entry.present? ? published_entry.id : nil }
     topic {
        if published_entry.present?
-         create(:topic, menu_group: create(:menu_group, menu: create(:menu, domain: published_entry.domain)))
+         create(:topic_with_domain,domain: published_entry.domain)
        else
          create(:topic)
        end
     }
     topic_id { topic.present? ? topic.id : nil }
+
+    factory :published_entries_topic_with_domain do
+      transient do
+        domain_id nil
+        domain { domian_id.present? ? Domain.where("id = ?", domain_id).take : create(:domain) }
+      end
+
+      published_entry { create(:published_entry, domain: domain) }
+      topic { create(:topic_with_domain, domain: domain) }
+    end
   end
 end
