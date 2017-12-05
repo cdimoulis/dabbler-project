@@ -50,21 +50,6 @@ RSpec.describe Blog::V1::PublishedEntriesController do
       expect(assigns(:records).pluck('id')).to include(published_entry_b.id)
     end
 
-    # it 'group returns correct published entries' do
-    #   group = create(:group)
-    #   published_entry_a = create(:published_entry, domain: group.domain)
-    #   published_entry_b = create(:published_entry, domain: group.domain)
-    #   published_entry_c = create(:published_entry, domain: group.domain)
-    #
-    #   group.published_entries << published_entry_b
-    #   group.published_entries << published_entry_c
-    #
-    #   get blog_v1_group_published_entries_path(group_id: group.id), format: :json
-    #   expect(response).to have_http_status(:success)
-    #   expect(assigns(:records).pluck('id')).to include(published_entry_b.id)
-    #   expect(assigns(:records).pluck('id')).to include(published_entry_c.id)
-    # end
-
     # it 'topic returns correct published entries' do
     #   topic = create(:topic)
     #   published_entry_a = create(:published_entry, domain: topic.domain)

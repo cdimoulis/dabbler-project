@@ -6,6 +6,7 @@
 #  published_entry_id :uuid             not null
 #  topic_id           :uuid             not null
 #  order              :integer
+#  creator_id         :uuid
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
 #
